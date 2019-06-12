@@ -14,11 +14,13 @@ function App() {
       <NumberInput
         id="num-input"
         initialValue={42}
+        onUpdate={(n, v) => console.log(n, v)}
       />
       <RadioInput
         id="radio-input"
         options={["A", "B", 3]}
-        initialIndex={2}
+        initialValue="B"
+        onUpdate={(n, v) => console.log(n, v)}
       />
     </div>
   );
