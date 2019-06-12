@@ -1,7 +1,7 @@
 import React from 'react';
 import Form from 'react-bootstrap/Form';
 
-export default function NumberInput({id, initialValue, onUpdate}) {
+export default function IntegerInput({id, initialValue, onUpdate}) {
 	return(
     <Form.Control
       id={id}

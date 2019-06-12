@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import TextInput from '../inputs/TextInput';
-import NumberInput from '../inputs/NumberInput';
+import IntegerInput from '../inputs/IntegerInput';
 import RadioInput from '../inputs/RadioInput';
 
 export default function Form({schema, uiSchema}) {
@@ -11,7 +11,7 @@ export default function Form({schema, uiSchema}) {
         initialValue="Brian"
         onUpdate={(n, v) => console.log(n, v)}
       />
-      <NumberInput
+      <IntegerInput
         id="num-input"
         initialValue={42}
         onUpdate={(n, v) => console.log(n, v)}
