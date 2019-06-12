@@ -1,5 +1,6 @@
 import React from 'react';
-import {default as TextInput} from './components/inputs/TextInput.js';
+import TextInput from './components/inputs/TextInput';
+import NumberInput from './components/inputs/NumberInput';
 
 function App() {
   return (
@@ -7,7 +8,11 @@ function App() {
       <TextInput
         id="test-id"
         initialValue="Brian"
-        onChange={(v) => console.log(v)}
+        onUpdate={(n, v) => console.log(n, v)}
+      />
+      <NumberInput
+        id="num-input"
+        initialValue={42}
       />
     </div>
   );
