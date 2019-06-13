@@ -5,7 +5,7 @@ import IntegerInput from '../inputs/IntegerInput';
 import RadioInput from '../inputs/RadioInput';
 
 export default function Form({schema, uiSchema}) {
-  SchemaParser.parseSchema(schema);
+  SchemaParser.parseSchemaWithUI(schema, uiSchema);
 
   return (
     <div className="App">
