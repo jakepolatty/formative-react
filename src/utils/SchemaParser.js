@@ -42,10 +42,10 @@ class SchemaParser {
   static convertSchemaLayer(schema, currentKey, uiSchema) {
     if (schema.type === "object") {
       let fields = schema.properties;
-      return {};
+      return SchemaParser.parseObjectLayer(schema, currentKey, uiSchema)
     } else if (schema.type === "array") {
       let fields = schema.items;
-      return {};
+      return SchemaParser.parseArrayLayer(schema, currentKey, uiSchema);
     } else if (schema.type === "string") {
       return SchemaParser.parseStringLayer(schema, currentKey, uiSchema[currentKey]);
     } else if (schema.type === "number") {
@@ -59,6 +59,48 @@ class SchemaParser {
     }
   }
 
+  // Parses an object section of the schema and all of its component elements
+  static parseObjectLayer(objLayer, key, uiSchema) {
+    return {};
+  }
+
+  // Parses an array section of the schema and its elements
+  static parseArrayLayer(arrayLayer, key, uiSchema) {
+    let inputType = undefined;
+    let fieldObject;
+    const arrayTypes = inputTypeMap.array;
+
+    if (uiSchema === undefined || uiSchema[key] === undefined
+      || uiSchema[key]["ui:widget"] === undefined) {
+      // The array should be rendered as a selection input if it has a single enumerated child,
+      // otherwise it should be presented as a list of inputs
+      if (arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
+        inputType = arrayTypes.select;
+        fieldObject = {type: inputType, id: key};
+
+        // TODO: Handle adding the enum values to the object
+      } else {
+        // TODO: Convert each of the items into component form
+      }
+    } else {
+      inputType = arrayTypes[uiSchema[key]["ui:widget"]];
+      
+      // The array should be rendered as a selection input if it has a single enumerated child,
+      // otherwise it should be presented as a list of inputs
+      if (inputType !== undefined && arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
+        fieldObject = {type: inputType, id: key};
+        // Append the UI schema options to the field
+        Object.assign(fieldObject, uiSchema[key]);
+
+        // TODO: Handle adding the enum values to the object
+      } else {
+        // TODO: Convert each of the items into component form
+      }
+    }
+
+    return fieldObject;
+  }
+
   // Parses a string valued field from the schema
   static parseStringLayer(strLayer, key, uiOptions) {
     let inputType = undefined;
@@ -66,6 +108,7 @@ class SchemaParser {
     const stringTypes = inputTypeMap.string;
 
     if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
+      // Check for a special string format passed in with the schema JSON
       if (strLayer.format !== undefined) {
         inputType = stringTypes[strLayer.format];
       }
@@ -96,11 +139,7 @@ class SchemaParser {
     const numberTypes = inputTypeMap.number;
 
     if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
-      if (numLayer.format !== undefined) {
-        inputType = numberTypes[numLayer.format];
-      }
-
-      inputType = (inputType !== undefined) ? inputType : numberTypes.number;
+      inputType = numberTypes.number;
       fieldObject = {type: inputType, id: key};
     } else {
       inputType = numberTypes[uiOptions["ui:widget"]];
@@ -131,11 +170,7 @@ class SchemaParser {
     const integerTypes = inputTypeMap.integer;
 
     if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
-      if (intLayer.format !== undefined) {
-        inputType = integerTypes[intLayer.format];
-      }
-
-      inputType = (inputType !== undefined) ? inputType : integerTypes.integer;
+      inputType = integerTypes.integer;
       fieldObject = {type: inputType, id: key};
     } else {
       inputType = integerTypes[uiOptions["ui:widget"]];
@@ -166,11 +201,7 @@ class SchemaParser {
     const booleanTypes = inputTypeMap.boolean;
 
     if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
-      if (boolLayer.format !== undefined) {
-        inputType = booleanTypes[boolLayer.format];
-      }
-
-      inputType = (inputType !== undefined) ? inputType : booleanTypes.checkbox;
+      inputType = booleanTypes.checkbox;
       fieldObject = {type: inputType, id: key};
     } else {
       inputType = booleanTypes[uiOptions["ui:widget"]];
