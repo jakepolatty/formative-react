@@ -5,10 +5,10 @@ export default const inputTypeMap = {
     email: "EmailInput",
     url: "UrlInput",
     file: "FileInput",
+    select: "SelectInput",
     date: "DateInput",
     datetime: "DatetimeInput",
     hidden: "HiddenInput",
-
   },
   number: {
     float: "FloatInput",

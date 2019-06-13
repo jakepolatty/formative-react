@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react';
+import SchemaParser from '../../utils/SchemaParser.js';
 import TextInput from '../inputs/TextInput';
 import IntegerInput from '../inputs/IntegerInput';
 import RadioInput from '../inputs/RadioInput';
 
 export default function Form({schema, uiSchema}) {
+  SchemaParser.parseSchema(schema);
+
   return (
     <div className="App">
       <TextInput
