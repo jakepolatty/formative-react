@@ -77,7 +77,7 @@ class SchemaParser {
       inputType = (inputType !== undefined) ? inputType : stringTypes.text;
 
       fieldObject = {type: inputType, id: key};
-      // Append the ui schema options to the field
+      // Append the UI schema options to the field
       Object.assign(fieldObject, uiOptions);
     }
 
@@ -91,7 +91,37 @@ class SchemaParser {
 
   // Parses a numerical field from the schema
   static parseNumberLayer(numLayer, key, uiOptions) {
+    let inputType;
+    let fieldObject;
+    const numberTypes = inputTypeMap.number;
 
+    if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
+      if (numLayer.format !== undefined) {
+        inputType = numberTypes[numLayer.format];
+      }
+
+      inputType = (inputType !== undefined) ? inputType : numberTypes.number;
+      fieldObject = {type: inputType, id: key};
+    } else {
+      inputType = numberTypes[uiOptions["ui:widget"]];
+      inputType = (inputType !== undefined) ? inputType : numberTypes.number
+      fieldObject = {type: inputType, id: key};
+
+      // Append the UI schema options to the field
+      Object.assign(fieldObject, uiOptions);
+    }
+
+    // Append the relevant JSON schema fields to the field data
+    Object.assign(fieldObject,
+      numLayer.title !== undefined && {label: numLayer.title},
+      numLayer.description !== undefined && {description: numLayer.description},
+      numLayer.default !== undefined && {initialValue: numLayer.default},
+      numLayer.multipleOf !== undefined && {increment: numLayer.multipleOf},
+      numLayer.minimum !== undefined && {min: numLayer.minimum},
+      numLayer.maximum !== undefined && {max: numLayer.maximum},
+      numLayer.exclusiveMinimum !== undefined && {exclusiveMin: numLayer.exclusiveMinimum},
+      numLayer.exclusiveMaximum !== undefined && {exclusiveMax: numLayer.exclusiveMaximum});
+    return fieldObject;
   }
 
   // Parses an integer field from the schema
@@ -112,7 +142,7 @@ class SchemaParser {
       inputType = (inputType !== undefined) ? inputType : integerTypes.integer;
       fieldObject = {type: inputType, id: key};
 
-      // Append the ui schema options to the field
+      // Append the UI schema options to the field
       Object.assign(fieldObject, uiOptions);
     }
 
@@ -131,7 +161,32 @@ class SchemaParser {
 
   // Parses a boolean field from the schema
   static parseBooleanLayer(boolLayer, key, uiOptions) {
+    let inputType;
+    let fieldObject;
+    const booleanTypes = inputTypeMap.boolean;
 
+    if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
+      if (boolLayer.format !== undefined) {
+        inputType = booleanTypes[boolLayer.format];
+      }
+
+      inputType = (inputType !== undefined) ? inputType : booleanTypes.checkbox;
+      fieldObject = {type: inputType, id: key};
+    } else {
+      inputType = booleanTypes[uiOptions["ui:widget"]];
+      inputType = (inputType !== undefined) ? inputType : booleanTypes.checkbox;
+      fieldObject = {type: inputType, id: key};
+
+      // Append the UI schema options to the field
+      Object.assign(fieldObject, uiOptions);
+    }
+
+    // Append the relevant JSON schema fields to the field data
+    Object.assign(fieldObject,
+      boolLayer.title !== undefined && {label: boolLayer.title},
+      boolLayer.description !== undefined && {description: boolLayer.description},
+      boolLayer.default !== undefined && {initialValue: boolLayer.default});
+    return fieldObject;
   }
 
 

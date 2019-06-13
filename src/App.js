@@ -7,10 +7,7 @@ function App() {
     <Form
       schema={{
   "title": "A single-field form",
-  "format": "range",
-  "type": "integer",
-  "minimum": 20,
-  "maximum": 30
+  "type": "boolean",
 }}
       uiSchema={{}}
     />
