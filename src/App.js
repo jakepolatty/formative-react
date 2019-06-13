@@ -7,10 +7,12 @@ function App() {
     <Form
       schema={{
   "title": "A single-field form",
-  "format": "datetime",
-  "type": "string"
+  "format": "range",
+  "type": "integer",
+  "minimum": 20,
+  "maximum": 30
 }}
-      uiSchema={{"date": {"ui:widget": "textarea"}}}
+      uiSchema={{}}
     />
   );
 }
