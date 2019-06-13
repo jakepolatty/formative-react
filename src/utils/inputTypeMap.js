@@ -1,9 +1,10 @@
-export default const inputTypeMap = {
+const inputTypeMap = {
   string: {
     text: "TextInput",
+    textarea: "TextAreaInput",
     password: "PasswordInput",
     email: "EmailInput",
-    url: "UrlInput",
+    uri: "UrlInput",
     file: "FileInput",
     select: "SelectInput",
     date: "DateInput",
@@ -32,3 +33,5 @@ export default const inputTypeMap = {
     hidden: "HiddenInput",
   },
 };
+
+export default inputTypeMap;
