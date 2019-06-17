@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 
 export default function IntegerInput({id, initialValue, label, description, onUpdate}) {
 	return(
-    <Form.Group controlId={id}>
+    <Form.Group>
       {label !== undefined &&
         <Form.Label>{label}</Form.Label>}
       <Form.Control

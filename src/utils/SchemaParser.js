@@ -41,10 +41,8 @@ class SchemaParser {
   // and returns an object representing that level of the schema that can be processed by the Form component
   static convertSchemaLayer(schema, currentKey, uiSchema) {
     if (schema.type === "object") {
-      let fields = schema.properties;
       return SchemaParser.parseObjectLayer(schema, currentKey, uiSchema)
     } else if (schema.type === "array") {
-      let fields = schema.items;
       return SchemaParser.parseArrayLayer(schema, currentKey, uiSchema);
     } else if (schema.type === "string") {
       return SchemaParser.parseStringLayer(schema, currentKey, uiSchema[currentKey]);

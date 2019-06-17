@@ -1,55 +1,48 @@
 import React from 'react';
 import Form from './components/Form/Form';
-import sampleSchema from './sample/sampleSchema.js';
+// import sampleSchema from './sample/sampleSchema.js';
 
 function App() {
   return (
     <Form
       schema={{
-  "title": "A list of tasks",
+  "title": "A registration form",
+  "description": "This is the same as the simple form, but it is rendered as a bootstrap grid. Try shrinking the browser window to see it in action.",
   "type": "object",
   "required": [
-    "title"
+    "firstName",
+    "lastName"
   ],
   "properties": {
-    "title": {
+    "firstName": {
       "type": "string",
-      "title": "Task list title"
+      "title": "First name"
     },
-    "tasks": {
-      "type": "array",
-      "title": "Tasks",
-      "items": {
-        "type": "object",
-        "required": [
-          "title"
-        ],
-        "properties": {
-          "title": {
-            "type": "string",
-            "title": "Title",
-            "description": "A sample title"
-          },
-          "details": {
-            "type": "string",
-            "title": "Task details",
-            "description": "Enter the task details"
-          },
-          "done": {
-            "type": "boolean",
-            "title": "Done?",
-            "default": false
-          }
-        }
-      }
+    "lastName": {
+      "type": "string",
+      "title": "Last name"
+    },
+    "age": {
+      "type": "integer",
+      "title": "Age"
+    },
+    "bio": {
+      "type": "string",
+      "title": "Bio"
+    },
+    "password": {
+      "type": "string",
+      "title": "Password",
+      "minLength": 3
+    },
+    "telephone": {
+      "type": "string",
+      "title": "Telephone",
+      "minLength": 10
     }
   }
 }}
-      uiSchema={{
-        "done": {
-          "ui:widget": "radio"
-        }
-      }}
+      uiSchema={{}}
     />
   );
 }

@@ -21,7 +21,7 @@ export default function RadioInput({id, options, initialValue, label, descriptio
   });
 
 	return(
-    <Form.Group controlId={id}>
+    <Form.Group>
       {label !== undefined &&
         <Form.Label>{label}</Form.Label>}
       {options.map((option, i) => {

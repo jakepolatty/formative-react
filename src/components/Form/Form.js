@@ -14,6 +14,8 @@ export default function Form({schema, uiSchema}) {
         setParsedSchema(parsed);
       }
     });
+    // Disable the eslint warning for [] didMount syntax
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const generateForm = (fields) => {
