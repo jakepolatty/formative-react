@@ -61,7 +61,24 @@ class SchemaParser {
 
   // Parses an object section of the schema and all of its component elements
   static parseObjectLayer(objLayer, key, uiSchema) {
-    return {};
+    let fieldGroupObject = {type: "InputGroup", id: key};
+
+    let itemsArray = Object.keys(objLayer.properties).map((propKey) => {
+      let itemLayer = SchemaParser.convertSchemaLayer(objLayer.properties[propKey], propKey, uiSchema);
+      // Add a required flag to the layer if it is required
+      if (objLayer.required !== undefined && objLayer.required.includes(propKey)) {
+        itemLayer.required = true;
+      }
+      return itemLayer;
+    });
+    fieldGroupObject.items = itemsArray;
+
+    // Append the top level fields to the group object
+    Object.assign(fieldGroupObject,
+      objLayer.title !== undefined && {label: objLayer.title},
+      objLayer.description !== undefined && {description: objLayer.description});
+
+    return fieldGroupObject;
   }
 
   // Parses an array section of the schema and its elements
@@ -141,7 +158,7 @@ class SchemaParser {
     let inputType = undefined;
     let fieldObject;
     const stringTypes = inputTypeMap.string;
-    const defaultType = strLayer.enum !== undefined ? strLayer.select : strLayer.text;
+    const defaultType = strLayer.enum !== undefined ? stringTypes.select : stringTypes.text;
 
     if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
       // Check for a special string format passed in with the schema JSON
