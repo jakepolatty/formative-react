@@ -77,10 +77,21 @@ class SchemaParser {
       if (arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
         inputType = arrayTypes.select;
         fieldObject = {type: inputType, id: key};
-
-        // TODO: Handle adding the enum values to the object
+        fieldObject.items = arrayLayer.items.enum;
       } else {
-        // TODO: Convert each of the items into component form
+        fieldObject = {type: "InputGroup", id: key};
+        if (Array.isArray(arrayLayer.items)) {
+          // Tuple Validation
+          let itemsArray = arrayLayer.items.map((item, index) => {
+            let itemKey = key + "-" + index;
+            return SchemaParser.convertSchemaLayer(item, itemKey, uiSchema);
+          });
+          fieldObject.items = itemsArray;
+        } else {
+          // List Validation
+          let itemKey = key + "-item"; 
+          fieldObject.itemFormat = SchemaParser.convertSchemaLayer(arrayLayer.items, itemKey, uiSchema);
+        }
       }
     } else {
       inputType = arrayTypes[uiSchema[key]["ui:widget"]];
@@ -91,12 +102,30 @@ class SchemaParser {
         fieldObject = {type: inputType, id: key};
         // Append the UI schema options to the field
         Object.assign(fieldObject, uiSchema[key]);
-
-        // TODO: Handle adding the enum values to the object
+        fieldObject.items = arrayLayer.items.enum;
       } else {
-        // TODO: Convert each of the items into component form
+        if (Array.isArray(arrayLayer.items)) {
+          let itemsArray = arrayLayer.items.map((item, index) => {
+            let itemKey = key + "-" + index;
+            return SchemaParser.convertSchemaLayer(item, itemKey, uiSchema);
+          });
+          fieldObject.items = itemsArray;
+        } else {
+          // List Validation
+          let itemKey = key + "-item"; 
+          fieldObject.itemFormat = SchemaParser.convertSchemaLayer(arrayLayer.items, itemKey, uiSchema);
+        }
       }
     }
+
+    // Append the top level JSON schema fields to the field data object
+    Object.assign(fieldObject,
+      arrayLayer.title !== undefined && {label: arrayLayer.title},
+      arrayLayer.description !== undefined && {description: arrayLayer.description},
+      arrayLayer.default !== undefined && {default: arrayLayer.default},
+      arrayLayer.minItems !== undefined && {minItems: arrayLayer.minItems},
+      arrayLayer.maxItems !== undefined && {maxItems: arrayLayer.maxItems},
+      arrayLayer.uniqueItems !== undefined && {unique: arrayLayer.uniqueItems});
 
     return fieldObject;
   }

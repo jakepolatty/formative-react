@@ -6,9 +6,13 @@ function App() {
   return (
     <Form
       schema={{
-        "title": "A single-field form",
-        "type": "boolean",
-      }}
+        "type": "array",
+      "title": "A list of strings",
+      "items": {
+        "type": "string",
+        "default": "bazinga"
+      }
+    }}
       uiSchema={{}}
     />
   );
