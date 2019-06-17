@@ -15,6 +15,7 @@ const inputTypeMap = {
     number: "NumberInput",
     text: "TextInput",
     range: "RangeInput",
+    select: "SelectInput",
     hidden: "HiddenInput",
   },
   boolean: {
@@ -26,6 +27,7 @@ const inputTypeMap = {
     integer: "IntegerInput",
     text: "TextInput",
     range: "RangeInput",
+    select: "SelectInput",
     hidden: "HiddenInput",
   },
   array: {

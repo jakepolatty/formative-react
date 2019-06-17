@@ -6,25 +6,20 @@ function App() {
   return (
     <Form
       schema={{
-        "type": "array",
-      "title": "A list of fixed items",
-      "items": [
-        {
-          "title": "A string value",
-          "type": "string",
-          "default": "lorem ipsum"
-        },
-        {
-          "title": "a boolean value",
-          "type": "boolean"
-        }
-      ],
-      "additionalItems": {
-        "title": "Additional item",
-        "type": "number"
-      }
+        "type": "number",
+      "title": "Number enum",
+      "enum": [
+        1,
+        2,
+        3
+      ]
     }}
-      uiSchema={{}}
+      uiSchema={{"numberEnumRadio": {
+    "ui:widget": "radio",
+    "ui:options": {
+      "inline": true
+    }
+  }}}
     />
   );
 }

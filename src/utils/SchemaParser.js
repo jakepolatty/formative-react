@@ -141,6 +141,7 @@ class SchemaParser {
     let inputType = undefined;
     let fieldObject;
     const stringTypes = inputTypeMap.string;
+    const defaultType = strLayer.enum !== undefined ? strLayer.select : strLayer.text;
 
     if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
       // Check for a special string format passed in with the schema JSON
@@ -148,11 +149,11 @@ class SchemaParser {
         inputType = stringTypes[strLayer.format];
       }
 
-      inputType = (inputType !== undefined) ? inputType : stringTypes.text;
+      inputType = (inputType !== undefined) ? inputType : defaultType;
       fieldObject = {type: inputType, id: key};
     } else {
       inputType = stringTypes[uiOptions["ui:widget"]];
-      inputType = (inputType !== undefined) ? inputType : stringTypes.text;
+      inputType = (inputType !== undefined) ? inputType : defaultType;
 
       fieldObject = {type: inputType, id: key};
       // Append the UI schema options to the field
@@ -164,6 +165,12 @@ class SchemaParser {
       strLayer.title !== undefined && {label: strLayer.title},
       strLayer.description !== undefined && {description: strLayer.description},
       strLayer.default !== undefined && {initialValue: strLayer.default});
+
+    // If the schema contains an enum field, append these options
+    if (strLayer.enum !== undefined) {
+      fieldObject.options = strLayer.enum;
+    }
+
     return fieldObject;
   }
 
@@ -172,13 +179,14 @@ class SchemaParser {
     let inputType;
     let fieldObject;
     const numberTypes = inputTypeMap.number;
+    const defaultType = numLayer.enum !== undefined ? numberTypes.select : numberTypes.number;
 
     if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
-      inputType = numberTypes.number;
+      inputType = defaultType;
       fieldObject = {type: inputType, id: key};
     } else {
       inputType = numberTypes[uiOptions["ui:widget"]];
-      inputType = (inputType !== undefined) ? inputType : numberTypes.number
+      inputType = (inputType !== undefined) ? inputType : defaultType;
       fieldObject = {type: inputType, id: key};
 
       // Append the UI schema options to the field
@@ -195,6 +203,12 @@ class SchemaParser {
       numLayer.maximum !== undefined && {max: numLayer.maximum},
       numLayer.exclusiveMinimum !== undefined && {exclusiveMin: numLayer.exclusiveMinimum},
       numLayer.exclusiveMaximum !== undefined && {exclusiveMax: numLayer.exclusiveMaximum});
+
+    // If the schema contains an enum field, append these options
+    if (numLayer.enum !== undefined) {
+      fieldObject.options = numLayer.enum;
+    }
+
     return fieldObject;
   }
 
@@ -203,13 +217,14 @@ class SchemaParser {
     let inputType;
     let fieldObject;
     const integerTypes = inputTypeMap.integer;
+    const defaultType = intLayer.enum !== undefined ? integerTypes.select : integerTypes.integer;
 
     if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
-      inputType = integerTypes.integer;
+      inputType = defaultType;
       fieldObject = {type: inputType, id: key};
     } else {
       inputType = integerTypes[uiOptions["ui:widget"]];
-      inputType = (inputType !== undefined) ? inputType : integerTypes.integer;
+      inputType = (inputType !== undefined) ? inputType : defaultType;
       fieldObject = {type: inputType, id: key};
 
       // Append the UI schema options to the field
@@ -226,6 +241,12 @@ class SchemaParser {
       intLayer.maximum !== undefined && {max: intLayer.maximum},
       intLayer.exclusiveMinimum !== undefined && {exclusiveMin: intLayer.exclusiveMinimum},
       intLayer.exclusiveMaximum !== undefined && {exclusiveMax: intLayer.exclusiveMaximum});
+
+    // If the schema contains an enum field, append these options
+    if (intLayer.enum !== undefined) {
+      fieldObject.options = intLayer.enum;
+    }
+
     return fieldObject;
   }
 
