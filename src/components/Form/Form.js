@@ -25,9 +25,13 @@ export default function Form({schema, uiSchema}) {
           // The specific list of items has been provided
           return (
             <div id={fields.id} key={fields.id}>
+              {fields.label !== undefined &&
+                <h2>{fields.label}</h2>}
               {fields.items.map((field) => {
                 return generateForm(field);
               })}
+              {fields.description !== undefined &&
+                <p>{fields.description}</p>}
             </div>
           );
         } else {
@@ -46,6 +50,8 @@ export default function Form({schema, uiSchema}) {
 
           return (
             <div id={fields.id} key={fields.id}>
+              {fields.label !== undefined &&
+                <h2>{fields.label}</h2>}
               {[...Array(listLength)].map((_, i) => {
                 // For each element within the default list link, check whether it has an initial value
                 if (i < initialValuesCount) {
@@ -56,6 +62,8 @@ export default function Form({schema, uiSchema}) {
                   return generateForm(fields.itemFormat);
                 }
               })}
+              {fields.description !== undefined &&
+                <p>{fields.description}</p>}
             </div>
           );
         }
