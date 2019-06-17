@@ -45,7 +45,11 @@ function App() {
     }
   }
 }}
-      uiSchema={{}}
+      uiSchema={{
+        "done": {
+          "ui:widget": "radio"
+        }
+      }}
     />
   );
 }
