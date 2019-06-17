@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Form from 'react-bootstrap/Form';
 
-export default function RadioInput({id, options, initialValue, onUpdate}) {
+export default function RadioInput({id, options, initialValue, label, description, onUpdate}) {
   if (options === undefined) {
     options = ["Yes", "No"];
 
@@ -21,7 +21,9 @@ export default function RadioInput({id, options, initialValue, onUpdate}) {
   });
 
 	return(
-    <div id={id}>
+    <Form.Group controlId={id}>
+      {label !== undefined &&
+        <Form.Label>{label}</Form.Label>}
       {options.map((option, i) => {
         const checked = option === value;
         return (
@@ -37,6 +39,8 @@ export default function RadioInput({id, options, initialValue, onUpdate}) {
           />
         );
       })}
-    </div>
+      {description !== undefined &&
+        <Form.Text>{description}</Form.Text>}
+    </Form.Group>
 	);
 }
