@@ -10,16 +10,14 @@ export default function Form({schema, uiSchema}) {
       if (err) {
         console.error(err);
       } else {
-        console.log(parsed)
+        console.log(parsed);
         setParsedSchema(parsed);
       }
     });
-    // Disable the eslint warning for [] didMount syntax
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [schema, uiSchema]);
 
   const generateForm = (fields) => {
-    if (fields !== undefined && fields !== {}) {
+    if (fields !== undefined && fields !== null) {
       if (fields.type === "InputGroup") {
         if (fields.items !== undefined) {
           // The specific list of items has been provided
@@ -85,7 +83,7 @@ export default function Form({schema, uiSchema}) {
   };
 
   return (
-    <div className="App">
+    <div className="SchemaForm">
       {generateForm(parsedSchema)}
     </div>
   );
