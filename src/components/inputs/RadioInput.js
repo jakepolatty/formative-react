@@ -20,7 +20,7 @@ export default function RadioInput({id, options, initialValue, onUpdate}) {
             value={option}
             checked={checked}
             label={option}
-            onChange={_ => setValue(option)}
+            onChange={onUpdate !== undefined ? _ => setValue(option) : undefined}
             type="radio"
           />
         );

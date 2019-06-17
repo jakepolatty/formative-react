@@ -8,7 +8,8 @@ export default function IntegerInput({id, initialValue, onUpdate}) {
       name={id}
       type="number"
       defaultValue={initialValue}
-      onChange={(event) => onUpdate(event.target.name, event.target.value)}
+      onChange={onUpdate !== undefined ? 
+        (event) => onUpdate(event.target.name, event.target.value) : undefined}
     />
 	);
 }

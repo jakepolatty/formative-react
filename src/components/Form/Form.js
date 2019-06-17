@@ -1,8 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import SchemaParser from '../../utils/SchemaParser.js';
-import TextInput from '../inputs/TextInput';
-import IntegerInput from '../inputs/IntegerInput';
-import RadioInput from '../inputs/RadioInput';
 import reactInputMap from '../../utils/reactInputMap.js';
 
 export default function Form({schema, uiSchema}) {
@@ -20,15 +17,43 @@ export default function Form({schema, uiSchema}) {
   }, []);
 
   const generateForm = (fields) => {
-    if (fields !== {}) {
+    if (fields !== undefined && fields !== {}) {
       if (fields.type === "InputGroup") {
         if (fields.items !== undefined) {
           // The specific list of items has been provided
-        } else {
-          // A generic item format has been provided
           return (
-            <div id={fields.id}>
+            <div id={fields.id} key={fields.id}>
+              {fields.items.map((field) => {
+                return generateForm(field);
+              })}
+            </div>
+          );
+        } else {
+          // A generic item format has been provided, so compute the number of elements that
+          // should be rendered
+          let listLength = 1;
+          let initialValuesCount = 0;
 
+          if (fields.minLength !== undefined && fields.minLength > 0) {
+            listLength = fields.minLength;
+          }
+          if (fields.initialValues !== undefined && fields.initialValues.length > 0) {
+            initialValuesCount = fields.initialValues.length;
+            listLength = Math.max(listLength, fields.initialValuesCount);
+          }
+
+          return (
+            <div id={fields.id} key={fields.id}>
+              {[...Array(listLength)].map((_, i) => {
+                // For each element within the default list link, check whether it has an initial value
+                if (i < initialValuesCount) {
+                  let format = fields.inputFormat;
+                  format.initialValue = fields.initialValues[i];
+                  return generateForm(format);
+                } else {
+                  return generateForm(fields.itemFormat);
+                }
+              })}
             </div>
           );
         }
@@ -36,8 +61,8 @@ export default function Form({schema, uiSchema}) {
         const Field = reactInputMap[fields.type];
         if (Field !== undefined) {
           // At this point the fields argument is at the level of a single field that can be rendered
-          const {type, ...rest} = fields;
-          return (<Field {...rest}/>);
+          const {type, id, ...rest} = fields;
+          return (<Field id={id} key={id} {...rest}/>);
         } else {
           // In the case where no matching field exists, return null
           return null;
@@ -51,22 +76,6 @@ export default function Form({schema, uiSchema}) {
 
   return (
     <div className="App">
-      <TextInput
-        id="test-id"
-        initialValue="Brian"
-        onUpdate={(n, v) => console.log(n, v)}
-      />
-      <IntegerInput
-        id="num-input"
-        initialValue={42}
-        onUpdate={(n, v) => console.log(n, v)}
-      />
-      <RadioInput
-        id="radio-input"
-        options={["A", "B", 3]}
-        initialValue="B"
-        onUpdate={(n, v) => console.log(n, v)}
-      />
       {generateForm(parsedSchema)}
     </div>
   );

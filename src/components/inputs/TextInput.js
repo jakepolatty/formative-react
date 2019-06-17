@@ -7,7 +7,8 @@ export default function TextInput({id, initialValue, onUpdate}) {
       id={id}
       name={id}
       defaultValue={initialValue}
-      onChange={(event) => onUpdate(event.target.name, event.target.value)}
+      onChange={onUpdate !== undefined ? 
+        (event) => onUpdate(event.target.name, event.target.value) : undefined}
     />
 	);
 }

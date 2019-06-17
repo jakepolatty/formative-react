@@ -138,7 +138,7 @@ class SchemaParser {
     Object.assign(fieldObject,
       arrayLayer.title !== undefined && {label: arrayLayer.title},
       arrayLayer.description !== undefined && {description: arrayLayer.description},
-      arrayLayer.default !== undefined && {default: arrayLayer.default},
+      arrayLayer.default !== undefined && {initialValues: arrayLayer.default},
       arrayLayer.minItems !== undefined && {minItems: arrayLayer.minItems},
       arrayLayer.maxItems !== undefined && {maxItems: arrayLayer.maxItems},
       arrayLayer.uniqueItems !== undefined && {unique: arrayLayer.uniqueItems});
