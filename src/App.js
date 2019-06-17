@@ -7,10 +7,21 @@ function App() {
     <Form
       schema={{
         "type": "array",
-      "title": "A list of strings",
-      "items": {
-        "type": "string",
-        "default": "bazinga"
+      "title": "A list of fixed items",
+      "items": [
+        {
+          "title": "A string value",
+          "type": "string",
+          "default": "lorem ipsum"
+        },
+        {
+          "title": "a boolean value",
+          "type": "boolean"
+        }
+      ],
+      "additionalItems": {
+        "title": "Additional item",
+        "type": "number"
       }
     }}
       uiSchema={{}}

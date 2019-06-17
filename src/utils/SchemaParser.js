@@ -95,7 +95,6 @@ class SchemaParser {
       }
     } else {
       inputType = arrayTypes[uiSchema[key]["ui:widget"]];
-      
       // The array should be rendered as a selection input if it has a single enumerated child,
       // otherwise it should be presented as a list of inputs
       if (inputType !== undefined && arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
@@ -126,6 +125,13 @@ class SchemaParser {
       arrayLayer.minItems !== undefined && {minItems: arrayLayer.minItems},
       arrayLayer.maxItems !== undefined && {maxItems: arrayLayer.maxItems},
       arrayLayer.uniqueItems !== undefined && {unique: arrayLayer.uniqueItems});
+
+    // Add additional items field if it exists and is not set to false
+    if (arrayLayer.additionalItems !== undefined && arrayLayer.additionalItems !== false) {
+      let itemKey = key + "-addItem";
+      fieldObject.additionalItemFormat = SchemaParser.convertSchemaLayer(arrayLayer.additionalItems,
+        itemKey, uiSchema);
+    }
 
     return fieldObject;
   }
