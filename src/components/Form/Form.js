@@ -3,6 +3,7 @@ import SchemaParser from '../../utils/SchemaParser.js';
 import TextInput from '../inputs/TextInput';
 import IntegerInput from '../inputs/IntegerInput';
 import RadioInput from '../inputs/RadioInput';
+import reactInputMap from '../../utils/reactInputMap.js';
 
 export default function Form({schema, uiSchema}) {
   SchemaParser.parseSchemaWithUI(schema, uiSchema, (success, err) => {
