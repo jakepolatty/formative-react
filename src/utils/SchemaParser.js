@@ -85,13 +85,14 @@ class SchemaParser {
     let inputType = undefined;
     let fieldObject;
     const arrayTypes = inputTypeMap.array;
+    const defaultType = "SelectInput";
 
     if (uiSchema === undefined || uiSchema[key] === undefined
-      || uiSchema[key]["ui:widget"] === undefined) {
+      || uiSchema[key]["ui:component"] === undefined) {
       // The array should be rendered as a selection input if it has a single enumerated child,
       // otherwise it should be presented as a list of inputs
       if (arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
-        inputType = arrayTypes.select;
+        inputType = defaultType;
         fieldObject = {type: inputType, id: key};
         fieldObject.items = arrayLayer.items.enum;
       } else {
@@ -110,10 +111,13 @@ class SchemaParser {
         }
       }
     } else {
-      inputType = arrayTypes[uiSchema[key]["ui:widget"]];
+      inputType = uiSchema[key]["ui:component"];
+      if (!arrayTypes.includes(inputType)) {
+        inputType = defaultType;
+      }
       // The array should be rendered as a selection input if it has a single enumerated child,
       // otherwise it should be presented as a list of inputs
-      if (inputType !== undefined && arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
+      if (arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
         fieldObject = {type: inputType, id: key};
         // Append the UI schema options to the field
         Object.assign(fieldObject, uiSchema[key]);
@@ -158,20 +162,17 @@ class SchemaParser {
     let inputType = undefined;
     let fieldObject;
     const stringTypes = inputTypeMap.string;
-    const defaultType = strLayer.enum !== undefined ? stringTypes.select : stringTypes.text;
+    const defaultType = strLayer.enum !== undefined ? "SelectInput" : "TextInput";
 
-    if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
+    if (uiOptions === undefined || uiOptions["ui:component"] === undefined) {
       // Check for a special string format passed in with the schema JSON
-      if (strLayer.format !== undefined) {
-        inputType = stringTypes[strLayer.format];
-      }
-
-      inputType = (inputType !== undefined) ? inputType : defaultType;
+      inputType = defaultType;
       fieldObject = {type: inputType, id: key};
     } else {
-      inputType = stringTypes[uiOptions["ui:widget"]];
-      inputType = (inputType !== undefined) ? inputType : defaultType;
-
+      inputType = uiOptions["ui:component"];
+      if (!stringTypes.includes(inputType)) {
+        inputType = defaultType;
+      }
       fieldObject = {type: inputType, id: key};
       // Append the UI schema options to the field
       Object.assign(fieldObject, uiOptions);
@@ -196,14 +197,16 @@ class SchemaParser {
     let inputType;
     let fieldObject;
     const numberTypes = inputTypeMap.number;
-    const defaultType = numLayer.enum !== undefined ? numberTypes.select : numberTypes.number;
+    const defaultType = numLayer.enum !== undefined ? "SelectInput" : "NumberInput";
 
-    if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
+    if (uiOptions === undefined || uiOptions["ui:component"] === undefined) {
       inputType = defaultType;
       fieldObject = {type: inputType, id: key};
     } else {
-      inputType = numberTypes[uiOptions["ui:widget"]];
-      inputType = (inputType !== undefined) ? inputType : defaultType;
+      inputType = uiOptions["ui:component"];
+      if (!numberTypes.includes(inputType)) {
+        inputType = defaultType;
+      }
       fieldObject = {type: inputType, id: key};
 
       // Append the UI schema options to the field
@@ -234,14 +237,16 @@ class SchemaParser {
     let inputType;
     let fieldObject;
     const integerTypes = inputTypeMap.integer;
-    const defaultType = intLayer.enum !== undefined ? integerTypes.select : integerTypes.integer;
+    const defaultType = intLayer.enum !== undefined ? "SelectInput" : "IntegerInput";
 
-    if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
+    if (uiOptions === undefined || uiOptions["ui:component"] === undefined) {
       inputType = defaultType;
       fieldObject = {type: inputType, id: key};
     } else {
-      inputType = integerTypes[uiOptions["ui:widget"]];
-      inputType = (inputType !== undefined) ? inputType : defaultType;
+      inputType = uiOptions["ui:component"];
+      if (!integerTypes.includes(inputType)) {
+        inputType = defaultType;
+      }
       fieldObject = {type: inputType, id: key};
 
       // Append the UI schema options to the field
@@ -272,13 +277,16 @@ class SchemaParser {
     let inputType;
     let fieldObject;
     const booleanTypes = inputTypeMap.boolean;
+    const defaultType = "CheckboxInput";
 
-    if (uiOptions === undefined || uiOptions["ui:widget"] === undefined) {
-      inputType = booleanTypes.checkbox;
+    if (uiOptions === undefined || uiOptions["ui:component"] === undefined) {
+      inputType = defaultType;
       fieldObject = {type: inputType, id: key};
     } else {
-      inputType = booleanTypes[uiOptions["ui:widget"]];
-      inputType = (inputType !== undefined) ? inputType : booleanTypes.checkbox;
+      inputType = uiOptions["ui:component"];
+      if (!booleanTypes.includes(inputType)) {
+        inputType = defaultType;
+      }
       fieldObject = {type: inputType, id: key};
 
       // Append the UI schema options to the field
