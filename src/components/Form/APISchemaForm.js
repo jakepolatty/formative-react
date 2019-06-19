@@ -22,12 +22,30 @@ export default function APISchemaForm({apiEndpoint, uiSchema}) {
     fetchSchema();
   }, [apiEndpoint]);
 
+  const saveFormData = (formData) => {
+    let headers = {
+      "Access-Control-Allow-Origin": "*"
+    };
+
+    axios.post(apiEndpoint, formData).then(res => {
+      if (res.data !== undefined && res.data !== null) {
+        const json = JSON.parse(res.data);
+        setData(json.data);
+      } else {
+        console.error("There was a problem saving the data to the server.");
+      }
+    }).catch(err => {
+      console.error(err);
+    });
+  };
+
   return (
     <div className="App">
       <Form
         schema={schema}
         uiSchema={uiSchema}
         externalData={data}
+        handleSave={(formData) => saveFormData(formData)}
       />
     </div>
   );
