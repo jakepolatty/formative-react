@@ -7,8 +7,8 @@ export default function APISchemaForm({apiEndpoint, uiSchema}) {
 
   useEffect(() => {
     async function fetchSchema() {
-      axios.get(apiEndpoint).then(data => {
-        const jsonSchema = JSON.parse(data);
+      axios.get(apiEndpoint).then(res => {
+        const jsonSchema = JSON.parse(res.data);
         setSchema(jsonSchema);
       });
     }

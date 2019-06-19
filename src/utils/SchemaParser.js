@@ -24,12 +24,12 @@ class SchemaParser {
       SchemaParser.parseSchema(jsonSchema, callback);
     } else {
       $RefParser.dereference(jsonSchema, (err, schema) => {
-      if (err) {
-        callback(null, err);
-      } else {
-        callback(SchemaParser.convertSchemaLayer(schema, "root", uiSchema), null);
-      }
-    });
+        if (err) {
+          callback(null, err);
+        } else {
+          callback(SchemaParser.convertSchemaLayer(schema, "root", uiSchema), null);
+        }
+      });
     }
   }
 

@@ -5,7 +5,7 @@ import APISchemaForm from './components/Form/APISchemaForm';
 function App() {
   return (
     <APISchemaForm
-      apiEndpoint="http://localhost:8888/api"
+      apiEndpoint="http://localhost:8888/api/"
       uiSchema={{}}
     />
   );
