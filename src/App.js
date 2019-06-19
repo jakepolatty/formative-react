@@ -6,7 +6,12 @@ function App() {
   return (
     <APISchemaForm
       apiEndpoint="http://localhost:8888/api/"
-      uiSchema={{}}
+      uiSchema={{
+        "bio": {
+          "ui:component": "TextAreaInput",
+          "rows": 4
+        }
+      }}
     />
   );
 }
