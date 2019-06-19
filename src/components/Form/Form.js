@@ -2,9 +2,11 @@ import React, {useState, useEffect} from 'react';
 import SchemaParser from '../../utils/SchemaParser.js';
 import reactInputMap from '../../utils/reactInputMap.js';
 
-export default function Form({schema, uiSchema}) {
+export default function Form({schema, uiSchema, externalData}) {
   const [parsedSchema, setParsedSchema] = useState({});
+  const [formData, setFormData] = useState({});
 
+  // When a new schema is passed in, parse it to reload the form
   useEffect(() => {
     SchemaParser.parseSchemaWithUI(schema, uiSchema, (parsed, err) => {
       if (err) {
@@ -15,6 +17,12 @@ export default function Form({schema, uiSchema}) {
       }
     });
   }, [schema, uiSchema]);
+
+  // When new form data is passed in, reset the state object
+  useEffect(() => {
+    console.log(externalData)
+    setFormData(externalData)
+  }, [externalData]);
 
   const generateForm = (fields) => {
     if (fields !== undefined && fields !== null) {
@@ -36,14 +44,14 @@ export default function Form({schema, uiSchema}) {
           // A generic item format has been provided, so compute the number of elements that
           // should be rendered
           let listLength = 1;
-          let initialValuesCount = 0;
+          let defaultsCount = 0;
 
           if (fields.minLength !== undefined && fields.minLength > 0) {
             listLength = fields.minLength;
           }
-          if (fields.initialValues !== undefined && fields.initialValues.length > 0) {
-            initialValuesCount = fields.initialValues.length;
-            listLength = Math.max(listLength, fields.initialValuesCount);
+          if (fields.defaultValue !== undefined && fields.defaultValue.length > 0) {
+            defaultsCount = fields.defaultValue.length;
+            listLength = Math.max(listLength, defaultsCount);
           }
 
           return (
@@ -52,9 +60,9 @@ export default function Form({schema, uiSchema}) {
                 <h2>{fields.label}</h2>}
               {[...Array(listLength)].map((_, i) => {
                 // For each element within the default list link, check whether it has an initial value
-                if (i < initialValuesCount) {
+                if (i < defaultsCount) {
                   let format = fields.inputFormat;
-                  format.initialValue = fields.initialValues[i];
+                  format.initialValue = fields.defaultValue[i];
                   return generateForm(format);
                 } else {
                   return generateForm(fields.itemFormat);
@@ -69,7 +77,8 @@ export default function Form({schema, uiSchema}) {
         const Field = reactInputMap[fields.type];
         if (Field !== undefined) {
           // At this point the fields argument is at the level of a single field that can be rendered
-          const {type, id, ...rest} = fields;
+          const {type, id, defaultValue, ...rest} = fields;
+
           return (<Field id={id} key={id} {...rest}/>);
         } else {
           // In the case where no matching field exists, return null

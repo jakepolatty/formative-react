@@ -11,7 +11,6 @@ export default function APISchemaForm({apiEndpoint, uiSchema}) {
       axios.get(apiEndpoint).then(res => {
         if (res.data !== undefined && res.data !== null) {
           const json = JSON.parse(res.data);
-          console.log(json)
           setSchema(json.schema);
           setData(json.data);
         } else {
@@ -28,6 +27,7 @@ export default function APISchemaForm({apiEndpoint, uiSchema}) {
       <Form
         schema={schema}
         uiSchema={uiSchema}
+        externalData={data}
       />
     </div>
   );

@@ -136,7 +136,7 @@ class SchemaParser {
     Object.assign(fieldObject,
       arrayLayer.title !== undefined && {label: arrayLayer.title},
       arrayLayer.description !== undefined && {description: arrayLayer.description},
-      arrayLayer.default !== undefined && {initialValues: arrayLayer.default},
+      arrayLayer.default !== undefined && {defaultValue: arrayLayer.default},
       arrayLayer.minItems !== undefined && {minItems: arrayLayer.minItems},
       arrayLayer.maxItems !== undefined && {maxItems: arrayLayer.maxItems},
       arrayLayer.uniqueItems !== undefined && {unique: arrayLayer.uniqueItems});
@@ -179,7 +179,7 @@ class SchemaParser {
     Object.assign(fieldObject,
       strLayer.title !== undefined && {label: strLayer.title},
       strLayer.description !== undefined && {description: strLayer.description},
-      strLayer.default !== undefined && {initialValue: strLayer.default});
+      strLayer.default !== undefined && {defaultValue: strLayer.default});
 
     // If the schema contains an enum field, append these options
     if (strLayer.enum !== undefined) {
@@ -212,7 +212,7 @@ class SchemaParser {
     Object.assign(fieldObject,
       numLayer.title !== undefined && {label: numLayer.title},
       numLayer.description !== undefined && {description: numLayer.description},
-      numLayer.default !== undefined && {initialValue: numLayer.default},
+      numLayer.default !== undefined && {defaultValue: numLayer.default},
       numLayer.multipleOf !== undefined && {increment: numLayer.multipleOf},
       numLayer.minimum !== undefined && {min: numLayer.minimum},
       numLayer.maximum !== undefined && {max: numLayer.maximum},
@@ -250,7 +250,7 @@ class SchemaParser {
     Object.assign(fieldObject,
       intLayer.title !== undefined && {label: intLayer.title},
       intLayer.description !== undefined && {description: intLayer.description},
-      intLayer.default !== undefined && {initialValue: intLayer.default},
+      intLayer.default !== undefined && {defaultValue: intLayer.default},
       intLayer.multipleOf !== undefined && {increment: intLayer.multipleOf},
       intLayer.minimum !== undefined && {min: intLayer.minimum},
       intLayer.maximum !== undefined && {max: intLayer.maximum},
@@ -287,7 +287,7 @@ class SchemaParser {
     Object.assign(fieldObject,
       boolLayer.title !== undefined && {label: boolLayer.title},
       boolLayer.description !== undefined && {description: boolLayer.description},
-      boolLayer.default !== undefined && {initialValue: boolLayer.default});
+      boolLayer.default !== undefined && {defaultValue: boolLayer.default});
     return fieldObject;
   }
 
