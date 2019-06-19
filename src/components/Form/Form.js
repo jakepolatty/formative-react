@@ -52,8 +52,8 @@ export default function Form({schema, uiSchema, externalData}) {
           let defaultsCount = 0;
 
           // If the list has a min length set that to the current list length
-          if (fields.minLength !== undefined && fields.minLength > 0) {
-            listLength = fields.minLength;
+          if (fields.minItems !== undefined && fields.minItems > 0) {
+            listLength = fields.minItems;
           }
           // If more values have been passed in with the form data than the min length, update the length 
           if (formData[fields.id] !== undefined && Array.isArray(formData[fields.id])) {
@@ -72,16 +72,17 @@ export default function Form({schema, uiSchema, externalData}) {
                 <h2>{fields.label}</h2>}
               {[...Array(listLength)].map((_, i) => {
                 // For each element within the computed list length, check whether it has an initial value
+                let format = fields.itemFormat;
+                format.id = format.id + i;
                 if (i < valueCount) {
-                  let format = fields.inputFormat;
                   format.defaultValue = formData[fields.id][i];
                   return generateForm(format);
                 } else if (i < defaultsCount) {
-                  let format = fields.inputFormat;
                   format.defaultValue = fields.defaultValue[i];
                   return generateForm(format);
                 } else {
-                  return generateForm(fields.itemFormat);
+                  format.defaultValue = undefined;
+                  return generateForm(format);
                 }
               })}
               {fields.description !== undefined &&
