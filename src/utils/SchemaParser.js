@@ -74,7 +74,8 @@ class SchemaParser {
     // Append the top level fields to the group object
     Object.assign(fieldGroupObject,
       objLayer.title !== undefined && {label: objLayer.title},
-      objLayer.description !== undefined && {description: objLayer.description});
+      objLayer.description !== undefined && {description: objLayer.description},
+      {groupType: "object"});
 
     return fieldGroupObject;
   }
@@ -139,7 +140,8 @@ class SchemaParser {
       arrayLayer.default !== undefined && {defaultValue: arrayLayer.default},
       arrayLayer.minItems !== undefined && {minItems: arrayLayer.minItems},
       arrayLayer.maxItems !== undefined && {maxItems: arrayLayer.maxItems},
-      arrayLayer.uniqueItems !== undefined && {unique: arrayLayer.uniqueItems});
+      arrayLayer.uniqueItems !== undefined && {unique: arrayLayer.uniqueItems},
+      {groupType: "array"});
 
     // Add additional items field if it exists and is not set to false
     if (arrayLayer.additionalItems !== undefined && arrayLayer.additionalItems !== false) {

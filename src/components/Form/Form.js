@@ -23,6 +23,7 @@ export default function Form({schema, uiSchema, externalData}) {
     setFormData(externalData)
   }, [externalData]);
 
+  // Generates the React component heirarchy for the form from the parsed schema
   const generateForm = (fields) => {
     if (fields !== undefined && fields !== null) {
       if (fields.type === "InputGroup") {
@@ -38,6 +39,11 @@ export default function Form({schema, uiSchema, externalData}) {
                   Array.isArray(formData[fields.id]) && i < formData[fields.id].length) {
                   field.defaultValue = formData[fields.id][i];
                 }
+                // If the input group is of type array, add the array index for update handling
+                if (formData.groupType === "array") {
+                  field.arrayIndex = i;
+                }
+
                 return generateForm(field);
               })}
               {fields.description !== undefined &&
@@ -73,7 +79,7 @@ export default function Form({schema, uiSchema, externalData}) {
               {[...Array(listLength)].map((_, i) => {
                 // For each element within the computed list length, check whether it has an initial value
                 let format = fields.itemFormat;
-                format.id = format.id + i;
+                format.arrayIndex = i;
                 if (i < valueCount) {
                   format.defaultValue = formData[fields.id][i];
                   return generateForm(format);
@@ -94,7 +100,7 @@ export default function Form({schema, uiSchema, externalData}) {
         const Field = reactInputMap[fields.type];
         if (Field !== undefined) {
           // At this point the fields argument is at the level of a single field that can be rendered
-          const {type, id, defaultValue, ...rest} = fields;
+          const {type, id, defaultValue, arrayIndex, ...rest} = fields;
           
           // If the form data contains this field, overwrite the default value
           // Otherwise pass in the default if there is one
@@ -105,7 +111,51 @@ export default function Form({schema, uiSchema, externalData}) {
             initialValue = defaultValue;
           }
 
-          return (<Field id={id} key={id} initialValue={initialValue} {...rest}/>);
+          if (arrayIndex !== undefined) {
+            return (
+              <Field
+                id={id + arrayIndex}
+                key={id + arrayIndex}
+                initialValue={initialValue}
+                onUpdate={
+                  (newValue) => {
+                    // Overwrite the new value in the correct array data index
+                    let arrayData = formData[id];
+                    if (arrayIndex < arrayData.length) {
+                      arrayData[arrayIndex] = newValue;
+                    } else {
+                      // If the earlier elements in the array have no values yet, set them to null
+                      for (let i = arrayData.length; i < arrayIndex; i++) {
+                        arrayData.push(null);
+                      }
+                      arrayData.push(newValue); // pushes at the correct index for this field
+                    }
+
+                    setFormData(prevData => {
+                      return {...prevData, ...arrayData};
+                    });
+                  }
+                }
+                {...rest}
+              />);
+          } else {
+            return (
+              <Field
+                id={id}
+                key={id}
+                initialValue={initialValue}
+                onUpdate={
+                  (newValue) => {
+                    // Overwrite the new value in the form data and use the hook setter
+                    let newData = {[id]: newValue};
+                    setFormData(prevData => {
+                      return {...prevData, ...newData};
+                    });
+                  }
+                }
+                {...rest}
+              />);
+          }
         } else {
           // In the case where no matching field exists, return null
           return null;

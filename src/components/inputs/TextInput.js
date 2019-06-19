@@ -11,7 +11,7 @@ export default function TextInput({id, initialValue, label, description, onUpdat
         name={id}
         defaultValue={initialValue}
         onChange={onUpdate !== undefined ? 
-          (event) => onUpdate(event.target.name, event.target.value) : undefined}
+          (event) => onUpdate(event.target.value) : undefined}
       />
       {description !== undefined &&
         <Form.Text>{description}</Form.Text>}

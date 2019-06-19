@@ -12,7 +12,7 @@ export default function IntegerInput({id, initialValue, label, description, onUp
         type="number"
         defaultValue={initialValue}
         onChange={onUpdate !== undefined ? 
-          (event) => onUpdate(event.target.name, event.target.value) : undefined}
+          (event) => onUpdate(event.target.value) : undefined}
       />
       {description !== undefined &&
         <Form.Text>{description}</Form.Text>}

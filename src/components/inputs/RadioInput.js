@@ -16,7 +16,7 @@ export default function RadioInput({id, options, initialValue, label, descriptio
 
   useEffect(() => {
     if (onUpdate !== undefined) {
-      onUpdate(id, value)
+      onUpdate(value)
     }
   });
 

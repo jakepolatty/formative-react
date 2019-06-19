@@ -12,7 +12,7 @@ export default function SelectInput({id, options, initialValue, label, descripti
         as="select"
         defaultValue={initialValue}
         onChange={onUpdate !== undefined ? 
-          (event) => onUpdate(event.target.name, event.target.value) : undefined}
+          (event) => onUpdate(event.target.value) : undefined}
       >
         {options.map((option, i) => {
           return (<option key={i}>{option}</option>);
