@@ -17,6 +17,9 @@ function App() {
           },
           "age": {
             "label": "Age of person"
+          },
+          "opacity": {
+            "ui:component": "SliderInput"
           }
         }}
       />
