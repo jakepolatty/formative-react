@@ -13,9 +13,9 @@ const inputTypeMap = {
   ],
   number: [
     "NumberInput",
+    "NumberSliderInput",
     "TextInput",
     "RangeInput",
-    "SliderInput",
     // "SelectInput",
     "HiddenInput",
   ],
@@ -26,9 +26,9 @@ const inputTypeMap = {
   ],
   integer: [
     "IntegerInput",
+    "NumberSliderInput",
     "TextInput",
     "RangeInput",
-    "SliderInput",
     // "SelectInput",
     "HiddenInput",
   ],

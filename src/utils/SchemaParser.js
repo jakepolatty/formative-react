@@ -134,6 +134,7 @@ class SchemaParser {
           fieldObject.itemFormat = SchemaParser.convertSchemaLayer(arrayLayer.items, itemKey, uiSchema);
         }
       }
+      delete uiSchema[key]["ui:component"];
     }
 
     // Append the top level JSON schema fields to the field data object
@@ -178,6 +179,7 @@ class SchemaParser {
         inputType = defaultType;
       }
       fieldObject = {type: inputType, id: key};
+      delete uiOptions["ui:component"];
     }
 
     // Append the relevant JSON schema fields to the field data
@@ -216,7 +218,7 @@ class SchemaParser {
         inputType = defaultType;
       }
       fieldObject = {type: inputType, id: key};
-
+      delete uiOptions["ui:component"];
     }
 
     // Append the relevant JSON schema fields to the field data
@@ -259,6 +261,7 @@ class SchemaParser {
         inputType = defaultType;
       }
       fieldObject = {type: inputType, id: key};
+      delete uiOptions["ui:component"];
     }
 
     // Append the relevant JSON schema fields to the field data
@@ -301,6 +304,7 @@ class SchemaParser {
         inputType = defaultType;
       }
       fieldObject = {type: inputType, id: key};
+      delete uiOptions["ui:component"];
     }
 
     // Append the relevant JSON schema fields to the field data
