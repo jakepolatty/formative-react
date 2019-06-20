@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
 import Form from 'react-bootstrap/Form';
 
-export default function IntegerInput({id, initialValue, label, description, onUpdate}) {
-  const [isInvalid, setIsInvalid] = useState(Number.isNaN(parseInt(initialValue)));
-
+export default function NumberInput({id, initialValue, label, description, onUpdate}) {
+  const [isInvalid, setIsInvalid] = useState(Number.isNaN(Number(initialValue)));
+ 
   const handleChange = (newValue) => {
-    let parsedInt = parseInt(newValue);
-    if (Number.isNaN(parsedInt) || parsedInt === "") {
+    let parsedNum = Number(newValue);
+    if (Number.isNaN(parsedNum) || newValue === "") {
       setIsInvalid(true);
     } else {
       setIsInvalid(false);
-      onUpdate(parsedInt);
+      onUpdate(parsedNum);
     }
   };
 
@@ -28,7 +28,7 @@ export default function IntegerInput({id, initialValue, label, description, onUp
         isInvalid={isInvalid}
       />
       <Form.Control.Feedback type="invalid">
-        Please enter an integer.
+        Please enter a number.
       </Form.Control.Feedback>
       {description !== undefined &&
         <Form.Text>{description}</Form.Text>}

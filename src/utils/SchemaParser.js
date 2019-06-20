@@ -248,7 +248,7 @@ class SchemaParser {
     let inputType;
     let fieldObject;
     const integerTypes = inputTypeMap.integer;
-    const defaultType = intLayer.enum !== undefined ? "SelectInput" : "IntegerInput";
+    const defaultType = intLayer.enum !== undefined ? "SelectInput" : "NumberInput";
 
     if (uiOptions === undefined || uiOptions["ui:component"] === undefined) {
       inputType = defaultType;

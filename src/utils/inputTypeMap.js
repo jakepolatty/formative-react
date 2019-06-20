@@ -15,7 +15,7 @@ const inputTypeMap = {
     "NumberInput",
     "TextInput",
     "RangeInput",
-    "SelectInput",
+    // "SelectInput",
     "HiddenInput",
   ],
   boolean: [
@@ -27,7 +27,7 @@ const inputTypeMap = {
     "IntegerInput",
     "TextInput",
     "RangeInput",
-    "SelectInput",
+    // "SelectInput",
     "HiddenInput",
   ],
   array: [
