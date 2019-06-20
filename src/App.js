@@ -8,6 +8,9 @@ function App() {
       <APISchemaForm
         apiEndpoint="http://localhost:8888/api/"
         uiSchema={{
+          "lastName": {
+            "ui:component": "HiddenInput"
+          },
           "bio": {
             "ui:component": "TextAreaInput",
             "rows": 4
