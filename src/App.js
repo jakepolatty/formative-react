@@ -11,6 +11,9 @@ function App() {
           "bio": {
             "ui:component": "TextAreaInput",
             "rows": 4
+          },
+          "age": {
+            "label": "Age of person"
           }
         }}
       />

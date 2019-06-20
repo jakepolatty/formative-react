@@ -120,7 +120,6 @@ class SchemaParser {
       if (arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
         fieldObject = {type: inputType, id: key};
         // Append the UI schema options to the field
-        Object.assign(fieldObject, uiSchema[key]);
         fieldObject.items = arrayLayer.items.enum;
       } else {
         if (Array.isArray(arrayLayer.items)) {
@@ -154,6 +153,11 @@ class SchemaParser {
         itemKey, uiSchema);
     }
 
+    // Append the UI fields last to override any JSON schema defaults
+    if (uiSchema !== undefined) {
+      Object.assign(fieldObject, uiSchema[key]);
+    }
+
     return fieldObject;
   }
 
@@ -174,8 +178,6 @@ class SchemaParser {
         inputType = defaultType;
       }
       fieldObject = {type: inputType, id: key};
-      // Append the UI schema options to the field
-      Object.assign(fieldObject, uiOptions);
     }
 
     // Append the relevant JSON schema fields to the field data
@@ -188,6 +190,12 @@ class SchemaParser {
     if (strLayer.enum !== undefined) {
       fieldObject.options = strLayer.enum;
     }
+
+    // Append the UI fields last to override any JSON schema defaults
+    if (uiOptions !== undefined) {
+      Object.assign(fieldObject, uiOptions);
+    }
+
 
     return fieldObject;
   }
@@ -209,8 +217,6 @@ class SchemaParser {
       }
       fieldObject = {type: inputType, id: key};
 
-      // Append the UI schema options to the field
-      Object.assign(fieldObject, uiOptions);
     }
 
     // Append the relevant JSON schema fields to the field data
@@ -227,6 +233,11 @@ class SchemaParser {
     // If the schema contains an enum field, append these options
     if (numLayer.enum !== undefined) {
       fieldObject.options = numLayer.enum;
+    }
+
+    // Append the UI fields last to override any JSON schema defaults
+    if (uiOptions !== undefined) {
+      Object.assign(fieldObject, uiOptions);
     }
 
     return fieldObject;
@@ -248,9 +259,6 @@ class SchemaParser {
         inputType = defaultType;
       }
       fieldObject = {type: inputType, id: key};
-
-      // Append the UI schema options to the field
-      Object.assign(fieldObject, uiOptions);
     }
 
     // Append the relevant JSON schema fields to the field data
@@ -267,6 +275,11 @@ class SchemaParser {
     // If the schema contains an enum field, append these options
     if (intLayer.enum !== undefined) {
       fieldObject.options = intLayer.enum;
+    }
+
+    // Append the UI fields last to override any JSON schema defaults
+    if (uiOptions !== undefined) {
+      Object.assign(fieldObject, uiOptions);
     }
 
     return fieldObject;
@@ -288,9 +301,6 @@ class SchemaParser {
         inputType = defaultType;
       }
       fieldObject = {type: inputType, id: key};
-
-      // Append the UI schema options to the field
-      Object.assign(fieldObject, uiOptions);
     }
 
     // Append the relevant JSON schema fields to the field data
@@ -298,6 +308,12 @@ class SchemaParser {
       boolLayer.title !== undefined && {label: boolLayer.title},
       boolLayer.description !== undefined && {description: boolLayer.description},
       boolLayer.default !== undefined && {defaultValue: boolLayer.default});
+
+    // Append the UI fields last to override any JSON schema defaults
+    if (uiOptions !== undefined) {
+      Object.assign(fieldObject, uiOptions);
+    }
+
     return fieldObject;
   }
 
