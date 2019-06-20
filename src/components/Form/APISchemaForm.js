@@ -23,10 +23,6 @@ export default function APISchemaForm({apiEndpoint, uiSchema}) {
   }, [apiEndpoint]);
 
   const saveFormData = (formData) => {
-    let headers = {
-      "Access-Control-Allow-Origin": "*"
-    };
-
     axios.post(apiEndpoint, formData).then(res => {
       if (res.data !== undefined && res.data !== null) {
         const json = JSON.parse(res.data);
@@ -40,7 +36,7 @@ export default function APISchemaForm({apiEndpoint, uiSchema}) {
   };
 
   return (
-    <div className="App">
+    <div className="APISchemaForm">
       <Form
         schema={schema}
         uiSchema={uiSchema}

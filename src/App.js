@@ -4,15 +4,17 @@ import APISchemaForm from './components/Form/APISchemaForm';
 
 function App() {
   return (
-    <APISchemaForm
-      apiEndpoint="http://localhost:8888/api/"
-      uiSchema={{
-        "bio": {
-          "ui:component": "TextAreaInput",
-          "rows": 4
-        }
-      }}
-    />
+    <div className="App" margin="20px">
+      <APISchemaForm
+        apiEndpoint="http://localhost:8888/api/"
+        uiSchema={{
+          "bio": {
+            "ui:component": "TextAreaInput",
+            "rows": 4
+          }
+        }}
+      />
+    </div>
   );
 }
 
