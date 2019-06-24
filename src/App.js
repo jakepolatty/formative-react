@@ -6,18 +6,17 @@ function App() {
   return (
     <div className="App" margin="20px">
       <APISchemaForm
-        apiEndpoint="http://localhost:8888/api/"
-        uiSchema={{
-          "lastName": {
-            "ui:component": "HiddenInput"
+        schemaEndpoint="https://comt.s3.amazonaws.com/schema/"
+        schemas={
+          "acdd": {
+            "include": []
           },
-          "bio": {
-            "ui:component": "TextAreaInput",
-            "rows": 4
-          },
-          "age": {
-            "label": "Age of person"
-          },
+          "wms": {
+            "include": []
+          }
+        }
+        dataApiEndpoint="http://localhost:8888/api/"
+        uiSchema={"wms": {
           "opacity": {
             "ui:component": "NumberSliderInput"
           }
