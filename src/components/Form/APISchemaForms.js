@@ -78,6 +78,7 @@ export default function APISchemaForms({schemaEndpoint, schemas, dataApiEndpoint
               externalData={filteredData}
               handleSave={(formData) => saveFormData(formData, schemaType)}
               schemaID={key}
+              includeFields={schemas[key].include}
               key={key}
             />
           );

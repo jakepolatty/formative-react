@@ -2,17 +2,17 @@ import React, {useState, useEffect} from 'react';
 import SchemaParser from '../../utils/SchemaParser.js';
 import reactInputMap from '../../utils/reactInputMap.js';
 
-export default function Form({schema, uiSchema, externalData, schemaID, handleSave}) {
+export default function Form({schema, uiSchema, externalData, schemaID, includeFields, handleSave}) {
   const [parsedSchema, setParsedSchema] = useState({});
   const [formData, setFormData] = useState({});
 
   // When a new schema is passed in, parse it to reload the form
   useEffect(() => {
+    console.log(uiSchema)
     SchemaParser.parseSchemaWithUI(schema, uiSchema, (parsed, err) => {
       if (err) {
         console.error(err);
       } else {
-        console.log(parsed);
         setParsedSchema(parsed);
       }
     });
@@ -115,50 +115,55 @@ export default function Form({schema, uiSchema, externalData, schemaID, handleSa
             initialValue = defaultValue;
           }
 
-          if (arrayIndex !== undefined) {
-            return (
-              <Field
-                id={id + arrayIndex}
-                key={id + arrayIndex}
-                initialValue={initialValue}
-                onUpdate={
-                  (newValue) => {
-                    // Overwrite the new value in the correct array data index
-                    let arrayData = formData[id];
-                    if (arrayIndex < arrayData.length) {
-                      arrayData[arrayIndex] = newValue;
-                    } else {
-                      // If the earlier elements in the array have no values yet, set them to null
-                      for (let i = arrayData.length; i < arrayIndex; i++) {
-                        arrayData.push(null);
+          if (includeFields.includes(id)) {
+            if (arrayIndex !== undefined) {
+              return (
+                <Field
+                  id={id + arrayIndex}
+                  key={id + arrayIndex}
+                  initialValue={initialValue}
+                  onUpdate={
+                    (newValue) => {
+                      // Overwrite the new value in the correct array data index
+                      let arrayData = formData[id];
+                      if (arrayIndex < arrayData.length) {
+                        arrayData[arrayIndex] = newValue;
+                      } else {
+                        // If the earlier elements in the array have no values yet, set them to null
+                        for (let i = arrayData.length; i < arrayIndex; i++) {
+                          arrayData.push(null);
+                        }
+                        arrayData.push(newValue); // pushes at the correct index for this field
                       }
-                      arrayData.push(newValue); // pushes at the correct index for this field
-                    }
 
-                    setFormData(prevData => {
-                      return {...prevData, ...arrayData};
-                    });
+                      setFormData(prevData => {
+                        return {...prevData, ...arrayData};
+                      });
+                    }
                   }
-                }
-                {...rest}
-              />);
+                  {...rest}
+                />);
+            } else {
+              return (
+                <Field
+                  id={id}
+                  key={id}
+                  initialValue={initialValue}
+                  onUpdate={
+                    (newValue) => {
+                      // Overwrite the new value in the form data and use the hook setter
+                      let newData = {[id]: newValue};
+                      setFormData(prevData => {
+                        return {...prevData, ...newData};
+                      });
+                    }
+                  }
+                  {...rest}
+                />);
+            }
           } else {
-            return (
-              <Field
-                id={id}
-                key={id}
-                initialValue={initialValue}
-                onUpdate={
-                  (newValue) => {
-                    // Overwrite the new value in the form data and use the hook setter
-                    let newData = {[id]: newValue};
-                    setFormData(prevData => {
-                      return {...prevData, ...newData};
-                    });
-                  }
-                }
-                {...rest}
-              />);
+            // This field should not be rendered to the page if it is not in the include list
+            return null;
           }
         } else {
           // In the case where no matching field exists, return null
