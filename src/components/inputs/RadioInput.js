@@ -21,9 +21,9 @@ export default function RadioInput({id, options, initialValue, label, descriptio
   });
 
 	return(
-    <Form.Group>
+    <Form.Group id={id + "-group"}>
       {label !== undefined &&
-        <Form.Label>{label}</Form.Label>}
+        <Form.Label id={id + "-label"}>{label}</Form.Label>}
       {options.map((option, i) => {
         const checked = option === value;
         return (
@@ -40,7 +40,7 @@ export default function RadioInput({id, options, initialValue, label, descriptio
         );
       })}
       {description !== undefined &&
-        <Form.Text>{description}</Form.Text>}
+        <Form.Text id={id + "-description"}>{description}</Form.Text>}
     </Form.Group>
 	);
 }

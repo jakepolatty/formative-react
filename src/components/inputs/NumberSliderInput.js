@@ -4,9 +4,9 @@ import Form from 'react-bootstrap/Form';
 export default function NumberSliderInput({id, initialValue, min, max, increment,
   label, description, onUpdate}) {
   return(
-    <Form.Group>
+    <Form.Group id={id + "-group"}>
       {label !== undefined &&
-        <Form.Label>{label}</Form.Label>}
+        <Form.Label id={id + "-label"}>{label}</Form.Label>}
       <Form.Control
         id={id}
         name={id}
@@ -19,7 +19,7 @@ export default function NumberSliderInput({id, initialValue, min, max, increment
           (event) => onUpdate(Number(event.target.value)) : undefined}
       />
       {description !== undefined &&
-        <Form.Text>{description}</Form.Text>}
+        <Form.Text id={id + "-description"}>{description}</Form.Text>}
     </Form.Group>
   );
 }

@@ -32,7 +32,7 @@ export default function Form({schema, uiSchema, externalData, handleSave}) {
           return (
             <div id={fields.id} key={fields.id}>
               {fields.label !== undefined &&
-                <h2>{fields.label}</h2>}
+                <h2 id={fields.id + "-label"}>{fields.label}</h2>}
               {fields.items.map((field, i) => {
                 // If initial values have been passed in with the form data, overwrite the field object
                 if (formData[fields.id] !== undefined &&
@@ -47,7 +47,7 @@ export default function Form({schema, uiSchema, externalData, handleSave}) {
                 return generateForm(field);
               })}
               {fields.description !== undefined &&
-                <p>{fields.description}</p>}
+                <p id={fields.id + "-description"}>{fields.description}</p>}
             </div>
           );
         } else {
@@ -75,7 +75,7 @@ export default function Form({schema, uiSchema, externalData, handleSave}) {
           return (
             <div id={fields.id} key={fields.id}>
               {fields.label !== undefined &&
-                <h2>{fields.label}</h2>}
+                <h2 id={fields.id + "-label"}>{fields.label}</h2>}
               {[...Array(listLength)].map((_, i) => {
                 // For each element within the computed list length, check whether it has an initial value
                 let format = fields.itemFormat;
@@ -92,7 +92,7 @@ export default function Form({schema, uiSchema, externalData, handleSave}) {
                 }
               })}
               {fields.description !== undefined &&
-                <p>{fields.description}</p>}
+                <p id={fields.id + "-description"}>{fields.description}</p>}
             </div>
           );
         }
@@ -172,6 +172,7 @@ export default function Form({schema, uiSchema, externalData, handleSave}) {
       {generateForm(parsedSchema)}
       <button
         onClick={() => handleSave(formData)}
+        id="save-button"
       >Save</button>
     </div>
   );

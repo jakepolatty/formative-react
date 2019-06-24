@@ -11,9 +11,9 @@ export default function CheckboxInput({id, initialValue, label, description, onU
   }, [value, onUpdate]);
 
   return(
-    <Form.Group>
+    <Form.Group id={id + "-group"}>
       {label !== undefined &&
-        <Form.Label>{label}</Form.Label>}
+        <Form.Label id={id + "-label"}>{label}</Form.Label>}
       <Form.Check
         id={id}
         name={id}
@@ -22,7 +22,7 @@ export default function CheckboxInput({id, initialValue, label, description, onU
         type="checkbox"
       />
       {description !== undefined &&
-        <Form.Text>{description}</Form.Text>}
+        <Form.Text id={id + "-description"}>{description}</Form.Text>}
     </Form.Group>
   );
 }
