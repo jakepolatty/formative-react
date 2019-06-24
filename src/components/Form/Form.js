@@ -20,7 +20,11 @@ export default function Form({schema, uiSchema, externalData, handleSave}) {
 
   // When new form data is passed in, reset the state object
   useEffect(() => {
-    setFormData(externalData)
+    if (externalData === undefined || externalData === null) {
+      setFormData({});
+    } else {
+      setFormData(externalData);
+    }
   }, [externalData]);
 
   // Generates the React component heirarchy for the form from the parsed schema

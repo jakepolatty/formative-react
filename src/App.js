@@ -1,24 +1,26 @@
 import React from 'react';
-import APISchemaForm from './components/Form/APISchemaForm';
+import APISchemaForms from './components/Form/APISchemaForms';
 // import sampleSchema from './sample/sampleSchema.js';
 
 function App() {
   return (
     <div className="App" margin="20px">
-      <APISchemaForm
+      <APISchemaForms
         schemaEndpoint="https://comt.s3.amazonaws.com/schema/"
-        schemas={
-          "acdd": {
-            "include": []
-          },
+        schemas={{
           "wms": {
             "include": []
+          },
+          "comt": {
+            "include": []
           }
-        }
+        }}
         dataApiEndpoint="http://localhost:8888/api/"
-        uiSchema={"wms": {
-          "opacity": {
-            "ui:component": "NumberSliderInput"
+        uiSchema={{
+          "wms": {
+            "opacity": {
+              "ui:component": "NumberSliderInput"
+            }
           }
         }}
       />
