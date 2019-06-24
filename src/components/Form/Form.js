@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import SchemaParser from '../../utils/SchemaParser.js';
 import reactInputMap from '../../utils/reactInputMap.js';
 
-export default function Form({schema, uiSchema, externalData, handleSave}) {
+export default function Form({schema, uiSchema, externalData, schemaID, handleSave}) {
   const [parsedSchema, setParsedSchema] = useState({});
   const [formData, setFormData] = useState({});
 
@@ -172,7 +172,7 @@ export default function Form({schema, uiSchema, externalData, handleSave}) {
   };
 
   return (
-    <div className="SchemaForm">
+    <div className={schemaID+"-form"}>
       {generateForm(parsedSchema)}
       <button
         onClick={() => handleSave(formData)}

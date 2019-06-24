@@ -8,11 +8,17 @@ function App() {
       <APISchemaForms
         schemaEndpoint="https://comt.s3.amazonaws.com/schema/"
         schemas={{
-          "wms": {
-            "include": []
+          "wms-a": {
+            "schema": "wms",
+            "include": ["layer", "style"]
+          },
+          "wms-b": {
+            "schema": "wms",
+            "include": ["opacity", "transparent", "elevation"]
           },
           "comt": {
-            "include": []
+            "schema": "comt",
+            "include": ["project", "subproject", "model"]
           }
         }}
         dataApiEndpoint="http://localhost:8888/api/"

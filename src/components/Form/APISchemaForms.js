@@ -10,26 +10,32 @@ export default function APISchemaForms({schemaEndpoint, schemas, dataApiEndpoint
     async function fetchSchemas() {
       // Make axios get requests to retrieve the schema for each of the specified keys
       let schemaKeys = Object.keys(schemas);
-      let schemaData = await Promise.all(schemaKeys.map((schema) => {
+      let schemaData = await Promise.all(schemaKeys.map((key) => {
+        let schema = schemas[key].schema;
         return axios.get(schemaEndpoint + schema + ".json").then(res => {
-          return {schema: res.data, key: schema};
+          return {schemaObject: res.data, key: key, schema: schema};
         });
       }));
 
-      let formData = await Promise.all(schemaKeys.map((schema) => {
+      // Get all schemas used in the form group to retrieve data from the api
+      let uniqueSchemas = [...new Set(schemaKeys.map(key => {
+        return schemas[key].schema;
+      }))];
+
+      let formData = await Promise.all(uniqueSchemas.map((schema) => {
         return axios.get(dataApiEndpoint + schema + "/").then(res => {
-          return {data: res.data, key: schema};
+          return {data: res.data, schema: schema};
         });
       }));
 
       let schemaObject = {};
-      schemaData.map((data) => {
-        schemaObject[data.key] = data.schema;
+      schemaData.forEach((data) => {
+        schemaObject[data.key] = {schemaObject: data.schemaObject, schema: data.schema};
       });
 
       let dataObject = {};
-      formData.map((data) => {
-        dataObject[data.key] = data.data;
+      formData.forEach((data) => {
+        dataObject[data.schema] = data.data;
       })
 
       setSchemaObject(schemaObject);
@@ -39,10 +45,12 @@ export default function APISchemaForms({schemaEndpoint, schemas, dataApiEndpoint
     fetchSchemas();
   }, [schemaEndpoint, schemas, dataApiEndpoint]);
 
-  const saveFormData = (formData, schemaKey) => {
-    axios.post(dataApiEndpoint + schemaKey + "/", formData).then(res => {
+  const saveFormData = (formData, schemaType) => {
+    let schemaData = dataObject[schemaType];
+    let mergedData = Object.assign(schemaData, formData);
+    axios.post(dataApiEndpoint + schemaType + "/", mergedData).then(res => {
       if (res.data !== undefined && res.data !== null) {
-        setDataObject(res.data);
+        setDataObject(Object.assign(dataObject, {[schemaType]: res.data}));
       } else {
         console.error("There was a problem saving the data to the server.");
       }
@@ -55,12 +63,21 @@ export default function APISchemaForms({schemaEndpoint, schemas, dataApiEndpoint
     <div className="APISchemaForm">
       {
         Object.keys(schemaObject).map((key) => {
+          let schemaType = schemaObject[key].schema;
+          let filteredData = {};
+          if (dataObject[schemaType] !== undefined) {
+            schemas[key].include.forEach((dataKey) => {
+              filteredData[dataKey] = dataObject[schemaType][dataKey];
+            });
+          }
+
           return (
             <Form
-              schema={schemaObject[key]}
-              uiSchema={uiSchema[key]}
-              externalData={dataObject[key]}
-              handleSave={(formData) => saveFormData(formData, key)}
+              schema={schemaObject[key].schemaObject}
+              uiSchema={uiSchema[schemaType]}
+              externalData={filteredData}
+              handleSave={(formData) => saveFormData(formData, schemaType)}
+              schemaID={key}
               key={key}
             />
           );
