@@ -65,7 +65,7 @@ export default function APISchemaForms({schemaEndpoint, schemas, dataApiEndpoint
         Object.keys(schemaObject).map((key) => {
           let schemaType = schemaObject[key].schema;
           let filteredData = {};
-          if (dataObject[schemaType] !== undefined) {
+          if (dataObject[schemaType] !== undefined && schemas[key] !== undefined) {
             schemas[key].include.forEach((dataKey) => {
               filteredData[dataKey] = dataObject[schemaType][dataKey];
             });
@@ -78,7 +78,7 @@ export default function APISchemaForms({schemaEndpoint, schemas, dataApiEndpoint
               externalData={filteredData}
               handleSave={(formData) => saveFormData(formData, schemaType)}
               schemaID={key}
-              includeFields={schemas[key].include}
+              includeFields={schemas[key] !== undefined ? schemas[key].include : []}
               key={key}
             />
           );
