@@ -9,7 +9,7 @@ const inputTypeMap = {
     "SelectInput",
     "DateInput",
     "DatetimeInput",
-    "HiddenInput"
+    "HiddenInput",
   ],
   number: [
     "NumberInput",

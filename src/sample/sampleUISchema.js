@@ -1,11 +1,11 @@
 const sampleUISchema = {
-  "wms": {
-    "opacity": {
+  wms: {
+    opacity: {
       "ui:component": "NumberSliderInput"
     }
   },
-  "comt": {
-    "subproject": {
+  comt: {
+    subproject: {
       "ui:component": "TextAreaInput",
       "rows": 1
     }

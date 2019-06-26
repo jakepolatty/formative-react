@@ -21,3 +21,7 @@ component that takes in the following props:
   that should be displayed in that form.
 - `dataApiEndpoint`: The endpoint where the form data can be accessed and modified
 - `uiSchema`: The UI schema object that controls the display and type of inputs used on the page.
+
+## Contributing to the repository
+If you wish to add a new input component to the repository for your use case, please read the
+[Style and Contribution Guide](StyleGuide.md).
