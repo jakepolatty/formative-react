@@ -1,0 +1,43 @@
+body {
+  background-color: #eeeeee;
+}
+
+.wms-a-form {
+  margin-bottom: 20px;
+}
+
+#wms-a-inputs {
+  display: inline-flex;
+}
+
+#wms-a #layer-group {
+  width: 400px;
+  margin-right: 20px;
+}
+
+#wms-a #style-group {
+  width: 400px;
+}
+
+.comt-form {
+  font-style: italic;
+  font-family: serif;
+  margin-bottom: 20px;
+}
+
+#comt-label {
+  color: blue;
+}
+
+#comt #project-group {
+  width: 300px;
+}
+
+.wms-b-form {
+  font-weight: bold;
+  font-family: monospace;
+  background-color: black;
+  padding: 20px;
+  border-radius: 40px;
+  color: white;
+}

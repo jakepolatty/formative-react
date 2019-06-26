@@ -1,6 +1,7 @@
 import React from 'react';
 import APISchemaForms from './components/Form/APISchemaForms';
 import sampleUISchema from './sample/sampleUISchema.js';
+import './sample/sampleCSS.css';
 
 function App() {
   return (

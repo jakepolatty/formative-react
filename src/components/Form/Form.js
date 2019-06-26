@@ -44,19 +44,21 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
             <div id={fields.id} key={fields.id}>
               {fields.label !== undefined &&
                 <h2 id={fields.id + "-label"}>{fields.label}</h2>}
-              {fields.items.map((field, i) => {
-                // If initial values have been passed in with the form data, overwrite the field object
-                if (formData[fields.id] !== undefined &&
-                  Array.isArray(formData[fields.id]) && i < formData[fields.id].length) {
-                  field.defaultValue = formData[fields.id][i];
-                }
-                // If the input group is of type array, add the array index for update handling
-                if (formData.groupType === "array") {
-                  field.arrayIndex = i;
-                }
+              <div id={fields.id+"-inputs"}>
+                {fields.items.map((field, i) => {
+                  // If initial values have been passed in with the form data, overwrite the field object
+                  if (formData[fields.id] !== undefined &&
+                    Array.isArray(formData[fields.id]) && i < formData[fields.id].length) {
+                    field.defaultValue = formData[fields.id][i];
+                  }
+                  // If the input group is of type array, add the array index for update handling
+                  if (formData.groupType === "array") {
+                    field.arrayIndex = i;
+                  }
 
-                return generateForm(field);
-              })}
+                  return generateForm(field);
+                })}
+              </div>
               {fields.description !== undefined &&
                 <p id={fields.id + "-description"}>{fields.description}</p>}
             </div>
@@ -87,21 +89,23 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
             <div id={fields.id} key={fields.id}>
               {fields.label !== undefined &&
                 <h2 id={fields.id + "-label"}>{fields.label}</h2>}
-              {[...Array(listLength)].map((_, i) => {
-                // For each element within the computed list length, check whether it has an initial value
-                let format = fields.itemFormat;
-                format.arrayIndex = i;
-                if (i < valueCount) {
-                  format.defaultValue = formData[fields.id][i];
-                  return generateForm(format);
-                } else if (i < defaultsCount) {
-                  format.defaultValue = fields.defaultValue[i];
-                  return generateForm(format);
-                } else {
-                  format.defaultValue = undefined;
-                  return generateForm(format);
-                }
-              })}
+              <div id={fields.id+"-inputs"}>
+                {[...Array(listLength)].map((_, i) => {
+                  // For each element within the computed list length, check whether it has an initial value
+                  let format = fields.itemFormat;
+                  format.arrayIndex = i;
+                  if (i < valueCount) {
+                    format.defaultValue = formData[fields.id][i];
+                    return generateForm(format);
+                  } else if (i < defaultsCount) {
+                    format.defaultValue = fields.defaultValue[i];
+                    return generateForm(format);
+                  } else {
+                    format.defaultValue = undefined;
+                    return generateForm(format);
+                  }
+                })}
+              </div>
               {fields.description !== undefined &&
                 <p id={fields.id + "-description"}>{fields.description}</p>}
             </div>
