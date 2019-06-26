@@ -11,21 +11,8 @@ import {faCheck} from '@fortawesome/free-solid-svg-icons';
  * - initialValue: The initial value that the field should take on
  * - onUpdate: A callback that handles updates to the field value
 **/
-export default function Input({Type, id, initialValue, label, description, onUpdate, onSave, ...rest}) {
-  const [updated, setUpdated] = useState(false);
-
-  const handleUpdate = (newValue) => {
-    setUpdated(true);
-    onUpdate(newValue);
-  }
-
-  const handleSave = () => {
-    setUpdated(false);
-    if (onSave !== undefined) {
-      onSave();
-    }
-  }
-
+export default function Input({Type, id, initialValue, label, description, updated, onUpdate, handleSave,
+  ...rest}) {
   return(
     <Form.Group id={id + "-group"}>
       {label !== undefined &&
@@ -35,15 +22,14 @@ export default function Input({Type, id, initialValue, label, description, onUpd
           id={id}
           name={id}
           initialValue={initialValue}
-          onUpdate={onUpdate !== undefined ?
-            (newValue) => handleUpdate(newValue) : undefined}
+          onUpdate={onUpdate !== undefined ? (newValue) => onUpdate(newValue) : undefined}
           {...rest}
         />
         <InputGroup.Append>
           <Button
             variant={updated ? "outline-success" : "outline-light"}
             disabled={!updated}
-            onClick={() => handleSave()}
+            onClick={handleSave !== undefined ? () => handleSave() : undefined}
           >
             <FontAwesomeIcon icon={faCheck}/>
           </Button>

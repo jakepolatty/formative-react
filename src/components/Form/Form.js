@@ -6,6 +6,7 @@ import Input from '../inputs/Input';
 export default function Form({schema, uiSchema, externalData, schemaID, includeFields, handleSave}) {
   const [parsedSchema, setParsedSchema] = useState({});
   const [formData, setFormData] = useState({});
+  const [updatedDict, setUpdatedDict] = useState({});
 
   // When a new schema is passed in, parse it to reload the form
   useEffect(() => {
@@ -26,6 +27,11 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
       setFormData(externalData);
     }
   }, [externalData]);
+
+  const saveForm = () => {
+    setUpdatedDict({});
+    handleSave(formData);
+  };
 
   // Generates the React component heirarchy for the form from the parsed schema
   const generateForm = (fields) => {
@@ -117,12 +123,15 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
 
           if (includeFields.includes(id)) {
             if (arrayIndex !== undefined) {
+              // If the input exists in an array, use the id with the index appended as a unique id
+              let indexId = id + arrayIndex;
               return (
                 <Input
                   Type={Field}
-                  id={id + arrayIndex}
-                  key={id + arrayIndex}
+                  id={indexId}
+                  key={indexId}
                   initialValue={initialValue}
+                  updated={updatedDict[indexId]}
                   onUpdate={
                     (newValue) => {
                       // Overwrite the new value in the correct array data index
@@ -137,9 +146,28 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
                         arrayData.push(newValue); // pushes at the correct index for this field
                       }
 
+                      // Set the updated state for the field to true on update
+                      let newUpdatedState = {[indexId]: true};
+                      setUpdatedDict(prevDict => {
+                        return {...prevDict, ...newUpdatedState}
+                      });
+
                       setFormData(prevData => {
                         return {...prevData, ...arrayData};
                       });
+                    }
+                  }
+                  handleSave={
+                    () => {
+                      let newData = {[id]: formData[id]};
+
+                      // Set the updated state to false on save
+                      let newUpdatedState = {[indexId]: false};
+                      setUpdatedDict(prevDict => {
+                        return {...prevDict, ...newUpdatedState};
+                      });
+
+                      handleSave(newData);
                     }
                   }
                   {...rest}
@@ -151,13 +179,34 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
                   id={id}
                   key={id}
                   initialValue={initialValue}
+                  updated={updatedDict[id]}
                   onUpdate={
                     (newValue) => {
                       // Overwrite the new value in the form data and use the hook setter
                       let newData = {[id]: newValue};
+
+                      // Set the updated state for the field to true on update
+                      let newUpdatedState = {[id]: true};
+                      setUpdatedDict(prevDict => {
+                        return {...prevDict, ...newUpdatedState};
+                      });
+
                       setFormData(prevData => {
                         return {...prevData, ...newData};
                       });
+                    }
+                  }
+                  handleSave={
+                    () => {
+                      let newData = {[id]: formData[id]};
+
+                      // Set the updated state to false on save
+                      let newUpdatedState = {[id]: false};
+                      setUpdatedDict(prevDict => {
+                        return {...prevDict, ...newUpdatedState};
+                      });
+
+                      handleSave(newData);
                     }
                   }
                   {...rest}
@@ -182,7 +231,7 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
     <div className={schemaID+"-form"}>
       {generateForm(parsedSchema)}
       <button
-        onClick={() => handleSave(formData)}
+        onClick={() => saveForm()}
         id="save-button"
       >Save</button>
     </div>
