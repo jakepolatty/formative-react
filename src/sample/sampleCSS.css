@@ -2,38 +2,38 @@ body {
   background-color: #eeeeee;
 }
 
-.wms-a-form {
+.wms-a-FORM {
   margin-bottom: 20px;
 }
 
-#wms-a-inputs {
+#wms-a-INPUTS {
   display: inline-flex;
 }
 
-#wms-a #layer-group {
+#wms-a #layer-GROUP {
   width: 400px;
   margin-right: 20px;
 }
 
-#wms-a #style-group {
+#wms-a #style-GROUP {
   width: 400px;
 }
 
-.comt-form {
+.comt-FORM {
   font-style: italic;
   font-family: serif;
   margin-bottom: 20px;
 }
 
-#comt-label {
+#comt-LABEL {
   color: blue;
 }
 
-#comt #project-group {
+#comt #project-GROUP {
   width: 300px;
 }
 
-.wms-b-form {
+.wms-b-FORM {
   font-weight: bold;
   font-family: monospace;
   background-color: black;

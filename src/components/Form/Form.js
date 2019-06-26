@@ -43,8 +43,8 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
           return (
             <div id={fields.id} key={fields.id}>
               {fields.label !== undefined &&
-                <h2 id={fields.id + "-label"}>{fields.label}</h2>}
-              <div id={fields.id+"-inputs"}>
+                <h2 id={fields.id + "-LABEL"}>{fields.label}</h2>}
+              <div id={fields.id+"-INPUTS"}>
                 {fields.items.map((field, i) => {
                   // If initial values have been passed in with the form data, overwrite the field object
                   if (formData[fields.id] !== undefined &&
@@ -60,7 +60,7 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
                 })}
               </div>
               {fields.description !== undefined &&
-                <p id={fields.id + "-description"}>{fields.description}</p>}
+                <p id={fields.id + "-DESCRIPTION"}>{fields.description}</p>}
             </div>
           );
         } else {
@@ -88,8 +88,8 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
           return (
             <div id={fields.id} key={fields.id}>
               {fields.label !== undefined &&
-                <h2 id={fields.id + "-label"}>{fields.label}</h2>}
-              <div id={fields.id+"-inputs"}>
+                <h2 id={fields.id + "-LABEL"}>{fields.label}</h2>}
+              <div id={fields.id+"-INPUTS"}>
                 {[...Array(listLength)].map((_, i) => {
                   // For each element within the computed list length, check whether it has an initial value
                   let format = fields.itemFormat;
@@ -107,7 +107,7 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
                 })}
               </div>
               {fields.description !== undefined &&
-                <p id={fields.id + "-description"}>{fields.description}</p>}
+                <p id={fields.id + "-DESCRIPTION"}>{fields.description}</p>}
             </div>
           );
         }
@@ -229,12 +229,12 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
   };
 
   return (
-    <div className={schemaID+"-form"}>
+    <div className={schemaID+"-FORM"}>
       {generateForm(parsedSchema)}
       <Button
         variant={Object.entries(updatedDict).length === 0 ? "light" : "success"}
         disabled={Object.entries(updatedDict).length === 0}
-        id={schemaID+"-save"}
+        id={schemaID+"-SAVE"}
         onClick={() => saveForm()}
       >
         Save

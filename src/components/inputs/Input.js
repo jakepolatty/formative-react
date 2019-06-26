@@ -14,9 +14,9 @@ import {faCheck} from '@fortawesome/free-solid-svg-icons';
 export default function Input({Type, id, initialValue, label, description, updated, onUpdate, handleSave,
   ...rest}) {
   return(
-    <Form.Group id={id + "-group"}>
+    <Form.Group id={id + "-GROUP"}>
       {label !== undefined &&
-        <Form.Label id={id + "-label"}>{label}</Form.Label>}
+        <Form.Label id={id + "-LABEL"}>{label}</Form.Label>}
       <InputGroup>
         <Type
           id={id}
@@ -36,7 +36,7 @@ export default function Input({Type, id, initialValue, label, description, updat
         </InputGroup.Append>
       </InputGroup>
       {description !== undefined &&
-        <Form.Text id={id + "-description"}>{description}</Form.Text>}
+        <Form.Text id={id + "-DESCRIPTION"}>{description}</Form.Text>}
     </Form.Group>
   );
 }

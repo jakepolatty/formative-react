@@ -1,5 +1,6 @@
 import React from 'react';
 import APISchemaForms from './components/Form/APISchemaForms';
+// These will be local to the project
 import sampleUISchema from './sample/sampleUISchema.js';
 import './sample/sampleCSS.css';
 
