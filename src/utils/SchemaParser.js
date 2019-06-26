@@ -7,27 +7,27 @@ class SchemaParser {
    **********************/
 
   // Converts the JSON schema into a fields object that can be displayed by the Form component
-  static parseSchema(jsonSchema, callback) {
+  static parseSchema(jsonSchema, schemaID, callback) {
     $RefParser.dereference(jsonSchema, (err, schema) => {
       if (err) {
         callback(null, err);
       } else {
-        callback(SchemaParser.convertSchemaLayer(schema, "root", {}), null);
+        callback(SchemaParser.convertSchemaLayer(schema, schemaID, {}), null);
       }
     });
   }
 
   // Converts the JSON schema and UI schema into a fields object that can be displayed by Form.js
-  static parseSchemaWithUI(jsonSchema, uiSchema, callback) {
+  static parseSchemaWithUI(jsonSchema, uiSchema, schemaID, callback) {
     // == null coerces the variable to cover both the null and undefined cases
     if (uiSchema == null || SchemaParser.isEmptyObject(uiSchema)) {
-      SchemaParser.parseSchema(jsonSchema, callback);
+      SchemaParser.parseSchema(jsonSchema, schemaID, callback);
     } else {
       $RefParser.dereference(jsonSchema, (err, schema) => {
         if (err) {
           callback(null, err);
         } else {
-          callback(SchemaParser.convertSchemaLayer(schema, "root", uiSchema), null);
+          callback(SchemaParser.convertSchemaLayer(schema, schemaID, uiSchema), null);
         }
       });
     }

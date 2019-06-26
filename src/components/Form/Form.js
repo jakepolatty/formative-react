@@ -11,14 +11,14 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
 
   // When a new schema is passed in, parse it to reload the form
   useEffect(() => {
-    SchemaParser.parseSchemaWithUI(schema, uiSchema, (parsed, err) => {
+    SchemaParser.parseSchemaWithUI(schema, uiSchema, schemaID, (parsed, err) => {
       if (err) {
         console.error(err);
       } else {
         setParsedSchema(parsed);
       }
     });
-  }, [schema, uiSchema]);
+  }, [schema, uiSchema, schemaID]);
 
   // When new form data is passed in, reset the state object
   useEffect(() => {
