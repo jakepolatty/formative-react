@@ -12,14 +12,15 @@ function App() {
             "schema": "wms",
             "include": ["layer", "style"]
           },
+          "comt": {
+            "schema": "comt",
+            "include": ["project", "subproject", "model"]
+          },
           "wms-b": {
             "schema": "wms",
             "include": ["opacity", "transparent", "elevation"]
           },
-          "comt": {
-            "schema": "comt",
-            "include": ["project", "subproject", "model"]
-          }
+          
         }}
         dataApiEndpoint="http://localhost:8888/api/"
         uiSchema={{

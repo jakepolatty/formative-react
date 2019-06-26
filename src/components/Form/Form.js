@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import SchemaParser from '../../utils/SchemaParser.js';
 import reactInputMap from '../../utils/reactInputMap.js';
+import Input from '../inputs/Input';
 
 export default function Form({schema, uiSchema, externalData, schemaID, includeFields, handleSave}) {
   const [parsedSchema, setParsedSchema] = useState({});
@@ -8,7 +9,6 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
 
   // When a new schema is passed in, parse it to reload the form
   useEffect(() => {
-    console.log(uiSchema)
     SchemaParser.parseSchemaWithUI(schema, uiSchema, (parsed, err) => {
       if (err) {
         console.error(err);
@@ -118,7 +118,8 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
           if (includeFields.includes(id)) {
             if (arrayIndex !== undefined) {
               return (
-                <Field
+                <Input
+                  Type={Field}
                   id={id + arrayIndex}
                   key={id + arrayIndex}
                   initialValue={initialValue}
@@ -145,7 +146,8 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
                 />);
             } else {
               return (
-                <Field
+                <Input
+                  Type={Field}
                   id={id}
                   key={id}
                   initialValue={initialValue}
