@@ -3,36 +3,34 @@ import Form from 'react-bootstrap/Form';
 
 export default function RadioInput({id, initialValue, onUpdate, options}) {
   if (options === undefined) {
-    options = ["Yes", "No"];
-
-    if (initialValue === true) {
-      initialValue = "Yes";
-    } else if (initialValue === false) {
-      initialValue = "No";
-    }
+    options = [true, false];
   }
 
-  const [value, setValue] = useState(initialValue);
-
-  useEffect(() => {
-    if (onUpdate !== undefined) {
-      onUpdate(value)
+  const handleUpdate = (newValue) => {
+    // Handle the case of a simple true/false radio button
+    if (newValue === "true" && options.length === 2) {
+      onUpdate(true);
+    } else if (newValue === "false" && options.length === 2) {
+      onUpdate(false);
+    } else {
+      onUpdate(newValue);
     }
-  });
+  }
 
 	return(
     <div>
       {options.map((option, i) => {
-        const checked = option === value;
+        const defaultChecked = option === initialValue;
         return (
           <Form.Check
             id={id + "" + i}
             key={id + "" + i}
             name={id}
             value={option}
-            checked={checked}
-            label={option}
-            onChange={_ => setValue(option)}
+            label={option.toString()}
+            defaultChecked={defaultChecked}
+            onChange={onUpdate !== undefined ?
+              (event) => handleUpdate(event.target.value) : undefined}
             type="radio"
           />
         );

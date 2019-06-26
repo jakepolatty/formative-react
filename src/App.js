@@ -27,6 +27,9 @@ function App() {
           "wms": {
             "opacity": {
               "ui:component": "NumberSliderInput"
+            },
+            "transparent": {
+              "ui:component": "RadioInput"
             }
           },
           "comt": {
