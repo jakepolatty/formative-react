@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import SchemaParser from '../../utils/SchemaParser.js';
 import reactInputMap from '../../utils/reactInputMap.js';
 import Input from '../inputs/Input';
+import Button from 'react-bootstrap/Button';
 
 export default function Form({schema, uiSchema, externalData, schemaID, includeFields, handleSave}) {
   const [parsedSchema, setParsedSchema] = useState({});
@@ -161,11 +162,9 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
                     () => {
                       let newData = {[id]: formData[id]};
 
-                      // Set the updated state to false on save
-                      let newUpdatedState = {[indexId]: false};
-                      setUpdatedDict(prevDict => {
-                        return {...prevDict, ...newUpdatedState};
-                      });
+                      // Remove the updated key on save
+                      const {[indexId]: tmp, ...rest} = updatedDict;
+                      setUpdatedDict(rest);
 
                       handleSave(newData);
                     }
@@ -200,11 +199,9 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
                     () => {
                       let newData = {[id]: formData[id]};
 
-                      // Set the updated state to false on save
-                      let newUpdatedState = {[id]: false};
-                      setUpdatedDict(prevDict => {
-                        return {...prevDict, ...newUpdatedState};
-                      });
+                      // Remove the updated key on save
+                      const {[id]: tmp, ...rest} = updatedDict;
+                      setUpdatedDict(rest);
 
                       handleSave(newData);
                     }
@@ -230,10 +227,14 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
   return (
     <div className={schemaID+"-form"}>
       {generateForm(parsedSchema)}
-      <button
+      <Button
+        variant={Object.entries(updatedDict).length === 0 ? "light" : "success"}
+        disabled={Object.entries(updatedDict).length === 0}
+        id={schemaID+"-save"}
         onClick={() => saveForm()}
-        id="save-button"
-      >Save</button>
+      >
+        Save
+      </Button>
     </div>
   );
 }
