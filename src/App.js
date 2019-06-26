@@ -1,6 +1,6 @@
 import React from 'react';
 import APISchemaForms from './components/Form/APISchemaForms';
-// import sampleSchema from './sample/sampleSchema.js';
+import sampleUISchema from './sample/sampleUISchema.js';
 
 function App() {
   return (
@@ -23,22 +23,7 @@ function App() {
           
         }}
         dataApiEndpoint="http://localhost:8888/api/"
-        uiSchema={{
-          "wms": {
-            "opacity": {
-              "ui:component": "NumberSliderInput"
-            },
-            "transparent": {
-              "ui:component": "RadioInput"
-            }
-          },
-          "comt": {
-            "subproject": {
-              "ui:component": "TextAreaInput",
-              "rows": 1
-            }
-          }
-        }}
+        uiSchema={sampleUISchema}
       />
     </div>
   );
