@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Form from 'react-bootstrap/Form';
 
-export default function NumberInput({id, initialValue, label, description, onUpdate}) {
+export default function NumberInput({id, initialValue, onUpdate}) {
   const [isInvalid, setIsInvalid] = useState(Number.isNaN(Number(initialValue)));
  
   const handleChange = (newValue) => {
@@ -15,9 +15,7 @@ export default function NumberInput({id, initialValue, label, description, onUpd
   };
 
 	return(
-    <Form.Group id={id + "-group"}>
-      {label !== undefined &&
-        <Form.Label id={id + "-label"}>{label}</Form.Label>}
+    <div>
       <Form.Control
         id={id}
         name={id}
@@ -30,8 +28,6 @@ export default function NumberInput({id, initialValue, label, description, onUpd
       <Form.Control.Feedback type="invalid">
         Please enter a number.
       </Form.Control.Feedback>
-      {description !== undefined &&
-        <Form.Text id={id + "-description"}>{description}</Form.Text>}
-    </Form.Group>
+    </div>
 	);
 }
