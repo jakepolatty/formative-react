@@ -135,14 +135,12 @@ class SchemaParser {
         if (Array.isArray(arrayLayer.items)) {
           // Tuple Validation
           let itemsArray = arrayLayer.items.map((item, index) => {
-            let itemKey = key + "-" + index;
-            return SchemaParser.convertSchemaLayer(item, itemKey, uiSchema);
+            return SchemaParser.convertSchemaLayer(item, key, uiSchema);
           });
           fieldObject.items = itemsArray;
         } else {
           // List Validation
-          let itemKey = key + "-item"; 
-          fieldObject.itemFormat = SchemaParser.convertSchemaLayer(arrayLayer.items, itemKey, uiSchema);
+          fieldObject.itemFormat = SchemaParser.convertSchemaLayer(arrayLayer.items, key, uiSchema);
         }
       }
     } else {
@@ -159,14 +157,12 @@ class SchemaParser {
       } else {
         if (Array.isArray(arrayLayer.items)) {
           let itemsArray = arrayLayer.items.map((item, index) => {
-            let itemKey = key + "-" + index;
-            return SchemaParser.convertSchemaLayer(item, itemKey, uiSchema);
+            return SchemaParser.convertSchemaLayer(item, key, uiSchema);
           });
           fieldObject.items = itemsArray;
         } else {
           // List Validation
-          let itemKey = key + "-item"; 
-          fieldObject.itemFormat = SchemaParser.convertSchemaLayer(arrayLayer.items, itemKey, uiSchema);
+          fieldObject.itemFormat = SchemaParser.convertSchemaLayer(arrayLayer.items, key, uiSchema);
         }
       }
     }
@@ -183,9 +179,8 @@ class SchemaParser {
 
     // Add additional items field if it exists and is not set to false
     if (arrayLayer.additionalItems !== undefined && arrayLayer.additionalItems !== false) {
-      let itemKey = key + "-addItem";
       fieldObject.additionalItemFormat = SchemaParser.convertSchemaLayer(arrayLayer.additionalItems,
-        itemKey, uiSchema);
+        key, uiSchema);
     }
 
     // Append the UI fields last to override any JSON schema defaults
