@@ -3,6 +3,7 @@ import FormPage from './components/FormPage/FormPage';
 import Button from 'react-bootstrap/Button';
 // These will be local to the project
 import sampleUISchema from './sample/sampleUISchema.js';
+import './sample/sampleCSS.css';
 
 function App() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -65,7 +66,7 @@ function App() {
       schemas={{
         "dataset": {
           "schema": "dataset",
-          "include": ["@type", "accessLevel", "rights", "describedBy", "theme"]
+          "include": ["@type", "accessLevel", "rights", "describedBy", "theme", "describedByType", "dataQuality", "issued"]
         }
       }}
       dataApiEndpoint="http://localhost:8888/api/"

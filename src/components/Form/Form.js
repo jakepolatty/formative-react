@@ -149,94 +149,9 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
           // Only standalone fields will be directly in the include list
           if (includeFields.includes(id)) {
             if (arrayIndex !== undefined) {
-              // If the input exists in an array, use the id with the index appended as a unique id
-              let indexId = id + "-" + arrayIndex;
-              return (
-                <Input
-                  Type={Field}
-                  id={indexId}
-                  key={indexId}
-                  initialValue={initialValue}
-                  updated={updatedDict[indexId]}
-                  onUpdate={
-                    (newValue) => {
-                      // Overwrite the new value in the correct array data index
-                      if (formData[id] === undefined) {
-                        formData[id] = [];
-                      }
-                      let arrayData = formData[id];
-
-                      if (arrayIndex < arrayData.length) {
-                        arrayData[arrayIndex] = newValue;
-                      } else {
-                        // If the earlier elements in the array have no values yet, set them to null
-                        for (let i = arrayData.length; i < arrayIndex; i++) {
-                          arrayData.push(null);
-                        }
-                        arrayData.push(newValue); // pushes at the correct index for this field
-                      }
-
-                      // Set the updated state for the field to true on update
-                      let newUpdatedState = {[indexId]: true};
-                      setUpdatedDict(prevDict => {
-                        return {...prevDict, ...newUpdatedState}
-                      });
-
-                      setFormData(prevData => {
-                        return {...prevData, ...{[id]: arrayData}};
-                      });
-                    }
-                  }
-                  handleSave={
-                    () => {
-                      let newData = {[id]: formData[id]};
-
-                      // Remove the updated key on save
-                      const {[indexId]: tmp, ...rest} = updatedDict;
-                      setUpdatedDict(rest);
-
-                      handleSave(newData);
-                    }
-                  }
-                  {...rest}
-                />);
+              return generateArrayField(Field, id, initialValue, arrayIndex, rest);
             } else {
-              return (
-                <Input
-                  Type={Field}
-                  id={id}
-                  key={id}
-                  initialValue={initialValue}
-                  updated={updatedDict[id]}
-                  onUpdate={
-                    (newValue) => {
-                      // Overwrite the new value in the form data and use the hook setter
-                      let newData = {[id]: newValue};
-
-                      // Set the updated state for the field to true on update
-                      let newUpdatedState = {[id]: true};
-                      setUpdatedDict(prevDict => {
-                        return {...prevDict, ...newUpdatedState};
-                      });
-
-                      setFormData(prevData => {
-                        return {...prevData, ...newData};
-                      });
-                    }
-                  }
-                  handleSave={
-                    () => {
-                      let newData = {[id]: formData[id]};
-
-                      // Remove the updated key on save
-                      const {[id]: tmp, ...rest} = updatedDict;
-                      setUpdatedDict(rest);
-
-                      handleSave(newData);
-                    }
-                  }
-                  {...rest}
-                />);
+              return generateSingleField(Field, id, initialValue, rest);
             }
           } else {
             // This field should not be rendered to the page if it is not in the include list
@@ -251,6 +166,101 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
       // In the case where fields is empty, return null
       return null;
     }
+  };
+
+  // Generates an input of type Field with the specified id and initial value
+  const generateSingleField = (Field, id, initialValue, rest) => {
+    return (
+      <Input
+        Type={Field}
+        id={id}
+        key={id}
+        initialValue={initialValue}
+        updated={updatedDict[id]}
+        onUpdate={
+          (newValue) => {
+            // Overwrite the new value in the form data and use the hook setter
+            let newData = {[id]: newValue};
+
+            // Set the updated state for the field to true on update
+            let newUpdatedState = {[id]: true};
+            setUpdatedDict(prevDict => {
+              return {...prevDict, ...newUpdatedState};
+            });
+
+            setFormData(prevData => {
+              return {...prevData, ...newData};
+            });
+          }
+        }
+        handleSave={
+          () => {
+            let newData = {[id]: formData[id]};
+
+            // Remove the updated key on save
+            const {[id]: tmp, ...rest} = updatedDict;
+            setUpdatedDict(rest);
+
+            handleSave(newData);
+          }
+        }
+        {...rest}
+      />);
+  };
+
+  // Generates a single input of type Field that sits at the specified index within an array of inputs
+  const generateArrayField = (Field, id, initialValue, arrayIndex, rest) => {
+    // If the input exists in an array, use the id with the index appended as a unique id
+    let indexId = id + "-" + arrayIndex;
+    return (
+      <Input
+        Type={Field}
+        id={indexId}
+        key={indexId}
+        initialValue={initialValue}
+        updated={updatedDict[indexId]}
+        onUpdate={
+          (newValue) => {
+            // Overwrite the new value in the correct array data index
+            if (formData[id] === undefined) {
+              formData[id] = [];
+            }
+            let arrayData = formData[id];
+
+            if (arrayIndex < arrayData.length) {
+              arrayData[arrayIndex] = newValue;
+            } else {
+              // If the earlier elements in the array have no values yet, set them to null
+              for (let i = arrayData.length; i < arrayIndex; i++) {
+                arrayData.push(null);
+              }
+              arrayData.push(newValue); // pushes at the correct index for this field
+            }
+
+            // Set the updated state for the field to true on update
+            let newUpdatedState = {[indexId]: true};
+            setUpdatedDict(prevDict => {
+              return {...prevDict, ...newUpdatedState}
+            });
+
+            setFormData(prevData => {
+              return {...prevData, ...{[id]: arrayData}};
+            });
+          }
+        }
+        handleSave={
+          () => {
+            let newData = {[id]: formData[id]};
+
+            // Remove the updated key on save
+            const {[indexId]: tmp, ...rest} = updatedDict;
+            setUpdatedDict(rest);
+
+            handleSave(newData);
+          }
+        }
+        {...rest}
+      />);
   };
 
   return (
