@@ -54,6 +54,8 @@ class SchemaParser {
       return SchemaParser.parseBooleanLayer(schema, currentKey, uiSchema[currentKey]);
     } else if (schema.anyOf !== undefined && schema.anyOf.length > 0) {
       return SchemaParser.parseAnyOfLayer(schema, currentKey, uiSchema);
+    } else if (schema.enum !== undefined && schema.enum.length > 0) {
+      return SchemaParser.parseStringLayer(schema, currentKey, uiSchema[currentKey]);
     } else if (schema.type === "null" || schema.type === undefined) {
       return null;
     }
@@ -61,7 +63,7 @@ class SchemaParser {
 
   // Parses a section of the schema wrapped by an anyOf validator
   static parseAnyOfLayer(anyOfLayer, key, uiSchema) {
-    // Filter out any {type: "null"} fields, whose functionality is included in 
+    // Filter out any {type: "null"} fields, whose functionality is included in inputs by default
     let filteredLayer = [];
     for (let i = 0; i < anyOfLayer.anyOf.length; i++) {
       let childSchema = anyOfLayer.anyOf[i];
@@ -72,7 +74,12 @@ class SchemaParser {
 
     if (filteredLayer.length === 1) {
       // In this case the anyOf field can be rendered directly as its non-null child
-      return SchemaParser.convertSchemaLayer(filteredLayer[0], key, uiSchema);
+      let parsedLayer = SchemaParser.convertSchemaLayer(filteredLayer[0], key, uiSchema);
+      Object.assign(parsedLayer,
+        anyOfLayer.title !== undefined && {label: anyOfLayer.title},
+        anyOfLayer.description !== undefined && {description: anyOfLayer.description});
+
+      return parsedLayer;
     } else if (filteredLayer.length >= 2) {
       // TODO: Handle anyOf schemas with multiple non-null children
     } else {
@@ -88,10 +95,14 @@ class SchemaParser {
     let itemsArray = Object.keys(objLayer.properties).map((propKey) => {
       let itemLayer = SchemaParser.convertSchemaLayer(objLayer.properties[propKey], propKey, uiSchema);
       // Add a required flag to the layer if it is required
-      if (objLayer.required !== undefined && objLayer.required.includes(propKey)) {
-        itemLayer.required = true;
+      if (itemLayer !== null && itemLayer !== undefined) {
+        if (objLayer.required !== undefined && objLayer.required.includes(propKey)) {
+          itemLayer.required = true;
+        }
+        return itemLayer;
+      } else {
+        return null;
       }
-      return itemLayer;
     });
     fieldGroupObject.items = itemsArray;
 

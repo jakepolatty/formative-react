@@ -38,9 +38,10 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
   const generateForm = (fields) => {
     if (fields !== undefined && fields !== null) {
       if (fields.type === "InputGroup") {
-        if (fields.items !== undefined) {
+        if (fields.items !== undefined && fields.items !== null) {
           // The specific list of items has been provided
-          return (
+          let hasVisibleChild = false;
+          let itemGroup = (
             <div id={fields.id} key={fields.id}>
               {fields.label !== undefined &&
                 <h2 id={fields.id + "-LABEL"}>{fields.label}</h2>}
@@ -55,15 +56,28 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
                   if (formData.groupType === "array") {
                     field.arrayIndex = i;
                   }
+                  
+                  // If a child is visible, indicate that the group should be shown
+                  let child = generateForm(field);
+                  if (child !== null) {
+                    hasVisibleChild = true;
+                  }
 
-                  return generateForm(field);
+                  return child;
                 })}
               </div>
               {fields.description !== undefined &&
                 <p id={fields.id + "-DESCRIPTION"}>{fields.description}</p>}
             </div>
           );
-        } else {
+
+          // Only show the input group if it has a child to display
+          if (hasVisibleChild) {
+            return itemGroup;
+          } else {
+            return null;
+          }
+        } else if (fields.itemFormat !== undefined && fields.itemFormat !== null) {
           // A generic item format has been provided, so compute the number of elements that
           // should be rendered
           let listLength = 1;
@@ -84,38 +98,45 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
             defaultsCount = fields.defaultValue.length;
             listLength = Math.max(listLength, defaultsCount);
           }
-
-          return (
-            <div id={fields.id} key={fields.id}>
-              {fields.label !== undefined &&
-                <h2 id={fields.id + "-LABEL"}>{fields.label}</h2>}
-              <div id={fields.id+"-INPUTS"}>
-                {[...Array(listLength)].map((_, i) => {
-                  // For each element within the computed list length, check whether it has an initial value
-                  let format = fields.itemFormat;
-                  format.arrayIndex = i;
-                  if (i < valueCount) {
-                    format.defaultValue = formData[fields.id][i];
+          
+          if (includeFields.includes(fields.id)) {
+            return (
+              <div id={fields.id} key={fields.id}>
+                {fields.label !== undefined &&
+                  <h2 id={fields.id + "-LABEL"}>{fields.label}</h2>}
+                <div id={fields.id+"-INPUTS"}>
+                  {[...Array(listLength)].map((_, i) => {
+                    // For each element within the computed list length, check whether it has an initial value
+                    let format = fields.itemFormat;
+                    format.arrayIndex = i;
+                    format.parentIncludes = true;
+                    if (i < valueCount) {
+                      format.defaultValue = formData[fields.id][i];
+                    } else if (i < defaultsCount) {
+                      format.defaultValue = fields.defaultValue[i];
+                    } else {
+                      format.defaultValue = undefined;
+                    }
                     return generateForm(format);
-                  } else if (i < defaultsCount) {
-                    format.defaultValue = fields.defaultValue[i];
-                    return generateForm(format);
-                  } else {
-                    format.defaultValue = undefined;
-                    return generateForm(format);
-                  }
-                })}
+                  })}
+                </div>
+                {fields.description !== undefined &&
+                  <p id={fields.id + "-DESCRIPTION"}>{fields.description}</p>}
               </div>
-              {fields.description !== undefined &&
-                <p id={fields.id + "-DESCRIPTION"}>{fields.description}</p>}
-            </div>
-          );
+            );
+          } else {
+            // The field is not included in the list
+            return null;
+          }
+        } else {
+          // There was an error constructing the input group
+          return null;
         }
       } else {
         const Field = reactInputMap[fields.type];
         if (Field !== undefined) {
           // At this point the fields argument is at the level of a single field that can be rendered
-          const {type, id, defaultValue, arrayIndex, ...rest} = fields;
+          const {type, id, defaultValue, arrayIndex, parentIncludes, ...rest} = fields;
           
           // If the form data contains this field, overwrite the default value
           // Otherwise pass in the default if there is one
@@ -126,93 +147,94 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
             initialValue = defaultValue;
           }
 
+          // Only standalone fields will be directly in the include list
           if (includeFields.includes(id)) {
-            if (arrayIndex !== undefined) {
-              // If the input exists in an array, use the id with the index appended as a unique id
-              let indexId = id + arrayIndex;
-              return (
-                <Input
-                  Type={Field}
-                  id={indexId}
-                  key={indexId}
-                  initialValue={initialValue}
-                  updated={updatedDict[indexId]}
-                  onUpdate={
-                    (newValue) => {
-                      // Overwrite the new value in the correct array data index
-                      let arrayData = formData[id];
-                      if (arrayIndex < arrayData.length) {
-                        arrayData[arrayIndex] = newValue;
-                      } else {
-                        // If the earlier elements in the array have no values yet, set them to null
-                        for (let i = arrayData.length; i < arrayIndex; i++) {
-                          arrayData.push(null);
-                        }
-                        arrayData.push(newValue); // pushes at the correct index for this field
+            return (
+              <Input
+                Type={Field}
+                id={id}
+                key={id}
+                initialValue={initialValue}
+                updated={updatedDict[id]}
+                onUpdate={
+                  (newValue) => {
+                    // Overwrite the new value in the form data and use the hook setter
+                    let newData = {[id]: newValue};
+
+                    // Set the updated state for the field to true on update
+                    let newUpdatedState = {[id]: true};
+                    setUpdatedDict(prevDict => {
+                      return {...prevDict, ...newUpdatedState};
+                    });
+
+                    setFormData(prevData => {
+                      return {...prevData, ...newData};
+                    });
+                  }
+                }
+                handleSave={
+                  () => {
+                    let newData = {[id]: formData[id]};
+
+                    // Remove the updated key on save
+                    const {[id]: tmp, ...rest} = updatedDict;
+                    setUpdatedDict(rest);
+
+                    handleSave(newData);
+                  }
+                }
+                {...rest}
+              />);
+          } else if (arrayIndex !== undefined && parentIncludes) {
+            // If the field has an array index its id will not exist directly in the includes list,
+            // and instead an include flag will be passed in from the parent
+            // If the input exists in an array, use the id with the index appended as a unique id
+            let indexId = id + arrayIndex;
+            return (
+              <Input
+                Type={Field}
+                id={indexId}
+                key={indexId}
+                initialValue={initialValue}
+                updated={updatedDict[indexId]}
+                onUpdate={
+                  (newValue) => {
+                    // Overwrite the new value in the correct array data index
+                    let arrayData = formData[id];
+                    if (arrayIndex < arrayData.length) {
+                      arrayData[arrayIndex] = newValue;
+                    } else {
+                      // If the earlier elements in the array have no values yet, set them to null
+                      for (let i = arrayData.length; i < arrayIndex; i++) {
+                        arrayData.push(null);
                       }
-
-                      // Set the updated state for the field to true on update
-                      let newUpdatedState = {[indexId]: true};
-                      setUpdatedDict(prevDict => {
-                        return {...prevDict, ...newUpdatedState}
-                      });
-
-                      setFormData(prevData => {
-                        return {...prevData, ...arrayData};
-                      });
+                      arrayData.push(newValue); // pushes at the correct index for this field
                     }
+
+                    // Set the updated state for the field to true on update
+                    let newUpdatedState = {[indexId]: true};
+                    setUpdatedDict(prevDict => {
+                      return {...prevDict, ...newUpdatedState}
+                    });
+
+                    setFormData(prevData => {
+                      return {...prevData, ...arrayData};
+                    });
                   }
-                  handleSave={
-                    () => {
-                      let newData = {[id]: formData[id]};
+                }
+                handleSave={
+                  () => {
+                    let newData = {[id]: formData[id]};
 
-                      // Remove the updated key on save
-                      const {[indexId]: tmp, ...rest} = updatedDict;
-                      setUpdatedDict(rest);
+                    // Remove the updated key on save
+                    const {[indexId]: tmp, ...rest} = updatedDict;
+                    setUpdatedDict(rest);
 
-                      handleSave(newData);
-                    }
+                    handleSave(newData);
                   }
-                  {...rest}
-                />);
-            } else {
-              return (
-                <Input
-                  Type={Field}
-                  id={id}
-                  key={id}
-                  initialValue={initialValue}
-                  updated={updatedDict[id]}
-                  onUpdate={
-                    (newValue) => {
-                      // Overwrite the new value in the form data and use the hook setter
-                      let newData = {[id]: newValue};
-
-                      // Set the updated state for the field to true on update
-                      let newUpdatedState = {[id]: true};
-                      setUpdatedDict(prevDict => {
-                        return {...prevDict, ...newUpdatedState};
-                      });
-
-                      setFormData(prevData => {
-                        return {...prevData, ...newData};
-                      });
-                    }
-                  }
-                  handleSave={
-                    () => {
-                      let newData = {[id]: formData[id]};
-
-                      // Remove the updated key on save
-                      const {[id]: tmp, ...rest} = updatedDict;
-                      setUpdatedDict(rest);
-
-                      handleSave(newData);
-                    }
-                  }
-                  {...rest}
-                />);
-            }
+                }
+                {...rest}
+              />);
           } else {
             // This field should not be rendered to the page if it is not in the include list
             return null;
