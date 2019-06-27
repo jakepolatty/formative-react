@@ -57,7 +57,7 @@ function App() {
         },
       }}
       dataApiEndpoint="http://localhost:8888/api/"
-      uiSchema={sampleUISchema}
+      uiSchema={{}}
     />),
   ];
 
@@ -90,6 +90,7 @@ function App() {
       >
         Next Page
       </Button>
+      <p>Page {currentPage + 1}</p>
     </div>
   );
 }

@@ -52,7 +52,31 @@ class SchemaParser {
       return SchemaParser.parseIntegerLayer(schema, currentKey, uiSchema[currentKey]);
     } else if (schema.type === "boolean") {
       return SchemaParser.parseBooleanLayer(schema, currentKey, uiSchema[currentKey]);
+    } else if (schema.anyOf !== undefined && schema.anyOf.length > 0) {
+      return SchemaParser.parseAnyOfLayer(schema, currentKey, uiSchema);
     } else if (schema.type === "null" || schema.type === undefined) {
+      return null;
+    }
+  }
+
+  // Parses a section of the schema wrapped by an anyOf validator
+  static parseAnyOfLayer(anyOfLayer, key, uiSchema) {
+    // Filter out any {type: "null"} fields, whose functionality is included in 
+    let filteredLayer = [];
+    for (let i = 0; i < anyOfLayer.anyOf.length; i++) {
+      let childSchema = anyOfLayer.anyOf[i];
+      if (childSchema.type !== "null") {
+        filteredLayer.push(childSchema);
+      }
+    }
+
+    if (filteredLayer.length === 1) {
+      // In this case the anyOf field can be rendered directly as its non-null child
+      return SchemaParser.convertSchemaLayer(filteredLayer[0], key, uiSchema);
+    } else if (filteredLayer.length >= 2) {
+      // TODO: Handle anyOf schemas with multiple non-null children
+    } else {
+      // The anyOf schema is incorrectly formatter if it has no remaining children
       return null;
     }
   }
