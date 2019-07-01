@@ -5,10 +5,12 @@ import Form from 'react-bootstrap/Form';
 export type Props = {
   id: string,
   initialValue: string,
-  onUpdate: Function
+  onUpdate: (string) => void
 };
 
-export default function TextInput({id, initialValue, onUpdate}: Props) {
+export default function TextInput(props: Props) {
+  let {id, initialValue, onUpdate} = props;
+
 	return(
     <Form.Control
       id={id}

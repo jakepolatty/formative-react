@@ -1,4 +1,5 @@
-import React from 'react';
+// @flow
+import * as React from 'react';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
@@ -11,8 +12,27 @@ import {faCheck} from '@fortawesome/free-solid-svg-icons';
  * - initialValue: The initial value that the field should take on
  * - onUpdate: A callback that handles updates to the field value
 **/
-export default function Input({Type, id, initialValue, label, description, updated, onUpdate, handleSave,
-  ...rest}) {
+
+export type InputFieldProps = {
+  id: string,
+  initialValue: string | number | boolean,
+  onUpdate: Function,
+}
+
+export type Props = {
+  Type: React.ComponentType<InputFieldProps>,
+  id: string,
+  initialValue: string | number | boolean,
+  label: string,
+  description: string,
+  updated: boolean,
+  onUpdate: Function,
+  handleSave: Function
+};
+
+export default function Input(props: Props) {
+  let {Type, id, initialValue, label, description, updated, onUpdate, handleSave, ...rest} = props;
+
   return(
     <Form.Group id={id + "-GROUP"}>
       {label !== undefined &&
