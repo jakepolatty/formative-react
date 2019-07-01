@@ -1,14 +1,9 @@
 // @flow
 import React from 'react';
 import Form from 'react-bootstrap/Form';
+import type {StringInputProps} from '../../utils/inputFlowTypes.js';
 
-export type Props = {
-  id: string,
-  initialValue: string,
-  onUpdate: (string) => void
-};
-
-export default function TextInput(props: Props) {
+export default function TextInput(props: StringInputProps) {
   let {id, initialValue, onUpdate} = props;
 
 	return(

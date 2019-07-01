@@ -1,7 +1,16 @@
+// @flow
 import React from 'react';
 import Form from 'react-bootstrap/Form';
+import type {StringInputProps} from '../../utils/inputFlowTypes.js';
 
-export default function TextAreaInput({id, initialValue, onUpdate, rows}) {
+type Props = {
+  ...StringInputProps,
+  rows: number
+}
+
+export default function TextAreaInput(props: Props) {
+  let {id, initialValue, onUpdate, rows} = props;
+
   return(
     <Form.Control
       id={id}

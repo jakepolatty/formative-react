@@ -1,10 +1,14 @@
+// @flow
 import React, {useState} from 'react';
 import Form from 'react-bootstrap/Form';
+import type {NumberInputProps} from '../../utils/inputFlowTypes.js';
 
-export default function NumberInput({id, initialValue, onUpdate}) {
+export default function NumberInput(props: NumberInputProps) {
+  let {id, initialValue, onUpdate} = props;
+
   const [isInvalid, setIsInvalid] = useState(Number.isNaN(Number(initialValue)));
  
-  const handleChange = (newValue) => {
+  const handleChange = (newValue: string) => {
     let parsedNum = Number(newValue);
     if (Number.isNaN(parsedNum) || newValue === "") {
       setIsInvalid(true);
