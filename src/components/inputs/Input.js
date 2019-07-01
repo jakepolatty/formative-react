@@ -15,22 +15,22 @@ import {faCheck} from '@fortawesome/free-solid-svg-icons';
 
 export type InputFieldProps = {
   id: string,
-  initialValue: string | number | boolean,
+  initialValue: any,
   onUpdate: Function,
 }
 
-export type Props = {
+export type InputWrapperProps = {
   Type: React.ComponentType<InputFieldProps>,
   id: string,
-  initialValue: string | number | boolean,
-  label: string,
-  description: string,
+  initialValue: any,
+  label?: string,
+  description?: string,
   updated: boolean,
   onUpdate: Function,
   handleSave: Function
 };
 
-export default function Input(props: Props) {
+export default function Input(props: InputWrapperProps) {
   let {Type, id, initialValue, label, description, updated, onUpdate, handleSave, ...rest} = props;
 
   return(

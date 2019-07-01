@@ -1,10 +1,24 @@
+// @flow
 import React, {useState, useEffect} from 'react';
+import type {ComponentType, Element, Node} from 'react';
 import SchemaParser from '../../utils/SchemaParser.js';
 import reactInputMap from '../../utils/reactInputMap.js';
 import Input from '../inputs/Input';
+import type {InputFieldProps} from '../inputs/Input';
 import Button from 'react-bootstrap/Button';
 
-export default function Form({schema, uiSchema, externalData, schemaID, includeFields, handleSave}) {
+type FormProps = {
+  schema: {[key: string]: any} | null,
+  uiSchema: {[key: string]: any} | null,
+  externalData: {[key: string]: any} | null,
+  schemaID: string,
+  includeFields: Array<string>,
+  handleSave: ({[key: string]: any}) => void
+};
+
+export default function Form(props: FormProps): Element<'div'> {
+  let {schema, uiSchema, externalData, schemaID, includeFields, handleSave} = props;
+
   const [parsedSchema, setParsedSchema] = useState({});
   const [formData, setFormData] = useState({});
   const [updatedDict, setUpdatedDict] = useState({});
@@ -35,7 +49,7 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
   };
 
   // Generates the React component heirarchy for the form from the parsed schema
-  const generateForm = (fields) => {
+  const generateForm = (fields?: {[key: string]: any}): ?Node => {
     if (fields !== undefined && fields !== null) {
       if (fields.type === "InputGroup") {
         if (fields.items !== undefined && fields.items !== null) {
@@ -50,7 +64,7 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
         const Field = reactInputMap[fields.type];
         if (Field !== undefined) {
           // At this point the fields argument is at the level of a single field that can be rendered
-          const {type, id, defaultValue, arrayIndex, ...rest} = fields;
+          const {type, id, defaultValue, arrayIndex, label, description, ...rest} = fields;
           
           // If the form data contains this field, overwrite the default value
           // Otherwise pass in the default if there is one
@@ -64,9 +78,9 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
           // Only standalone fields will be directly in the include list
           if (includeFields.includes(id)) {
             if (arrayIndex !== undefined) {
-              return generateArrayField(Field, id, initialValue, arrayIndex, rest);
+              return generateArrayField(Field, id, initialValue, arrayIndex, label, description, rest);
             } else {
-              return generateSingleField(Field, id, initialValue, rest);
+              return generateSingleField(Field, id, initialValue, label, description, rest);
             }
           } else {
             // This field should not be rendered to the page if it is not in the include list
@@ -84,7 +98,7 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
   };
 
   // Generates an explicit list of input fields for an InputGroup
-  const generateInputList = (fields) => {
+  const generateInputList = (fields: {[key: string]: any}): ?Element<'div'> => {
     // The specific list of items has been provided
     let hasVisibleChild = false;
     let itemGroup = (
@@ -126,7 +140,7 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
   };
 
   // Generates a list of input fields of the correct length for a generic InputGroup array
-  const generateInputFormat = (fields) => {
+  const generateInputFormat = (fields: {[key: string]: any}): ?Element<'div'> => {
     // A generic item format has been provided, so compute the number of elements that
     // should be rendered
     let listLength = 1;
@@ -179,7 +193,8 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
   };
 
   // Generates an input of type Field with the specified id and initial value
-  const generateSingleField = (Field, id, initialValue, rest) => {
+  const generateSingleField = (Field: ComponentType<InputFieldProps>, id: string, initialValue: any,
+    label?: string, description?: string, rest): Element<typeof Input> => {
     return (
       <Input
         Type={Field}
@@ -187,6 +202,8 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
         key={id}
         initialValue={initialValue}
         updated={updatedDict[id]}
+        label={label}
+        description={description}
         onUpdate={
           (newValue) => {
             // Overwrite the new value in the form data and use the hook setter
@@ -219,7 +236,8 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
   };
 
   // Generates a single input of type Field that sits at the specified index within an array of inputs
-  const generateArrayField = (Field, id, initialValue, arrayIndex, rest) => {
+  const generateArrayField = (Field: ComponentType<InputFieldProps>, id: string, initialValue: any,
+    arrayIndex: number, label?: string, description?: string, rest): Element<typeof Input> => {
     // If the input exists in an array, use the id with the index appended as a unique id
     let indexId = id + "-" + arrayIndex;
     return (
@@ -229,6 +247,8 @@ export default function Form({schema, uiSchema, externalData, schemaID, includeF
         key={indexId}
         initialValue={initialValue}
         updated={updatedDict[indexId]}
+        label={label}
+        description={description}
         onUpdate={
           (newValue) => {
             // Overwrite the new value in the correct array data index

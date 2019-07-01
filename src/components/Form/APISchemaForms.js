@@ -1,8 +1,17 @@
+// @flow
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import Form from './Form';
 
-export default function APISchemaForms({schemaEndpoint, schemas, dataApiEndpoint, uiSchema}) {
+export type FormsProps = {
+  schemaEndpoint: string,
+  schemas: {[schema: string]: any},
+  dataApiEndpoint: string,
+  uiSchema: {[key: string]: any},
+};
+
+export default function APISchemaForms(props: FormsProps) {
+  let {schemaEndpoint, schemas, dataApiEndpoint, uiSchema} = props;
   const [schemaObject, setSchemaObject] = useState({});
   const [dataObject, setDataObject] = useState({});
 
@@ -45,7 +54,7 @@ export default function APISchemaForms({schemaEndpoint, schemas, dataApiEndpoint
     fetchSchemas();
   }, [schemaEndpoint, schemas, dataApiEndpoint]);
 
-  const saveFormData = (formData, schemaType) => {
+  const saveFormData = (formData: {[key: string]: any}, schemaType: string) => {
     let schemaData = dataObject[schemaType];
     let mergedData = Object.assign(schemaData, formData);
     axios.post(dataApiEndpoint + schemaType + "/", mergedData).then(res => {
