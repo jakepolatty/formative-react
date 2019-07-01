@@ -66,11 +66,30 @@ function App() {
       schemas={{
         "dataset": {
           "schema": "dataset",
-          "include": ["@type", "accessLevel", "rights", "describedBy", "theme", "describedByType", "dataQuality", "issued"]
+          "include": ["accessLevel", "theme", "dataQuality", "issued"]
         }
       }}
       dataApiEndpoint="http://localhost:8888/api/"
       uiSchema={{}}
+    />),
+    (<FormPage
+      index={1}
+      schemaEndpoint="https://project-open-data.cio.gov/v1.1/schema/"
+      schemas={{
+        "dataset": {
+          "schema": "dataset",
+          "include": ["rights", "describedBy", "describedByType"]
+        },
+      }}
+      dataApiEndpoint="http://localhost:8888/api/"
+      uiSchema={{
+        "dataset": {
+          "rights": {
+            "ui:component": "SelectInput",
+            "options": ["a", "b", "c"]
+          }
+        }
+      }}
     />)
   ];
 
