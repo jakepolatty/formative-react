@@ -2,8 +2,7 @@
 import React from 'react';
 import type {ComponentType, Element, Node} from 'react';
 import reactInputMap from '../../../utils/reactInputMap.js';
-import Input from '../../inputs/Input';
-import type {InputFieldProps} from '../../inputs/Input';
+import InputFormField from './InputFormField';
 
 export type FieldsType = {
   type: string,
@@ -18,6 +17,26 @@ export type FieldsType = {
   itemFormat?: any,
   rest?: Array<any>
 }
+
+type FormHandlerProps = {
+  formData: {[key: string]: any},
+  setFormData: ({[key: string]: any}) => void,
+  updatedDict: {[key: string]: any},
+  setUpdatedDict: ({[key: string]: any}) => void,
+  handleSave: Function
+}
+
+type FormGeneratorProps = {
+  ...FormHandlerProps,
+  includeFields: Array<string>,
+  fields: FieldsType
+}
+
+// export default function FormGenerator(props: FormGeneratorProps) {
+//   let {formData, setFormData, updatedDict, setUpdatedDict, handleSave, includeFields, fields} = props;
+
+
+// }
 
 class FormGenerator {
   formData: {[key: string]: any};
@@ -40,6 +59,7 @@ class FormGenerator {
 
   // Generates the React component heirarchy for the form from the parsed schema
   generateForm(fields: FieldsType | {[key: string]: any}): ?Node {
+    console.log("test")
     if (fields !== undefined && fields !== null) {
       if (fields.type === "InputGroup") {
         if (fields.items !== undefined && fields.items !== null) {
@@ -67,11 +87,23 @@ class FormGenerator {
           
           // Only standalone fields will be directly in the include list
           if (this.includeFields.includes(id)) {
-            if (arrayIndex !== undefined) {
-              return this.generateArrayField(Field, id, initialValue, arrayIndex, label, description, rest);
-            } else {
-              return this.generateSingleField(Field, id, initialValue, label, description, rest);
-            }
+            return (
+              <InputFormField
+                Field={Field}
+                id={id}
+                key={arrayIndex !== undefined ? id + arrayIndex : id}
+                initialValue={initialValue}
+                arrayIndex={arrayIndex}
+                label={label}
+                description={description}
+                formData={this.formData}
+                setFormData={this.setFormData}
+                updatedDict={this.updatedDict}
+                setUpdatedDict={this.setUpdatedDict}
+                handleSave={this.handleSave}
+                {...rest}
+              />
+            );
           } else {
             // This field should not be rendered to the page if it is not in the include list
             return null;
@@ -187,108 +219,6 @@ class FormGenerator {
       // The field is not included in the list
       return null;
     }
-  };
-
-  // Generates an input of type Field with the specified id and initial value
-  generateSingleField(Field: ComponentType<InputFieldProps>, id: string, initialValue: any,
-    label?: string, description?: string, rest: any): Element<typeof Input> {
-    return (
-      <Input
-        Type={Field}
-        id={id}
-        key={id}
-        initialValue={initialValue}
-        updated={this.updatedDict[id]}
-        label={label}
-        description={description}
-        onUpdate={
-          (newValue) => {
-            // Overwrite the new value in the form data and use the hook setter
-            let newData = {[id]: newValue};
-
-            // Set the updated state for the field to true on update
-            let newUpdatedState = {[id]: true};
-            this.setUpdatedDict(prevDict => {
-              console.log(newUpdatedState, prevDict)
-              return {...prevDict, ...newUpdatedState};
-            });
-
-            this.setFormData(prevData => {
-              return {...prevData, ...newData};
-            });
-          }
-        }
-        handleSave={
-          () => {
-            let newData = {[id]: this.formData[id]};
-
-            // Remove the updated key on save
-            const {[id]: tmp, ...rest} = this.updatedDict;
-            this.setUpdatedDict(rest);
-
-            this.handleSave(newData);
-          }
-        }
-        {...rest}
-      />);
-  };
-
-  // Generates a single input of type Field that sits at the specified index within an array of inputs
-  generateArrayField(Field: ComponentType<InputFieldProps>, id: string, initialValue: any,
-    arrayIndex: number, label?: string, description?: string, rest: any): Element<typeof Input> {
-    // If the input exists in an array, use the id with the index appended as a unique id
-    let indexId = id + "-" + arrayIndex;
-    return (
-      <Input
-        Type={Field}
-        id={indexId}
-        key={indexId}
-        initialValue={initialValue}
-        updated={this.updatedDict[indexId]}
-        label={label}
-        description={description}
-        onUpdate={
-          (newValue) => {
-            // Overwrite the new value in the correct array data index
-            if (this.formData[id] === undefined) {
-              this.formData[id] = [];
-            }
-            let arrayData = this.formData[id];
-
-            if (arrayIndex < arrayData.length) {
-              arrayData[arrayIndex] = newValue;
-            } else {
-              // If the earlier elements in the array have no values yet, set them to null
-              for (let i = arrayData.length; i < arrayIndex; i++) {
-                arrayData.push(null);
-              }
-              arrayData.push(newValue); // pushes at the correct index for this field
-            }
-
-            // Set the updated state for the field to true on update
-            let newUpdatedState = {[indexId]: true};
-            this.setUpdatedDict(prevDict => {
-              return {...prevDict, ...newUpdatedState}
-            });
-
-            this.setFormData(prevData => {
-              return {...prevData, ...{[id]: arrayData}};
-            });
-          }
-        }
-        handleSave={
-          () => {
-            let newData = {[id]: this.formData[id]};
-
-            // Remove the updated key on save
-            const {[indexId]: tmp, ...rest} = this.updatedDict;
-            this.setUpdatedDict(rest);
-
-            this.handleSave(newData);
-          }
-        }
-        {...rest}
-      />);
   };
 }
 

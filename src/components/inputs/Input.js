@@ -32,7 +32,7 @@ export type InputWrapperProps = {
 
 export default function Input(props: InputWrapperProps) {
   let {Type, id, initialValue, label, description, updated, onUpdate, handleSave, ...rest} = props;
-  console.log(updated)
+
   return(
     <Form.Group id={id + "-GROUP"}>
       {label !== undefined &&
