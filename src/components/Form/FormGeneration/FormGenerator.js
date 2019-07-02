@@ -18,26 +18,6 @@ export type FieldsType = {
   rest?: Array<any>
 }
 
-type FormHandlerProps = {
-  formData: {[key: string]: any},
-  setFormData: ({[key: string]: any}) => void,
-  updatedDict: {[key: string]: any},
-  setUpdatedDict: ({[key: string]: any}) => void,
-  handleSave: Function
-}
-
-type FormGeneratorProps = {
-  ...FormHandlerProps,
-  includeFields: Array<string>,
-  fields: FieldsType
-}
-
-// export default function FormGenerator(props: FormGeneratorProps) {
-//   let {formData, setFormData, updatedDict, setUpdatedDict, handleSave, includeFields, fields} = props;
-
-
-// }
-
 class FormGenerator {
   formData: {[key: string]: any};
   setFormData: ({[key: string]: any}) => void;
@@ -87,18 +67,19 @@ class FormGenerator {
           
           // Only standalone fields will be directly in the include list
           if (this.includeFields.includes(id)) {
+            let displayId = arrayIndex !== undefined ? id + + "-" + arrayIndex : id;
             return (
               <InputFormField
                 Field={Field}
-                id={id}
-                key={arrayIndex !== undefined ? id + arrayIndex : id}
+                id={displayId}
+                key={displayId}
                 initialValue={initialValue}
                 arrayIndex={arrayIndex}
                 label={label}
                 description={description}
                 formData={this.formData}
                 setFormData={this.setFormData}
-                updatedDict={this.updatedDict}
+                updated={this.updatedDict[displayId]}
                 setUpdatedDict={this.setUpdatedDict}
                 handleSave={this.handleSave}
                 {...rest}

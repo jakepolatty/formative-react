@@ -18,14 +18,14 @@ type FieldProps = {
   ...InputProps,
   formData: {[key: string]: any},
   setFormData: ({[key: string]: any}) => void,
-  updatedDict: {[key: string]: any},
+  updated: boolean,
   setUpdatedDict: ({[key: string]: any}) => void,
   handleSave: Function
 }
 
 export default function InputFormField(props: FieldProps) {
   let {Field, id, initialValue, arrayIndex, label, description,
-    formData, setFormData, updatedDict, setUpdatedDict, handleSave, ...rest} = props;
+    formData, setFormData, updated, setUpdatedDict, handleSave, ...rest} = props;
 
   if (arrayIndex !== undefined) {
     let indexId = id + "-" + arrayIndex;
@@ -34,7 +34,7 @@ export default function InputFormField(props: FieldProps) {
         Type={Field}
         id={indexId}
         initialValue={initialValue}
-        updated={updatedDict !== undefined ? updatedDict[indexId] : false}
+        updated={updated !== undefined ? updated : false}
         label={label}
         description={description}
         onUpdate={
@@ -71,8 +71,10 @@ export default function InputFormField(props: FieldProps) {
             let newData = {[id]: formData[id]};
 
             // Remove the updated key on save
-            const {[indexId]: tmp, ...rest} = updatedDict;
-            setUpdatedDict(rest);
+            setUpdatedDict(prevDict => {
+               const {[indexId]: tmp, ...rest} = prevDict;
+               return {...rest};
+            });
 
             handleSave(newData);
           }
@@ -85,7 +87,7 @@ export default function InputFormField(props: FieldProps) {
         Type={Field}
         id={id}
         initialValue={initialValue}
-        updated={updatedDict !== undefined ? updatedDict[id] : false}
+        updated={updated !== undefined ? updated : false}
         label={label}
         description={description}
         onUpdate={
@@ -109,8 +111,10 @@ export default function InputFormField(props: FieldProps) {
             let newData = {[id]: formData[id]};
 
             // Remove the updated key on save
-            const {[id]: tmp, ...rest} = updatedDict;
-            setUpdatedDict(rest);
+            setUpdatedDict(prevDict => {
+               const {[id]: tmp, ...rest} = prevDict;
+               return {...rest};
+            });
 
             handleSave(newData);
           }

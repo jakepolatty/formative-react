@@ -48,7 +48,7 @@ export default function Form(props: FormProps): Element<'div'> {
 
   // When either the schema or the form data updates, reload the form
   useEffect(() => {
-    setGeneratedForm(generator.generateForm(parsedSchema, updatedDict, setUpdatedDict));
+    setGeneratedForm(generator.generateForm(parsedSchema));
   }, [parsedSchema, externalData, updatedDict]);
 
   const saveForm = () => {
