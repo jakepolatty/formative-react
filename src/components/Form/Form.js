@@ -1,7 +1,8 @@
 // @flow
 import React, {useState, useEffect} from 'react';
 import type {ComponentType, Element, Node} from 'react';
-import FormGenerator from '../../utils/FormGenerator.js';
+import FormGenerator from './FormGeneration/FormGenerator.js';
+import type {FieldsType} from './FormGeneration/FormGenerator.js'
 import SchemaParser from '../../utils/SchemaParser.js';
 import Button from 'react-bootstrap/Button';
 
@@ -17,9 +18,13 @@ type FormProps = {
 export default function Form(props: FormProps): Element<'div'> {
   let {schema, uiSchema, externalData, schemaID, includeFields, handleSave} = props;
 
+  const [parsedSchema: ?FieldsType, setParsedSchema] = useState({});
   const [formData: ?{[key: string]: any}, setFormData] = useState({});
   const [updatedDict: ?{[key: string]: any}, setUpdatedDict] = useState({});
   const [generatedForm, setGeneratedForm] = useState(null);
+
+  let generator = new FormGenerator(formData, setFormData, updatedDict, setUpdatedDict,
+    includeFields, handleSave);
 
   // When a new schema is passed in, parse it to reload the form
   useEffect(() => {
@@ -27,9 +32,7 @@ export default function Form(props: FormProps): Element<'div'> {
       if (err) {
         console.error(err);
       } else {
-        let generator = new FormGenerator(formData, setFormData, updatedDict, setUpdatedDict,
-          includeFields, handleSave);
-        setGeneratedForm(generator.generateForm(parsed));
+        setParsedSchema(parsed);
       }
     });
   }, [schema, uiSchema, schemaID]);
@@ -42,6 +45,11 @@ export default function Form(props: FormProps): Element<'div'> {
       setFormData(externalData);
     }
   }, [externalData]);
+
+  // When either the schema or the form data updates, reload the form
+  useEffect(() => {
+    setGeneratedForm(generator.generateForm(parsedSchema));
+  }, [parsedSchema, externalData]);
 
   const saveForm = () => {
     setUpdatedDict({});

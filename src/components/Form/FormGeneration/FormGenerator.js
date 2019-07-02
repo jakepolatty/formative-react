@@ -1,30 +1,34 @@
-
+// @flow
 import React from 'react';
 import type {ComponentType, Element, Node} from 'react';
-import reactInputMap from './reactInputMap.js';
-import Input from '../components/inputs/Input';
-import type {InputFieldProps} from '../components/inputs/Input';
+import reactInputMap from '../../../utils/reactInputMap.js';
+import Input from '../../inputs/Input';
+import type {InputFieldProps} from '../../inputs/Input';
 
-type FieldsType = ?{
-  type: React.ComponentType<InputFieldProps>,
+export type FieldsType = {
+  type: string,
   id: string,
   defaultValue: any,
   arrayIndex?: number,
   label?: string,
   description?: string,
+  groupType?: string,
+  minItems?: number,
+  items?: Array<any>,
+  itemFormat?: any,
   rest?: Array<any>
 }
 
 class FormGenerator {
-  formData: ?{[key: string]: any};
-  setFormData: (?{[key: string]: any}) => void;
-  updatedDict: ?{[key: string]: any};
-  setUpdatedDict: (?{[key: string]: any}) => void;
+  formData: {[key: string]: any};
+  setFormData: ({[key: string]: any}) => void;
+  updatedDict: {[key: string]: any};
+  setUpdatedDict: ({[key: string]: any}) => void;
   includeFields: Array<string>;
   handleSave: Function;
 
-  constructor(formData: ?{[key: string]: any}, setFormData: (?{[key: string]: any}) => void,
-    updatedDict: ?{[key: string]: any}, setUpdatedDict: (?{[key: string]: any}) => void,
+  constructor(formData: {[key: string]: any}, setFormData: ({[key: string]: any}) => void,
+    updatedDict: {[key: string]: any}, setUpdatedDict: ({[key: string]: any}) => void,
     includeFields: Array<string>, handleSave: Function) {
     this.formData = formData;
     this.setFormData = setFormData;
@@ -35,7 +39,7 @@ class FormGenerator {
   }
 
   // Generates the React component heirarchy for the form from the parsed schema
-  generateForm(fields?: FieldsType): ?Node {
+  generateForm(fields: FieldsType | {[key: string]: any}): ?Node {
     if (fields !== undefined && fields !== null) {
       if (fields.type === "InputGroup") {
         if (fields.items !== undefined && fields.items !== null) {
@@ -87,35 +91,38 @@ class FormGenerator {
   generateInputList(fields: FieldsType): ?Element<'div'> {
     // The specific list of items has been provided
     let hasVisibleChild = false;
-    let itemGroup = (
-      <div id={fields.id} key={fields.id}>
-        {fields.label !== undefined &&
-          <h2 id={fields.id + "-LABEL"}>{fields.label}</h2>}
-        <div id={fields.id+"-INPUTS"}>
-          {fields.items.map((field, i) => {
-            // If initial values have been passed in with the form data, overwrite the field object
-            if (this.formData[fields.id] !== undefined &&
-              Array.isArray(this.formData[fields.id]) && i < this.formData[fields.id].length) {
-              field.defaultValue = this.formData[fields.id][i];
-            }
-            // If the input group is of type array, add the array index for update handling
-            if (fields.groupType === "array") {
-              field.arrayIndex = i;
-            }
-            
-            // If a child is visible, indicate that the group should be shown
-            let child = this.generateForm(field);
-            if (child !== null) {
-              hasVisibleChild = true;
-            }
+    let itemGroup;
+    if (fields.items !== null && fields.items !== undefined) {
+      itemGroup = (
+        <div id={fields.id} key={fields.id}>
+          {fields.label !== undefined &&
+            <h2 id={fields.id + "-LABEL"}>{fields.label}</h2>}
+          <div id={fields.id+"-INPUTS"}>
+            {fields.items.map((field, i) => {
+              // If initial values have been passed in with the form data, overwrite the field object
+              if (this.formData[fields.id] !== undefined &&
+                Array.isArray(this.formData[fields.id]) && i < this.formData[fields.id].length) {
+                field.defaultValue = this.formData[fields.id][i];
+              }
+              // If the input group is of type array, add the array index for update handling
+              if (fields.groupType === "array") {
+                field.arrayIndex = i;
+              }
+              
+              // If a child is visible, indicate that the group should be shown
+              let child = this.generateForm(field);
+              if (child !== null) {
+                hasVisibleChild = true;
+              }
 
-            return child;
-          })}
+              return child;
+            })}
+          </div>
+          {fields.description !== undefined &&
+            <p id={fields.id + "-DESCRIPTION"}>{fields.description}</p>}
         </div>
-        {fields.description !== undefined &&
-          <p id={fields.id + "-DESCRIPTION"}>{fields.description}</p>}
-      </div>
-    );
+      );
+    }
 
     // Only show the input group if it has a child to display
     if (hasVisibleChild) {
@@ -157,15 +164,19 @@ class FormGenerator {
             {[...Array(listLength)].map((_, i) => {
               // For each element within the computed list length, check whether it has an initial value
               let format = fields.itemFormat;
-              format.arrayIndex = i;
-              if (i < valueCount) {
-                format.defaultValue = this.formData[fields.id][i];
-              } else if (i < defaultsCount) {
-                format.defaultValue = fields.defaultValue[i];
+              if (format !== null && format !== undefined) {
+                format.arrayIndex = i;
+                if (i < valueCount) {
+                  format.defaultValue = this.formData[fields.id][i];
+                } else if (i < defaultsCount) {
+                  format.defaultValue = fields.defaultValue[i];
+                } else {
+                  format.defaultValue = undefined;
+                }
+                return this.generateForm(format);
               } else {
-                format.defaultValue = undefined;
+                return null;
               }
-              return this.generateForm(format);
             })}
           </div>
           {fields.description !== undefined &&
@@ -180,7 +191,7 @@ class FormGenerator {
 
   // Generates an input of type Field with the specified id and initial value
   generateSingleField(Field: ComponentType<InputFieldProps>, id: string, initialValue: any,
-    label?: string, description?: string, rest): Element<typeof Input> {
+    label?: string, description?: string, rest: any): Element<typeof Input> {
     return (
       <Input
         Type={Field}
@@ -198,6 +209,7 @@ class FormGenerator {
             // Set the updated state for the field to true on update
             let newUpdatedState = {[id]: true};
             this.setUpdatedDict(prevDict => {
+              console.log(newUpdatedState, prevDict)
               return {...prevDict, ...newUpdatedState};
             });
 
@@ -223,7 +235,7 @@ class FormGenerator {
 
   // Generates a single input of type Field that sits at the specified index within an array of inputs
   generateArrayField(Field: ComponentType<InputFieldProps>, id: string, initialValue: any,
-    arrayIndex: number, label?: string, description?: string, rest): Element<typeof Input> {
+    arrayIndex: number, label?: string, description?: string, rest: any): Element<typeof Input> {
     // If the input exists in an array, use the id with the index appended as a unique id
     let indexId = id + "-" + arrayIndex;
     return (
