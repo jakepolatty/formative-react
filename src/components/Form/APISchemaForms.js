@@ -3,11 +3,16 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import Form from './Form';
 
+type SchemaType = {
+  "schema": string,
+  "include": Array<string>
+}
+
 export type FormsProps = {
   schemaEndpoint: string,
-  schemas: {[schema: string]: any},
+  schemas: {[schema: string]: SchemaType},
   dataApiEndpoint: string,
-  uiSchema: {[key: string]: any},
+  uiSchema: {[key: string]: any}
 };
 
 export default function APISchemaForms(props: FormsProps) {

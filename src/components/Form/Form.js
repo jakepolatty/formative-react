@@ -1,4 +1,4 @@
-// @flow
+
 import React, {useState, useEffect} from 'react';
 import type {ComponentType, Element, Node} from 'react';
 import SchemaParser from '../../utils/SchemaParser.js';
@@ -19,9 +19,9 @@ type FormProps = {
 export default function Form(props: FormProps): Element<'div'> {
   let {schema, uiSchema, externalData, schemaID, includeFields, handleSave} = props;
 
-  const [parsedSchema, setParsedSchema] = useState({});
-  const [formData, setFormData] = useState({});
-  const [updatedDict, setUpdatedDict] = useState({});
+  const [parsedSchema: ?{[key: string]: any}, setParsedSchema] = useState({});
+  const [formData: ?{[key: string]: any}, setFormData] = useState({});
+  const [updatedDict: ?{[key: string]: any}, setUpdatedDict] = useState({});
 
   // When a new schema is passed in, parse it to reload the form
   useEffect(() => {
