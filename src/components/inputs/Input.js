@@ -1,11 +1,13 @@
 // @flow
-import React, {useEffect, useContext, useMemo} from 'react';
+import React, {useContext, useMemo} from 'react';
 import type {ComponentType} from 'react';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip'
 import Form from 'react-bootstrap/Form';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faCheck} from '@fortawesome/free-solid-svg-icons';
+import {faCheck, faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import {UpdatedContext} from '../Form/Form.js';
 
 /**
@@ -27,12 +29,13 @@ export type InputWrapperProps = {
   initialValue: any,
   label?: string,
   description?: string,
+  info?: string,
   onUpdate: Function,
   onSave: Function
 };
 
 export default function Input(props: InputWrapperProps) {
-  let {Type, id, initialValue, label, description, onUpdate, onSave, ...rest} = props;
+  let {Type, id, initialValue, label, description, info, onUpdate, onSave, ...rest} = props;
 
   const {updatedDict, dispatch} = useContext(UpdatedContext);
 
@@ -48,11 +51,29 @@ export default function Input(props: InputWrapperProps) {
     onSave();
   }
 
+  let currentUpdated = updatedDict[id];
+
   return useMemo(() => (
     <Form.Group id={id + "-GROUP"}>
       {label !== undefined &&
         <Form.Label id={id + "-LABEL"}>{label}</Form.Label>}
       <InputGroup>
+        {info !== undefined &&
+          <InputGroup.Prepend>
+            <OverlayTrigger
+              trigger={['hover', 'focus']}
+              overlay={
+                <Tooltip>
+                  {info}
+                </Tooltip>
+              }
+            >
+              <Button
+                variant="primary">
+                <FontAwesomeIcon icon={faInfoCircle}/>
+              </Button>
+            </OverlayTrigger>
+          </InputGroup.Prepend>}
         <Type
           id={id}
           name={id}
@@ -62,8 +83,8 @@ export default function Input(props: InputWrapperProps) {
         />
         <InputGroup.Append>
           <Button
-            variant={updatedDict[id] ? "outline-success" : "outline-light"}
-            disabled={!updatedDict[id]}
+            variant={currentUpdated ? "outline-success" : "outline-light"}
+            disabled={!currentUpdated}
             onClick={onSave !== undefined ? () => handleSave() : undefined}
           >
             <FontAwesomeIcon icon={faCheck}/>
@@ -73,5 +94,5 @@ export default function Input(props: InputWrapperProps) {
       {description !== undefined &&
         <Form.Text id={id + "-DESCRIPTION"}>{description}</Form.Text>}
     </Form.Group>
-  ), [updatedDict[id]]);
+  ), [currentUpdated]);
 }

@@ -1,6 +1,6 @@
 // @flow
 import React, {useState, useEffect, useReducer} from 'react';
-import type {ComponentType, Element, Node} from 'react';
+import type {Element} from 'react';
 import FormGenerator from './FormGeneration/FormGenerator.js';
 import type {FieldsType} from './FormGeneration/FormGenerator.js'
 import SchemaParser from '../../utils/SchemaParser.js';
@@ -32,8 +32,9 @@ function updateReducer(dict: {[key: string]: any}, {type, payload}: ReducerActio
     case "save-field":
       const {[payload]: _, ...rest} = dict;
       return rest;
+    default:
+      return dict;
   }
-  return dict;
 }
 
 

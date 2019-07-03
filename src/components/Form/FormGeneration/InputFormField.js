@@ -1,6 +1,6 @@
 // @flow
-import * as React from 'react';
-import type {ComponentType, Element, Node} from 'react';
+import React from 'react';
+import type {ComponentType} from 'react';
 import Input from '../../inputs/Input';
 import type {InputFieldProps} from '../../inputs/Input';
 
@@ -11,6 +11,7 @@ type InputProps = {
   arrayIndex?: number,
   label?: string,
   description?: string,
+  info?: string,
   rest?: any
 };
 
@@ -21,7 +22,8 @@ type FieldProps = {
 }
 
 export default function InputFormField(props: FieldProps) {
-  let {Field, id, initialValue, arrayIndex, label, description, setFormData, handleSave, ...rest} = props;
+  let {Field, id, initialValue, arrayIndex, label, description, info,
+    setFormData, handleSave, ...rest} = props;
   
   if (id !== undefined && Field !== undefined) {
     if (arrayIndex !== undefined) {
@@ -33,6 +35,7 @@ export default function InputFormField(props: FieldProps) {
           initialValue={initialValue}
           label={label}
           description={description}
+          info={info}
           onUpdate={
             (newValue) => {
               setFormData(prevData => {
@@ -70,6 +73,7 @@ export default function InputFormField(props: FieldProps) {
           initialValue={initialValue}
           label={label}
           description={description}
+          info={info}
           onUpdate={
             (newValue) => {
               // Overwrite the new value in the form data and use the hook setter

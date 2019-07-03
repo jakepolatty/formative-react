@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import type {ComponentType, Element, Node} from 'react';
+import type {Element, Node} from 'react';
 import reactInputMap from '../../../utils/reactInputMap.js';
 import InputFormField from './InputFormField';
 
@@ -11,6 +11,7 @@ export type FieldsType = {
   arrayIndex?: number,
   label?: string,
   description?: string,
+  info?: string,
   groupType?: string,
   minItems?: number,
   items?: Array<any>,
@@ -48,7 +49,7 @@ class FormGenerator {
         const Field = reactInputMap[fields.type];
         if (Field !== undefined) {
           // At this point the fields argument is at the level of a single field that can be rendered
-          const {type, id, defaultValue, arrayIndex, label, description, ...rest} = fields;
+          const {type, id, defaultValue, arrayIndex, label, description, info, ...rest} = fields;
           
           // If the form data contains this field, overwrite the default value
           // Otherwise pass in the default if there is one
@@ -71,6 +72,7 @@ class FormGenerator {
                 arrayIndex={arrayIndex}
                 label={label}
                 description={description}
+                info={info}
                 setFormData={this.setFormData}
                 handleSave={this.handleSave}
                 {...rest}
