@@ -23,6 +23,9 @@ function updateReducer(dict, {type, payload}) {
       return {};
     case "update":
       return {...dict, [payload]: true};
+    case "save-field":
+      const {[payload]: _, ...rest} = dict;
+      return rest;
   }
   return dict;
 }

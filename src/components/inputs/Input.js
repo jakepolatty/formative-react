@@ -43,7 +43,7 @@ export default function Input(props: InputWrapperProps) {
   }
 
   const handleSave = () => {
-    dispatch({type: "reset"});
+    dispatch({type: "save-field", payload: id});
     onSave();
   }
 
