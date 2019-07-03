@@ -6,18 +6,24 @@ import type {FieldsType} from './FormGeneration/FormGenerator.js'
 import SchemaParser from '../../utils/SchemaParser.js';
 import Button from 'react-bootstrap/Button';
 
-type FormProps = {
-  schema: {[key: string]: any} | null,
-  uiSchema: {[key: string]: any} | null,
-  externalData: {[key: string]: any} | null,
-  schemaID: string,
-  includeFields: Array<string>,
-  handleSave: ({[key: string]: any}) => void
-};
 
-export const UpdatedContext = React.createContext(null);
+// Updated context type and definition
+type UpdatedContextType = {
+  updatedDict: {[key: string]: any},
+  dispatch: Function
+}
 
-function updateReducer(dict, {type, payload}) {
+export const UpdatedContext = React.createContext<UpdatedContextType>(
+  {updatedDict: {}, dispatch: () => {return null}});
+
+
+// Updated dictionary reducer
+type ReducerActionType = {
+  type: string,
+  payload: string
+}
+
+function updateReducer(dict: {[key: string]: any}, {type, payload}: ReducerActionType) {
   switch (type) {
     case "reset":
       return {};
@@ -29,6 +35,16 @@ function updateReducer(dict, {type, payload}) {
   }
   return dict;
 }
+
+
+type FormProps = {
+  schema: {[key: string]: any} | null,
+  uiSchema: {[key: string]: any} | null,
+  externalData: {[key: string]: any} | null,
+  schemaID: string,
+  includeFields: Array<string>,
+  handleSave: ({[key: string]: any}) => void
+};
 
 export default function Form(props: FormProps): Element<'div'> {
   let {schema, uiSchema, externalData, schemaID, includeFields, handleSave} = props;
@@ -64,7 +80,7 @@ export default function Form(props: FormProps): Element<'div'> {
   }, [parsedSchema, externalData]);
 
   const saveForm = () => {
-    dispatch({type: "reset"});
+    dispatch({type: "reset", payload: ""});
     handleSave(formData);
   };
 

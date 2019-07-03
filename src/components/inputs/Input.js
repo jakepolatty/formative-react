@@ -1,5 +1,6 @@
 // @flow
 import React, {useEffect, useContext, useMemo} from 'react';
+import type {ComponentType} from 'react';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
@@ -21,7 +22,7 @@ export type InputFieldProps = {
 }
 
 export type InputWrapperProps = {
-  Type: React.ComponentType<InputFieldProps>,
+  Type: ComponentType<InputFieldProps>,
   id: string,
   initialValue: any,
   label?: string,
