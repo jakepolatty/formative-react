@@ -21,18 +21,13 @@ export type FieldsType = {
 class FormGenerator {
   formData: {[key: string]: any};
   setFormData: ({[key: string]: any}) => void;
-  updatedDict: {[key: string]: any};
-  setUpdatedDict: ({[key: string]: any}) => void;
   includeFields: Array<string>;
   handleSave: Function;
 
   constructor(formData: {[key: string]: any}, setFormData: ({[key: string]: any}) => void,
-    updatedDict: {[key: string]: any}, setUpdatedDict: ({[key: string]: any}) => void,
     includeFields: Array<string>, handleSave: Function) {
     this.formData = formData;
     this.setFormData = setFormData;
-    this.updatedDict = updatedDict;
-    this.setUpdatedDict = setUpdatedDict;
     this.includeFields = includeFields;
     this.handleSave = handleSave;
   }
@@ -77,10 +72,7 @@ class FormGenerator {
                 arrayIndex={arrayIndex}
                 label={label}
                 description={description}
-                formData={this.formData}
                 setFormData={this.setFormData}
-                updated={this.updatedDict[displayId]}
-                setUpdatedDict={this.setUpdatedDict}
                 handleSave={this.handleSave}
                 {...rest}
               />

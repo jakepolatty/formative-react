@@ -1,10 +1,11 @@
 // @flow
-import * as React from 'react';
+import React, {useEffect, useContext} from 'react';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCheck} from '@fortawesome/free-solid-svg-icons';
+import {UpdatedContext} from '../Form/Form.js';
 
 /**
  * All custom input fields must accept the following props:
@@ -25,14 +26,35 @@ export type InputWrapperProps = {
   initialValue: any,
   label?: string,
   description?: string,
-  updated: boolean,
   onUpdate: Function,
-  handleSave: Function
+  onSave: Function
 };
 
 export default function Input(props: InputWrapperProps) {
-  let {Type, id, initialValue, label, description, updated, onUpdate, handleSave, ...rest} = props;
-  
+  let {Type, id, initialValue, label, description, onUpdate, onSave, ...rest} = props;
+
+  const {updatedDict, setUpdatedDict} = useContext(UpdatedContext);
+
+  console.log("input")
+
+  const handleUpdate = (newValue) => {
+    if (!updatedDict[id]) {
+      let newUpdated = {[id]: true}
+      setUpdatedDict(prevDict => {
+        return {...prevDict, ...newUpdated}
+      });
+    }
+    onUpdate(newValue);
+  }
+
+  const handleSave = () => {
+    setUpdatedDict(prevDict => {
+      const {[id]: tmp, ...rest} = prevDict;
+      return rest;
+    });
+    onSave();
+  }
+
   return(
     <Form.Group id={id + "-GROUP"}>
       {label !== undefined &&
@@ -42,14 +64,14 @@ export default function Input(props: InputWrapperProps) {
           id={id}
           name={id}
           initialValue={initialValue}
-          onUpdate={onUpdate !== undefined ? (newValue) => onUpdate(newValue) : undefined}
+          onUpdate={onUpdate !== undefined ? (newValue) => handleUpdate(newValue) : undefined}
           {...rest}
         />
         <InputGroup.Append>
           <Button
-            variant={updated ? "outline-success" : "outline-light"}
-            disabled={!updated}
-            onClick={handleSave !== undefined ? () => handleSave() : undefined}
+            variant={updatedDict[id] ? "outline-success" : "outline-light"}
+            disabled={!updatedDict[id]}
+            onClick={onSave !== undefined ? () => handleSave() : undefined}
           >
             <FontAwesomeIcon icon={faCheck}/>
           </Button>

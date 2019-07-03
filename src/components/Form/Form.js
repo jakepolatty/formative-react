@@ -15,6 +15,8 @@ type FormProps = {
   handleSave: ({[key: string]: any}) => void
 };
 
+export const UpdatedContext = React.createContext(null);
+
 export default function Form(props: FormProps): Element<'div'> {
   let {schema, uiSchema, externalData, schemaID, includeFields, handleSave} = props;
 
@@ -22,9 +24,6 @@ export default function Form(props: FormProps): Element<'div'> {
   const [formData: ?{[key: string]: any}, setFormData] = useState({});
   const [updatedDict: ?{[key: string]: any}, setUpdatedDict] = useState({});
   const [generatedForm, setGeneratedForm] = useState(null);
-
-  let generator = new FormGenerator(formData, setFormData, updatedDict, setUpdatedDict,
-    includeFields, handleSave);
 
   // When a new schema is passed in, parse it to reload the form
   useEffect(() => {
@@ -49,16 +48,27 @@ export default function Form(props: FormProps): Element<'div'> {
   // When either the schema or the form data updates, reload the form
   useEffect(() => {
     setGeneratedForm(generator.generateForm(parsedSchema));
-  }, [parsedSchema, externalData, updatedDict]);
+  }, [parsedSchema, externalData]);
 
   const saveForm = () => {
     setUpdatedDict({});
     handleSave(formData);
   };
 
+  const saveField = (id) => {
+    setFormData(data => {
+      handleSave({[id]: data[id]});
+      return data;
+    });
+  }
+
+  let generator = new FormGenerator(formData, setFormData, includeFields, saveField);
+
   return (
     <div className={schemaID+"-FORM"}>
-      {generatedForm}
+      <UpdatedContext.Provider value={{updatedDict, setUpdatedDict}}>
+        {generatedForm}
+      </UpdatedContext.Provider>
       <Button
         variant={Object.entries(updatedDict).length === 0 ? "light" : "success"}
         disabled={Object.entries(updatedDict).length === 0}
