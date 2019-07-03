@@ -6,7 +6,8 @@ const sampleUISchema = {
   },
   comt: {
     project: {
-      info: "The project name"
+      info: "The project name",
+      "ui:component": "GeoBoundingBoxInput"
     },
     subproject: {
       "ui:component": "TextAreaInput",

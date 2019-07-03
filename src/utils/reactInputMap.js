@@ -1,4 +1,5 @@
 import CheckboxInput from '../components/inputs/CheckboxInput';
+import GeoBoundingBoxInput from '../components/inputs/GeoBoundingBoxInput';
 import HiddenInput from '../components/inputs/HiddenInput';
 import NumberInput from '../components/inputs/NumberInput';
 import NumberSliderInput from '../components/inputs/NumberSliderInput';
@@ -9,6 +10,7 @@ import TextInput from '../components/inputs/TextInput';
 
 const reactInputMap = {
   CheckboxInput: CheckboxInput,
+  GeoBoundingBoxInput: GeoBoundingBoxInput,
   HiddenInput: HiddenInput,
   NumberInput: NumberInput,
   NumberSliderInput: NumberSliderInput,
