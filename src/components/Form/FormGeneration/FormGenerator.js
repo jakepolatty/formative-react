@@ -34,7 +34,6 @@ class FormGenerator {
 
   // Generates the React component heirarchy for the form from the parsed schema
   generateForm(fields: FieldsType | {[key: string]: any}): ?Node {
-    console.log("test")
     if (fields !== undefined && fields !== null) {
       if (fields.type === "InputGroup") {
         if (fields.items !== undefined && fields.items !== null) {

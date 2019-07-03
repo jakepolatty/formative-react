@@ -1,5 +1,5 @@
 // @flow
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useReducer} from 'react';
 import type {ComponentType, Element, Node} from 'react';
 import FormGenerator from './FormGeneration/FormGenerator.js';
 import type {FieldsType} from './FormGeneration/FormGenerator.js'
@@ -17,12 +17,22 @@ type FormProps = {
 
 export const UpdatedContext = React.createContext(null);
 
+function updateReducer(dict, {type, payload}) {
+  switch (type) {
+    case "reset":
+      return {};
+    case "update":
+      return {...dict, [payload]: true};
+  }
+  return dict;
+}
+
 export default function Form(props: FormProps): Element<'div'> {
   let {schema, uiSchema, externalData, schemaID, includeFields, handleSave} = props;
 
   const [parsedSchema: ?FieldsType, setParsedSchema] = useState({});
   const [formData: ?{[key: string]: any}, setFormData] = useState({});
-  const [updatedDict: ?{[key: string]: any}, setUpdatedDict] = useState({});
+  const [updatedDict: ?{[key: string]: any}, dispatch] = useReducer(updateReducer, {});
   const [generatedForm, setGeneratedForm] = useState(null);
 
   // When a new schema is passed in, parse it to reload the form
@@ -51,7 +61,7 @@ export default function Form(props: FormProps): Element<'div'> {
   }, [parsedSchema, externalData]);
 
   const saveForm = () => {
-    setUpdatedDict({});
+    dispatch({type: "reset"});
     handleSave(formData);
   };
 
@@ -66,7 +76,7 @@ export default function Form(props: FormProps): Element<'div'> {
 
   return (
     <div className={schemaID+"-FORM"}>
-      <UpdatedContext.Provider value={{updatedDict, setUpdatedDict}}>
+      <UpdatedContext.Provider value={{updatedDict, dispatch}}>
         {generatedForm}
       </UpdatedContext.Provider>
       <Button

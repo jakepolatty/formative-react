@@ -1,5 +1,5 @@
 // @flow
-import React, {useEffect, useContext} from 'react';
+import React, {useEffect, useContext, useMemo} from 'react';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
@@ -33,29 +33,21 @@ export type InputWrapperProps = {
 export default function Input(props: InputWrapperProps) {
   let {Type, id, initialValue, label, description, onUpdate, onSave, ...rest} = props;
 
-  const {updatedDict, setUpdatedDict} = useContext(UpdatedContext);
-
-  console.log("input")
+  const {updatedDict, dispatch} = useContext(UpdatedContext);
 
   const handleUpdate = (newValue) => {
     if (!updatedDict[id]) {
-      let newUpdated = {[id]: true}
-      setUpdatedDict(prevDict => {
-        return {...prevDict, ...newUpdated}
-      });
+      dispatch({type: "update", payload: id});
     }
     onUpdate(newValue);
   }
 
   const handleSave = () => {
-    setUpdatedDict(prevDict => {
-      const {[id]: tmp, ...rest} = prevDict;
-      return rest;
-    });
+    dispatch({type: "reset"});
     onSave();
   }
 
-  return(
+  return useMemo(() => (
     <Form.Group id={id + "-GROUP"}>
       {label !== undefined &&
         <Form.Label id={id + "-LABEL"}>{label}</Form.Label>}
@@ -80,5 +72,5 @@ export default function Input(props: InputWrapperProps) {
       {description !== undefined &&
         <Form.Text id={id + "-DESCRIPTION"}>{description}</Form.Text>}
     </Form.Group>
-  );
+  ), [updatedDict[id]]);
 }
