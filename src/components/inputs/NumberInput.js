@@ -19,7 +19,9 @@ export default function NumberInput(props: Props) {
       setIsInvalid(true);
     } else {
       setIsInvalid(false);
-      onUpdate(parsedNum);
+      if (onUpdate !== undefined) {
+        onUpdate(parsedNum);
+      }
     }
   };
 
@@ -32,8 +34,7 @@ export default function NumberInput(props: Props) {
         defaultValue={initialValue}
         step={step !== undefined ? step : "any"}
         isInvalid={isInvalid}
-        onChange={onUpdate !== undefined ? 
-          (event) => handleChange(event.target.value) : undefined}
+        onChange={(event) => handleChange(event.target.value)}
       />
     </div>
 	);

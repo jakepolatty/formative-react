@@ -13,16 +13,17 @@ export default function GeoBoundingBoxInput(props: StringInputProps) {
   let matchArray = initialValue.match(coordsRegex);
   if (initialValue !== undefined && matchArray !== null) {
     // match format: ["(lon1, lat1), (lon2, lat2)", lon1, _, lat1, _, lon2, _, lat2, _]
-    initialVals = {lon1: matchArray[1], lat1: matchArray[3], lon2: matchArray[5], lat2: matchArray[7]};
+    initialVals = {lon1: Number(matchArray[1]), lat1: Number(matchArray[3]),
+      lon2: Number(matchArray[5]), lat2: Number(matchArray[7])};
   }
   const [vals, setVals] = useState(initialVals);
  
-  const handleUpdate = (newValue: string, key: string) => {
+  const handleUpdate = (newValue: number, key: string) => {
     setVals(prevVals => {
       let newVal = {[key]: newValue.toString()};
       let valsDict = {...prevVals, ...newVal};
       onUpdate(outputString(valsDict));
-      return {...prevVals, ...newVal};
+      return valsDict;
     });
   };
 
