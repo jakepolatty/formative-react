@@ -3,11 +3,16 @@ import React, {useState} from 'react';
 import Form from 'react-bootstrap/Form';
 import type {NumberInputProps} from '../../utils/inputFlowTypes.js';
 
-export default function NumberInput(props: NumberInputProps) {
-  let {id, initialValue, onUpdate} = props;
+type Props = {
+  ...NumberInputProps,
+  step?: number
+}
 
-  const [isInvalid, setIsInvalid] = useState(Number.isNaN(Number(initialValue)));
- 
+export default function NumberInput(props: Props) {
+  let {id, initialValue, onUpdate, step} = props;
+
+  const [isInvalid, setIsInvalid] = useState(false);
+
   const handleChange = (newValue: string) => {
     let parsedNum = Number(newValue);
     if (Number.isNaN(parsedNum) || newValue === "") {
@@ -25,13 +30,11 @@ export default function NumberInput(props: NumberInputProps) {
         name={id}
         type="number"
         defaultValue={initialValue}
+        step={step !== undefined ? step : "any"}
+        isInvalid={isInvalid}
         onChange={onUpdate !== undefined ? 
           (event) => handleChange(event.target.value) : undefined}
-        isInvalid={isInvalid}
       />
-      <Form.Control.Feedback type="invalid">
-        Please enter a number.
-      </Form.Control.Feedback>
     </div>
 	);
 }
