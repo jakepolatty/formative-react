@@ -59,7 +59,7 @@ export default function Form(props: FormProps): Element<'div'> {
   useEffect(() => {
     SchemaParser.parseSchemaWithUI(schema, uiSchema, schemaID, (parsed, err) => {
       if (err) {
-        console.error(err);
+        console.error("Malformatted JSON schema");
       } else {
         setParsedSchema(parsed);
       }

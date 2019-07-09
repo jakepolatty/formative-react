@@ -28,6 +28,8 @@ export default function APISchemaForms(props: FormsProps) {
         let schema = schemas[key].schema;
         return axios.get(schemaEndpoint + schema + ".json").then(res => {
           return {schemaObject: res.data, key: key, schema: schema};
+        }).catch(err => {
+          console.error(err);
         });
       }));
 
@@ -39,6 +41,8 @@ export default function APISchemaForms(props: FormsProps) {
       let formData = await Promise.all(uniqueSchemas.map((schema) => {
         return axios.get(dataApiEndpoint + schema + "/").then(res => {
           return {data: res.data, schema: schema};
+        }).catch(err => {
+           console.error(err);
         });
       }));
 
