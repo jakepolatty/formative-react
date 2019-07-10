@@ -50,7 +50,6 @@
     "@babel/cli": "^7.4.4",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
-    "babel-cli": "^6.26.0",
     "flow-bin": "^0.102.0"
   }
 }

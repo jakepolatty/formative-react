@@ -12,11 +12,12 @@ export type FormsProps = {
   schemaEndpoint: string,
   schemas: {[schema: string]: SchemaType},
   dataApiEndpoint: string,
-  uiSchema: {[key: string]: any}
+  uiSchema: {[key: string]: any},
+  onError: (string) => void
 };
 
 export default function APISchemaForms(props: FormsProps) {
-  let {schemaEndpoint, schemas, dataApiEndpoint, uiSchema} = props;
+  let {schemaEndpoint, schemas, dataApiEndpoint, uiSchema, onError} = props;
   const [schemaObject, setSchemaObject] = useState({});
   const [dataObject, setDataObject] = useState({});
 
@@ -29,7 +30,7 @@ export default function APISchemaForms(props: FormsProps) {
         return axios.get(schemaEndpoint + schema + ".json").then(res => {
           return {schemaObject: res.data, key: key, schema: schema};
         }).catch(err => {
-          console.error(err);
+          onError(err.message);
         });
       }));
 
@@ -42,7 +43,7 @@ export default function APISchemaForms(props: FormsProps) {
         return axios.get(dataApiEndpoint + schema + "/").then(res => {
           return {data: res.data, schema: schema};
         }).catch(err => {
-           console.error(err);
+          onError(err.message);
         });
       }));
 
@@ -70,10 +71,10 @@ export default function APISchemaForms(props: FormsProps) {
       if (res.data !== undefined && res.data !== null) {
         setDataObject(Object.assign(dataObject, {[schemaType]: res.data}));
       } else {
-        console.error("There was a problem saving the data to the server.");
+        onError("There was a problem saving the data to the server.");
       }
     }).catch(err => {
-      console.error(err);
+      onError(err.message);
     });
   };
 

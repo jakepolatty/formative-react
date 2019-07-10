@@ -10,10 +10,11 @@ type FormPageProps = {
   schemas: {[schema: string]: any},
   dataApiEndpoint: string,
   uiSchema: {[key: string]: any},
+  onError: (string) => void
 };
 
 export default function FormPage(props: FormPageProps) {
-  let {pageName, schemaEndpoint, schemas, dataApiEndpoint, uiSchema} = props;
+  let {pageName, schemaEndpoint, schemas, dataApiEndpoint, uiSchema, onError} = props;
 
   return (
     <div id={pageName}>
@@ -22,6 +23,7 @@ export default function FormPage(props: FormPageProps) {
         schemas={schemas}
         dataApiEndpoint={dataApiEndpoint}
         uiSchema={uiSchema}
+        onError={onError}
       />
     </div>
   );

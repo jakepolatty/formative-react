@@ -44,7 +44,8 @@ type FormProps = {
   externalData: {[key: string]: any} | null,
   schemaID: string,
   includeFields: Array<string>,
-  handleSave: ({[key: string]: any}) => void
+  handleSave: ({[key: string]: any}) => void,
+  onError: (string) => void
 };
 
 export default function Form(props: FormProps): Element<'div'> {
@@ -59,7 +60,7 @@ export default function Form(props: FormProps): Element<'div'> {
   useEffect(() => {
     SchemaParser.parseSchemaWithUI(schema, uiSchema, schemaID, (parsed, err) => {
       if (err) {
-        console.error("Malformatted JSON schema");
+        onError("The JSON schema for " + schemaID + " was malformed.");
       } else {
         setParsedSchema(parsed);
       }
