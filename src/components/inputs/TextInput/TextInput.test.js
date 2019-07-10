@@ -3,8 +3,6 @@ import Form from 'react-bootstrap/Form';
 import {shallow} from 'enzyme';
 import TextInput from './TextInput';
 
-const updateFn = jest.fn();
-
 describe("<TextInput>", () => {
   it("should render correctly", () => {
     let component = shallow(<TextInput/>);
@@ -25,6 +23,7 @@ describe("<TextInput>", () => {
   });
 
   it("should send back updates", () => {
+    const updateFn = jest.fn();
     let component = shallow(<TextInput id="test-id" initialValue="Test" onUpdate={updateFn}/>);
     component.simulate("change", {target: {name: "test-id", value: "New Value"}});
     expect(updateFn).toHaveBeenCalledWith("New Value");
