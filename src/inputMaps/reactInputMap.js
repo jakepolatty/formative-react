@@ -1,12 +1,12 @@
-import CheckboxInput from '../components/inputs/CheckboxInput';
-import GeoBoundingBoxInput from '../components/inputs/GeoBoundingBoxInput';
-import HiddenInput from '../components/inputs/HiddenInput';
-import NumberInput from '../components/inputs/NumberInput';
-import NumberSliderInput from '../components/inputs/NumberSliderInput';
-import RadioInput from '../components/inputs/RadioInput';
-import SelectInput from '../components/inputs/SelectInput';
-import TextAreaInput from '../components/inputs/TextAreaInput';
-import TextInput from '../components/inputs/TextInput';
+import CheckboxInput from '../components/inputs/CheckboxInput/CheckboxInput';
+import GeoBoundingBoxInput from '../components/inputs/GeoBoundingBoxInput/GeoBoundingBoxInput';
+import HiddenInput from '../components/inputs/HiddenInput/HiddenInput';
+import NumberInput from '../components/inputs/NumberInput/NumberInput';
+import NumberSliderInput from '../components/inputs/NumberSliderInput/NumberSliderInput';
+import RadioInput from '../components/inputs/RadioInput/RadioInput';
+import SelectInput from '../components/inputs/SelectInput/SelectInput';
+import TextAreaInput from '../components/inputs/TextAreaInput/TextAreaInput';
+import TextInput from '../components/inputs/TextInput/TextInput';
 
 const reactInputMap = {
   CheckboxInput: CheckboxInput,

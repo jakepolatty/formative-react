@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import Form from 'react-bootstrap/Form';
-import type {GenericSelectionInputProps} from '../../utils/inputFlowTypes.js';
+import type {GenericSelectionInputProps} from '../utils/inputFlowTypes.js';
 
 export default function RadioInput(props: GenericSelectionInputProps) {
   let {id, initialValue, onUpdate, options} = props;
@@ -23,7 +23,7 @@ export default function RadioInput(props: GenericSelectionInputProps) {
     }
   }
 
-	return(
+  return(
     <div>
       {options.map((option, i) => {
         const defaultChecked = option === initialValue;
@@ -41,5 +41,5 @@ export default function RadioInput(props: GenericSelectionInputProps) {
         );
       })}
     </div>
-	);
+  );
 }

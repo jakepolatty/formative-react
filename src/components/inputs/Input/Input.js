@@ -8,7 +8,7 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import Form from 'react-bootstrap/Form';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCheck, faInfoCircle} from '@fortawesome/free-solid-svg-icons';
-import {UpdatedContext} from '../Form/Form.js';
+import {UpdatedContext} from '../../Form/Form.js';
 
 /**
  * All custom input fields must accept the following props:

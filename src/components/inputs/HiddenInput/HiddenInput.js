@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import Form from 'react-bootstrap/Form';
-import type {GenericInputProps} from '../../utils/inputFlowTypes.js';
+import type {GenericInputProps} from '../inputFlowTypes.js';
 
 export default function HiddenInput(props: GenericInputProps) {
   let {id, initialValue} = props;

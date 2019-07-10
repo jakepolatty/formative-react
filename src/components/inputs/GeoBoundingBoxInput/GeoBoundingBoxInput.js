@@ -1,7 +1,7 @@
 // @flow
 import React, {useState} from 'react';
-import NumberInput from './NumberInput';
-import type {StringInputProps} from '../../utils/inputFlowTypes.js';
+import NumberInput from '../NumberInput/NumberInput';
+import type {StringInputProps} from '../inputFlowTypes.js';
 
 export default function GeoBoundingBoxInput(props: StringInputProps) {
   let {id, initialValue, onUpdate} = props;

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import Form from 'react-bootstrap/Form';
-import type {StringSelectionInputProps} from '../../utils/inputFlowTypes.js';
+import type {StringSelectionInputProps} from '../utils/inputFlowTypes.js';
 
 export default function SelectInput(props: StringSelectionInputProps) {
   let {id, initialValue, onUpdate, options} = props;

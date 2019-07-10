@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
 import type {ComponentType} from 'react';
-import Input from '../../inputs/Input';
-import type {InputFieldProps} from '../../inputs/Input';
+import Input from '../../inputs/Input/Input';
+import type {InputFieldProps} from '../../inputs/Input/Input';
 
 type InputProps = {
   Field: ComponentType<InputFieldProps>,

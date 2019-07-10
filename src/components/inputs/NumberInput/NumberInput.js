@@ -1,7 +1,7 @@
 // @flow
 import React, {useState} from 'react';
 import Form from 'react-bootstrap/Form';
-import type {NumberInputProps} from '../../utils/inputFlowTypes.js';
+import type {NumberInputProps} from '../inputFlowTypes.js';
 
 type Props = {
   ...NumberInputProps,
@@ -25,7 +25,7 @@ export default function NumberInput(props: Props) {
     }
   };
 
-	return(
+  return(
     <div>
       <Form.Control
         id={id}
@@ -37,5 +37,5 @@ export default function NumberInput(props: Props) {
         onChange={(event) => handleChange(event.target.value)}
       />
     </div>
-	);
+  );
 }

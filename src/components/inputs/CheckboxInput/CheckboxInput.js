@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import Form from 'react-bootstrap/Form';
-import type {BooleanInputProps} from '../../utils/inputFlowTypes.js';
+import type {BooleanInputProps} from '../inputFlowTypes.js';
 
 export default function CheckboxInput(props: BooleanInputProps) {
   let {id, initialValue, onUpdate} = props;
