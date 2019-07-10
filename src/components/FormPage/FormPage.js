@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import APISchemaForms from '../Form/APISchemaForms';
+import APISchemaForms from '../APISchemaForms/APISchemaForms';
 // These will be local to the project
 
 type FormPageProps = {
