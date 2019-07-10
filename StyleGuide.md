@@ -46,8 +46,8 @@ In order to add a new component to the repository that can be referenced from th
 dynamically in a `Form`, follow these steps (described for a component named `SomeInput`):
 1. Create a new functional input field component `SomeInput.js` in the `src/components/inputs` directory,
 adhering to all of the design patterns described [above](#design-patterns).
-2. In the file `src/utils/reactInputMap.js` add an import for the location of the new component and
-a new key-value pair to the object:
+2. In the file `src/inputMaps/reactInputMap.js` add an import for the location of the new component
+and a new key-value pair to the object:
 ```
 import SomeInput from '../components/inputs/SomeInputs/SomeInput';
 ...
@@ -57,7 +57,7 @@ const reactInputMap = {
   ...
 };
 ```
-3. In the file `src/utils/inputTypeMap.js`, add the string `"SomeInput"` to the arrays for each of the
+3. In the file `src/inputMaps/inputTypeMap.js`, add the string `"SomeInput"` to the arrays for each of the
 JSON schema data types that can be displayed in the field.  For example, if `SomeInput` can handle string
 and number type data, the following edits would be made:
 ```

@@ -1,5 +1,5 @@
 import $RefParser from "json-schema-ref-parser";
-import inputTypeMap from "./inputTypeMap.js";
+import inputTypeMap from "../inputMaps/inputTypeMap.js";
 
 class SchemaParser {
   /**********************

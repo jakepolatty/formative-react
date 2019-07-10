@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import type {Element, Node} from 'react';
-import reactInputMap from '../../../utils/reactInputMap.js';
+import reactInputMap from '../../../inputMaps/reactInputMap.js';
 import InputFormField from './InputFormField';
 
 export type FieldsType = {
