@@ -15,8 +15,8 @@ export default function SelectInput(props: StringSelectionInputProps) {
       onChange={onUpdate !== undefined ? 
         (event) => onUpdate(event.target.value) : undefined}
     >
-      {options.map((option, i) => {
-        return (<option key={i}>{option}</option>);
+      {options !== undefined && options.map((option, i) => {
+        return (<option key={i} value={option}>{option}</option>);
       })}
     </Form.Control>
   );
