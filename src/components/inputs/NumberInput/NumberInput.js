@@ -1,5 +1,5 @@
 // @flow
-import React, {useState} from 'react';
+import React from 'react';
 import Form from 'react-bootstrap/Form';
 import type {NumberInputProps} from '../inputFlowTypes.js';
 
@@ -11,7 +11,7 @@ type Props = {
 export default function NumberInput(props: Props) {
   let {id, initialValue, onUpdate, step} = props;
 
-  const [isInvalid, setIsInvalid] = useState(false);
+  const [isInvalid, setIsInvalid] = React.useState(false);
 
   const handleChange = (newValue: string) => {
     let parsedNum = Number(newValue);
@@ -26,16 +26,14 @@ export default function NumberInput(props: Props) {
   };
 
   return(
-    <div>
-      <Form.Control
-        id={id}
-        name={id}
-        type="number"
-        defaultValue={initialValue}
-        step={step !== undefined ? step : "any"}
-        isInvalid={isInvalid}
-        onChange={(event) => handleChange(event.target.value)}
-      />
-    </div>
+    <Form.Control
+      id={id}
+      name={id}
+      type="number"
+      defaultValue={initialValue}
+      step={step !== undefined ? step : "any"}
+      isInvalid={isInvalid}
+      onChange={(event) => handleChange(event.target.value)}
+    />
   );
 }

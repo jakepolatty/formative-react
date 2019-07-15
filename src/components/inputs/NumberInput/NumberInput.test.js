@@ -8,6 +8,10 @@ describe("<NumberInput>", () => {
   const useStateSpy = jest.spyOn(React, "useState");
   useStateSpy.mockImplementation((init) => [init, setState]);
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("should render correctly", () => {
     let component = shallow(<NumberInput/>);
     let input = component.find(Form.Control).dive();
@@ -44,17 +48,19 @@ describe("<NumberInput>", () => {
     expect(input.prop("step")).toEqual(0.1);
   });
 
-  // it("should send back updates", () => {
-  //   const updateFn = jest.fn();
-  //   let component = shallow(<NumberInput id="test-id" initialValue={12} onUpdate={updateFn}/>);
-  //   const handleChangeSpy = jest.spyOn(component.instance(), "handleChange");
-  //   component.simulate("change", {target: {name: "test-id", value: 7}});
-  //   expect(handleChangeSpy).toHaveBeenCalledWith(7);
-  // });
+  it("should send back updates", () => {
+    const updateFn = jest.fn();
+    let component = shallow(<NumberInput id="test-id" initialValue={12} onUpdate={updateFn}/>);
+    component.simulate("change", {target: {name: "test-id", value: "7"}});
+    expect(updateFn).toHaveBeenCalledWith(7);
+    expect(setState).toHaveBeenCalledWith(false); // Not invalid
+  });
 
-  // it("should display invalid on non-numeric input", () => {
-  //   let component = shallow(<NumberInput id="test-id" initialValue={12}/>);
-  //   component.simulate("change", {target: {name: "test-id", value: "a"}});
-  //   expect(setState).toHaveBeenCalledWith(true);
-  // });
+  it("should not update for invalid input", () => {
+    const updateFn = jest.fn();
+    let component = shallow(<NumberInput id="test-id" initialValue={12} onUpdate={updateFn}/>);
+    component.simulate("change", {target: {name: "test-id", value: "b7"}});
+    expect(updateFn).toHaveBeenCalledTimes(0);
+    expect(setState).toHaveBeenCalledWith(true); // Invalid
+  });
 });
