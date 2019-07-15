@@ -69,6 +69,7 @@ export default function Input(props: InputWrapperProps) {
               }
             >
               <Button
+                id={id+"-INFO"}
                 variant="primary">
                 <FontAwesomeIcon icon={faInfoCircle}/>
               </Button>
@@ -83,6 +84,7 @@ export default function Input(props: InputWrapperProps) {
         />
         <InputGroup.Append>
           <Button
+            id={id + "-SAVE"}
             variant={currentUpdated ? "outline-success" : "outline-light"}
             disabled={!currentUpdated}
             onClick={onSave !== undefined ? () => handleSave() : undefined}
