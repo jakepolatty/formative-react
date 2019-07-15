@@ -10,11 +10,14 @@ export default function GeoBoundingBoxInput(props: StringInputProps) {
 
   // Set up the initial value dictionary if values have already been provided
   let initialVals = {lon1: undefined, lat1: undefined, lon2: undefined, lat2: undefined};
-  let matchArray = initialValue.match(coordsRegex);
-  if (initialValue !== undefined && matchArray !== null) {
-    // match format: ["(lon1, lat1), (lon2, lat2)", lon1, _, lat1, _, lon2, _, lat2, _]
-    initialVals = {lon1: Number(matchArray[1]), lat1: Number(matchArray[3]),
-      lon2: Number(matchArray[5]), lat2: Number(matchArray[7])};
+
+  if (initialValue !== undefined) {
+    let matchArray = initialValue.match(coordsRegex);
+    if (matchArray !== null) {
+      // match format: ["(lon1, lat1), (lon2, lat2)", lon1, _, lat1, _, lon2, _, lat2, _]
+      initialVals = {lon1: Number(matchArray[1]), lat1: Number(matchArray[3]),
+        lon2: Number(matchArray[5]), lat2: Number(matchArray[7])};
+    }
   }
   const [vals, setVals] = useState(initialVals);
  
@@ -32,7 +35,7 @@ export default function GeoBoundingBoxInput(props: StringInputProps) {
   }
 
   return(
-    <div>
+    <div id={id}>
       <p id={id+"-lon1-LABEL"}>Longitude 1</p>
       <NumberInput
         id={id+"-lon1"}
