@@ -131,7 +131,7 @@ class SchemaParser {
       if (arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
         inputType = defaultType;
         fieldObject = {type: inputType, id: key};
-        fieldObject.items = arrayLayer.items.enum;
+        fieldObject.options = arrayLayer.items.enum;
       } else {
         fieldObject = {type: "InputGroup", id: key};
         if (Array.isArray(arrayLayer.items)) {
@@ -155,7 +155,7 @@ class SchemaParser {
       if (arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
         fieldObject = {type: inputType, id: key};
         // Append the UI schema options to the field
-        fieldObject.items = arrayLayer.items.enum;
+        fieldObject.options = arrayLayer.items.enum;
       } else {
         if (Array.isArray(arrayLayer.items)) {
           let itemsArray = arrayLayer.items.map((item, index) => {

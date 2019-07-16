@@ -49,8 +49,24 @@ const arrayFormatSchema = {
     "type": "string",
     "minLength": 1
   },
-  minItems: 1
+  minItems: 2,
+  maxItems: 5,
+  uniqueItems: true
 };
+
+const arrayEnumSchema = {
+  title: "Time Zone (US)",
+  description: "An American time zone",
+  type: "array",
+  items: {
+    enum: [
+      "PST",
+      "MST",
+      "CST",
+      "EST"
+    ]
+  }
+}
 
 const objectSchema = {
   title: "WMS",
@@ -104,7 +120,7 @@ const objectSchema = {
 
 const anyOfSchema = {
   title: "Spatial",
-  description: "The range of spatial applicability of a dataset. Could include a spatial region like a bounding box or a named place.",
+  description: "The range of spatial applicability of a dataset.",
   anyOf: [
     {
       type: "string",
@@ -226,7 +242,26 @@ describe("SchemaParser", () => {
   });
 
   it("should recursively parse array layers", () => {
+    let parsed1 = SchemaParser.convertSchemaLayer(arrayFormatSchema, "keywords", {});
+    expect(parsed1.label).toEqual("Tags");
+    expect(parsed1.description).toEqual("Tags (or keywords) help users discover your dataset");
+    expect(parsed1.minItems).toEqual(2);
+    expect(parsed1.maxItems).toEqual(5);
+    expect(parsed1.unique).toEqual(true);
 
+    let tagField = parsed1.itemFormat;
+    expect(tagField.type).toEqual("TextInput");
+    expect(tagField.minLength).toEqual(1);
+
+    // Simple UI schema
+  });
+
+  it("should parse array wrappers for enums", () => {
+    let parsed1 = SchemaParser.convertSchemaLayer(arrayEnumSchema, "timeZones", {});
+    expect(parsed1.label).toEqual("Time Zone (US)");
+    expect(parsed1.description).toEqual("An American time zone");
+    expect(parsed1.type).toEqual("SelectInput");
+    expect(parsed1.options).toEqual(["PST", "MST", "CST", "EST"]);
   });
 
   it("should recursively parse object layers", () => {
@@ -234,7 +269,21 @@ describe("SchemaParser", () => {
   });
 
   it("should parse simple nullable anyOf layers", () => {
+    let parsed1 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial", {});
+    expect(parsed1.label).toEqual("Spatial");
+    expect(parsed1.description).toEqual("The range of spatial applicability of a dataset.");
+    expect(parsed1.type).toEqual("TextInput");
 
+    // Simply UI schema
+    let parsed2 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial",
+      {spatial: {"ui:component": "GeoBoundingBoxInput", "default": "(0, 0), (0, 0)"}});
+    expect(parsed2.type).toEqual("GeoBoundingBoxInput");
+    expect(parsed2.default).toEqual("(0, 0), (0, 0)");
+
+    // Invalid ui:component flag
+    let parsed3 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial",
+      {spatial: {"ui:component": "GeoBoundingBoxInpu"}});
+    expect(parsed3.type).toEqual("TextInput");
   });
 
   it("correctly identifies empty objects", () => {
