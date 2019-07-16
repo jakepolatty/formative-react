@@ -40,7 +40,9 @@ class SchemaParser {
   // Takes in the current layer of the schema, the key referring to that layer, and the whole UI schema,
   // and returns an object representing that level of the schema that can be processed by the Form component
   static convertSchemaLayer(schema, currentKey, uiSchema) {
-    if (schema.type === "object") {
+    if (schema === null || schema === undefined) {
+      return null;
+    } else if (schema.type === "object") {
       return SchemaParser.parseObjectLayer(schema, currentKey, uiSchema)
     } else if (schema.type === "array") {
       return SchemaParser.parseArrayLayer(schema, currentKey, uiSchema);
@@ -83,7 +85,7 @@ class SchemaParser {
     } else if (filteredLayer.length >= 2) {
       // TODO: Handle anyOf schemas with multiple non-null children
     } else {
-      // The anyOf schema is incorrectly formatter if it has no remaining children
+      // The anyOf schema is incorrectly formatted if it has no remaining children
       return null;
     }
   }
