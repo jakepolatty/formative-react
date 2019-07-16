@@ -216,7 +216,10 @@ class SchemaParser {
     Object.assign(fieldObject,
       strLayer.title !== undefined && {label: strLayer.title},
       strLayer.description !== undefined && {description: strLayer.description},
-      strLayer.default !== undefined && {defaultValue: strLayer.default});
+      strLayer.default !== undefined && {defaultValue: strLayer.default},
+      strLayer.minLength !== undefined && {minLength: strLayer.minLength},
+      strLayer.maxLength !== undefined && {maxLength: strLayer.maxLength},
+      strLayer.pattern !== undefined && {pattern: strLayer.pattern});
 
     // If the schema contains an enum field, append these options
     if (strLayer.enum !== undefined) {

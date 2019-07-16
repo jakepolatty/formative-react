@@ -26,7 +26,7 @@ const inputTypeMap = {
     "HiddenInput",
   ],
   integer: [
-    "IntegerInput",
+    "NumberInput",
     "NumberSliderInput",
     "TextInput",
     "RangeInput",
