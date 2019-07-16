@@ -54,7 +54,7 @@ class FormGenerator {
           // If the form data contains this field, overwrite the default value
           // Otherwise pass in the default if there is one
           let initialValue;
-          if (this.formData[id] !== undefined) {
+          if (arrayIndex === undefined && this.formData[id] !== undefined) {
             initialValue = this.formData[id];
           } else if (defaultValue !== undefined) {
             initialValue = defaultValue;
@@ -62,7 +62,7 @@ class FormGenerator {
           
           // Only standalone fields will be directly in the include list
           if (this.includeFields.includes(id)) {
-            let displayId = arrayIndex !== undefined ? id + + "-" + arrayIndex : id;
+            let displayId = arrayIndex !== undefined ? id + "-" + arrayIndex : id;
             return (
               <InputFormField
                 Field={Field}
@@ -161,28 +161,24 @@ class FormGenerator {
       listLength = Math.max(listLength, defaultsCount);
     }
     
-    if (this.includeFields.includes(fields.id)) {
+    let format = fields.itemFormat;
+    if (this.includeFields.includes(fields.id) && format !== null && format !== undefined) {
       return (
         <div id={fields.id} key={fields.id}>
           {fields.label !== undefined &&
             <h2 id={fields.id + "-LABEL"}>{fields.label}</h2>}
-          <div id={fields.id+"-INPUTS"}>
+          <div id={fields.id + "-INPUTS"}>
             {[...Array(listLength)].map((_, i) => {
               // For each element within the computed list length, check whether it has an initial value
-              let format = fields.itemFormat;
-              if (format !== null && format !== undefined) {
-                format.arrayIndex = i;
-                if (i < valueCount) {
-                  format.defaultValue = this.formData[fields.id][i];
-                } else if (i < defaultsCount) {
-                  format.defaultValue = fields.defaultValue[i];
-                } else {
-                  format.defaultValue = undefined;
-                }
-                return this.generateForm(format);
+              format.arrayIndex = i;
+              if (i < valueCount) {
+                format.defaultValue = this.formData[fields.id][i];
+              } else if (i < defaultsCount) {
+                format.defaultValue = fields.defaultValue[i];
               } else {
-                return null;
+                format.defaultValue = undefined;
               }
+              return this.generateForm(format);
             })}
           </div>
           {fields.description !== undefined &&
