@@ -157,6 +157,7 @@ class SchemaParser {
         // Append the UI schema options to the field
         fieldObject.options = arrayLayer.items.enum;
       } else {
+        fieldObject = {type: "InputGroup", id: key};
         if (Array.isArray(arrayLayer.items)) {
           let itemsArray = arrayLayer.items.map((item, index) => {
             return SchemaParser.convertSchemaLayer(item, key, uiSchema);

@@ -106,14 +106,10 @@ const objectSchema = {
       title: "Transparent"
     },
     elevation: {
-      type: "integer",
+      type: "number",
       title: "Elevation",
-      enum: [
-        1,
-        2,
-        3,
-        4
-      ]
+      minimum: -10994,
+      maximum: 8848,
     }
   }
 };
@@ -243,6 +239,8 @@ describe("SchemaParser", () => {
 
   it("should recursively parse array layers", () => {
     let parsed1 = SchemaParser.convertSchemaLayer(arrayFormatSchema, "keywords", {});
+    expect(parsed1.type).toEqual("InputGroup");
+    expect(parsed1.groupType).toEqual("array");
     expect(parsed1.label).toEqual("Tags");
     expect(parsed1.description).toEqual("Tags (or keywords) help users discover your dataset");
     expect(parsed1.minItems).toEqual(2);
@@ -253,7 +251,16 @@ describe("SchemaParser", () => {
     expect(tagField.type).toEqual("TextInput");
     expect(tagField.minLength).toEqual(1);
 
-    // Simple UI schema
+    // Simple UI schema - should default to InputGroup
+    let parsed2 = SchemaParser.convertSchemaLayer(arrayFormatSchema, "keywords",
+      {keywords: {"ui:component": "MultiSelectInput", minItems: 1, maxItems: 4}});
+    expect(parsed2.type).toEqual("InputGroup");
+    expect(parsed2.minItems).toEqual(1);
+    expect(parsed2.maxItems).toEqual(4);
+
+    let tagField2 = parsed2.itemFormat;
+    expect(tagField2.type).toEqual("TextInput");
+    expect(tagField.minLength).toEqual(1);
   });
 
   it("should parse array wrappers for enums", () => {
@@ -262,10 +269,53 @@ describe("SchemaParser", () => {
     expect(parsed1.description).toEqual("An American time zone");
     expect(parsed1.type).toEqual("SelectInput");
     expect(parsed1.options).toEqual(["PST", "MST", "CST", "EST"]);
+
+    // Simple UI schema
+    let parsed2 = SchemaParser.convertSchemaLayer(arrayEnumSchema, "timeZones",
+      {timeZones: {"ui:component": "MultiSelectInput", maxItems: 3}});
+    expect(parsed2.type).toEqual("MultiSelectInput");
+    expect(parsed2.options).toEqual(["PST", "MST", "CST", "EST"]);
+    expect(parsed2.maxItems).toEqual(3);
   });
 
   it("should recursively parse object layers", () => {
+    let parsed1 = SchemaParser.convertSchemaLayer(objectSchema, "wms",
+      {opacity: {"ui:component": "NumberSliderInput", min: 0, max: 100}});
+    expect(parsed1.type).toEqual("InputGroup");
+    expect(parsed1.groupType).toEqual("object");
+    expect(parsed1.label).toEqual("WMS");
+    expect(parsed1.description).toEqual("A simple form for WMS specification.");
 
+    let children1 = parsed1.items;
+    expect(children1.length).toEqual(5);
+
+    let layer = children1[0];
+    expect(layer.label).toEqual("LAYER");
+    expect(layer.required).toEqual(true);
+    expect(layer.type).toEqual("SelectInput");
+    expect(layer.options).toEqual(["LayerA", "LayerB", "LayerC", "TODO_populate_this_enum_with_endpoint"]);
+
+    let style = children1[1];
+    expect(style.label).toEqual("STYLE");
+    expect(style.required).toEqual(true);
+    expect(style.type).toEqual("SelectInput");
+    expect(style.options).toEqual(["StyleA", "StyleB", "StyleC", "TODO_populate_this_enum_with_endpoint"]);
+
+    let opacity = children1[2];
+    expect(opacity.label).toEqual("Opacity");
+    expect(opacity.type).toEqual("NumberSliderInput");
+    expect(opacity.min).toEqual(0);
+    expect(opacity.max).toEqual(100);
+
+    let transparent = children1[3];
+    expect(transparent.label).toEqual("Transparent");
+    expect(transparent.type).toEqual("CheckboxInput");
+
+    let elevation = children1[4];
+    expect(elevation.label).toEqual("Elevation");
+    expect(elevation.type).toEqual("NumberInput");
+    expect(elevation.min).toEqual(-10994);
+    expect(elevation.max).toEqual(8848);
   });
 
   it("should parse simple nullable anyOf layers", () => {
