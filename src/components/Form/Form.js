@@ -52,7 +52,8 @@ export default function Form(props: FormProps): Element<'div'> {
   let {schema, uiSchema, externalData, schemaID, includeFields, handleSave} = props;
 
   const [parsedSchema: ?FieldsType, setParsedSchema] = useState({});
-  const [formData: ?{[key: string]: any}, setFormData] = useState({});
+  let initialData = (externalData !== undefined && externalData !== null) ? externalData : {};
+  const [formData: ?{[key: string]: any}, setFormData] = useState(initialData);
   const [updatedDict: ?{[key: string]: any}, dispatch] = useReducer(updateReducer, {});
   const [generatedForm, setGeneratedForm] = useState(null);
 
