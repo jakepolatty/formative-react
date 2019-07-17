@@ -129,6 +129,62 @@ const anyOfSchema = {
 };
 
 describe("SchemaParser", () => {
+  it("should return the parsed schema in a callback", done => {
+    function callback1(parsed, err) {
+      expect(err).toBeNull();
+
+      expect(parsed.type).toEqual("InputGroup");
+      expect(parsed.groupType).toEqual("object");
+      expect(parsed.label).toEqual("WMS");
+      expect(parsed.description).toEqual("A simple form for WMS specification.");
+
+      let children = parsed.items;
+      expect(children.length).toEqual(5);
+
+      let opacity = children[2];
+      expect(opacity.label).toEqual("Opacity");
+      expect(opacity.type).toEqual("NumberInput");
+      done();
+    }
+
+    SchemaParser.parseSchema(objectSchema, "wms", callback1);
+
+    // With UI schema
+    function callback2(parsed, err) {
+      expect(err).toBeNull();
+
+      expect(parsed.type).toEqual("InputGroup");
+      expect(parsed.groupType).toEqual("object");
+      expect(parsed.label).toEqual("WMS");
+      expect(parsed.description).toEqual("A simple form for WMS specification.");
+
+      let children = parsed.items;
+      expect(children.length).toEqual(5);
+
+      let opacity = children[2];
+      expect(opacity.label).toEqual("Opacity");
+      expect(opacity.type).toEqual("NumberSliderInput");
+      done();
+    }
+
+    SchemaParser.parseSchemaWithUI(objectSchema, {opacity: {"ui:component": "NumberSliderInput"}},
+      "wms", callback2);
+  });
+
+  it("should return an error for a malformed schema", done => {
+    function callback1(parsed, err) {
+      expect(parsed).toBeNull();
+      expect(err).toBeTruthy();
+      done();
+    }
+
+    SchemaParser.parseSchema({"$ref": "not-a-ref"}, "root", callback1);
+
+    // With UI schema
+    SchemaParser.parseSchemaWithUI({"$ref": "not-a-ref"}, "root",
+      {test: {"ui:component": "TextInput"}}, callback1);
+  });
+
   it("should return null for an empty schema", () => {
     let parsed1 = SchemaParser.convertSchemaLayer(null, "root", {});
     expect(parsed1).toBeNull();
@@ -139,6 +195,11 @@ describe("SchemaParser", () => {
     let parsed3 = SchemaParser.convertSchemaLayer({}, "root", {});
     expect(parsed3).toBeNull();
   });
+
+  it("should return null for a null typed schema", () => {
+    let parsed = SchemaParser.convertSchemaLayer({type: "null"}, "root", {});
+    expect(parsed).toBeNull();
+  })
 
   it("should parse string layers", () => {
     let parsed1 = SchemaParser.convertSchemaLayer(stringSchema, "description", {});
