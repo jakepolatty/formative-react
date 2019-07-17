@@ -39,7 +39,7 @@ export default function InputFormField(props: FieldProps) {
           onUpdate={
             (newValue) => {
               setFormData(prevData => {
-                let arrayData = prevData[id];
+                let arrayData = prevData !== undefined ? prevData[id] : [];
                 if (arrayData === undefined) {
                   arrayData = [];
                 }

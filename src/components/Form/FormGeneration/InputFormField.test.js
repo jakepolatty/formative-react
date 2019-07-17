@@ -11,6 +11,14 @@ describe("<InputFormField>", () => {
     expect(input.length).toEqual(1);
   });
 
+  it("should render null for an invalid id or input field", () => {
+    let component1 = shallow(<InputFormField Field={TextInput}/>);
+    expect(component1.getElement()).toBeNull();
+
+    let component2 = shallow(<InputFormField id="test-id"/>);
+    expect(component2.getElement()).toBeNull();
+  });
+
   it("should render a label", () => {
     let component = shallow(<InputFormField Field={TextInput} id="test-id" label="Test Label"/>);
     let input = component.find(Input);
@@ -42,11 +50,19 @@ describe("<InputFormField>", () => {
   });
 
   it("should return form data updates", () => {
-    let updateDataFn = jest.fn();
-    let component = shallow(<InputFormField Field={TextInput} id="test-id" setFormData={updateDataFn}/>);
+    let setFormDataFn = jest.fn();
+
+    let component = shallow(<InputFormField Field={TextInput} id="test-id" setFormData={setFormDataFn}/>);
     let input = component.find(Input);
     input.simulate("update", "New Value");
-    expect(updateDataFn).toHaveBeenCalledTimes(1);
+    expect(setFormDataFn.mock.calls[0][0]()).toEqual({"test-id": "New Value"});
+
+    // Array index field
+    let component2 = shallow(<InputFormField Field={TextInput} id="test-id"
+      arrayIndex={2} setFormData={setFormDataFn}/>);
+    let input2 = component2.find(Input);
+    input2.simulate("update", "Value 2");
+    expect(setFormDataFn.mock.calls[1][0]()).toEqual({"test-id": [null, null, "Value 2"]});
   });
 
   it("should send back save events", () => {
@@ -54,6 +70,12 @@ describe("<InputFormField>", () => {
     let component = shallow(<InputFormField Field={TextInput} id="test-id" handleSave={saveFn}/>);
     let input = component.find(Input);
     input.simulate("save");
-    expect(saveFn).toHaveBeenCalled();
+    expect(saveFn).toHaveBeenCalledWith("test-id");
+
+    let component2 = shallow(<InputFormField Field={TextInput} id="new-id"
+      arrayIndex={2} handleSave={saveFn}/>);
+    let input2 = component2.find(Input);
+    input2.simulate("save");
+    expect(saveFn).toHaveBeenCalledWith("new-id");
   });
 });

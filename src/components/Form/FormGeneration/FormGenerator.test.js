@@ -205,13 +205,13 @@ describe("FormGenerator", () => {
 
     let input1 = inputs.childAt(0);
     expect(input1.find(TextInput).length).toEqual(1);
-    expect(input1.prop("id")).toEqual("references-0");
+    expect(input1.find(TextInput).prop("id")).toEqual("references-0");
     let input2 = inputs.childAt(1);
     expect(input2.find(TextInput).length).toEqual(1);
-    expect(input2.prop("id")).toEqual("references-1");
+    expect(input2.find(TextInput).prop("id")).toEqual("references-1");
     let input3 = inputs.childAt(2);
     expect(input3.find(TextInput).length).toEqual(1);
-    expect(input3.prop("id")).toEqual("references-2");
+    expect(input3.find(TextInput).prop("id")).toEqual("references-2");
   });
 
   it("should populate the input format fields with form data", () => {

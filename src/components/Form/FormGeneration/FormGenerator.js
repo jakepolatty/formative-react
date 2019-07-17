@@ -66,7 +66,7 @@ class FormGenerator {
             return (
               <InputFormField
                 Field={Field}
-                id={displayId}
+                id={id}
                 key={displayId}
                 initialValue={initialValue}
                 arrayIndex={arrayIndex}
