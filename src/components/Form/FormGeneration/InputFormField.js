@@ -40,9 +40,6 @@ export default function InputFormField(props: FieldProps) {
             (newValue) => {
               setFormData(prevData => {
                 let arrayData = prevData !== undefined ? prevData[id] : [];
-                if (arrayData === undefined) {
-                  arrayData = [];
-                }
                 
                 if (arrayIndex < arrayData.length) {
                   arrayData[arrayIndex] = newValue;

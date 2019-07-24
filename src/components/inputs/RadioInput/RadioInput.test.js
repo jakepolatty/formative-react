@@ -85,4 +85,10 @@ describe("<RadioInput>", () => {
     formCheck2.simulate("change", {target: {name: "test-id", value: false}});
     expect(updateFn).toHaveBeenCalledWith(false);
   });
+
+  it("should not throw an error if onUpdate is undefined", () => {
+    let component = shallow(<RadioInput id="test-id"/>);
+    let formCheck1 = component.find(Form.Check).at(0);
+    formCheck1.simulate("change", {target: {name: "test-id", value: true}});
+  });
 });

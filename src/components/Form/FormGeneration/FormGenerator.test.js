@@ -55,6 +55,19 @@ const inputList = {
   ]
 };
 
+const arrayInputList = {
+  "type": "InputGroup",
+  "id": "dataset",
+  "label": "Project Open Data Dataset",
+  "groupType": "array",
+  "description": "The metadata format for all federal open data.",
+  "items": [
+    textField,
+    selectField,
+    checkboxField
+  ]
+};
+
 const inputFormatGroup = {
   "type": "InputGroup",
   "id": "references",
@@ -91,6 +104,7 @@ describe("FormGenerator", () => {
     expect(form2).toBeNull();
     let form3 = generator.generateForm({});
     expect(form3).toBeNull();
+    let form4 = generator.generateForm({type: "InputGroup"});
 
     let input = generator.generateInputList({});
     expect(input).toBeNull();
@@ -212,6 +226,25 @@ describe("FormGenerator", () => {
     let input3 = inputs.childAt(2);
     expect(input3.find(TextInput).length).toEqual(1);
     expect(input3.find(TextInput).prop("id")).toEqual("references-2");
+  });
+
+  it("should generate lists of fields for an array pattern", () => {
+    let generator = new FormGenerator({"dataQuality": true}, () => null,
+      ["rights", "dataQuality"], () => null);
+    let fieldGroup = mount(generator.generateForm(arrayInputList));
+    expect(fieldGroup.prop("id")).toEqual("dataset");
+
+    let inputs = fieldGroup.find("#dataset-INPUTS");
+    expect(inputs.children().length).toEqual(2);
+
+    let input1 = inputs.childAt(0);
+    expect(input1.find(TextInput).length).toEqual(1);
+    expect(input1.prop("initialValue")).toEqual("private");
+    expect(input1.prop("arrayIndex")).toEqual(0);
+    let input2 = inputs.childAt(1);
+    expect(input2.find(CheckboxInput).length).toEqual(1);
+    expect(input2.prop("initialValue")).toEqual(true);
+    expect(input2.prop("arrayIndex")).toEqual(2);
   });
 
   it("should populate the input format fields with form data", () => {

@@ -109,6 +109,8 @@ class FormGenerator {
               if (this.formData[fields.id] !== undefined &&
                 Array.isArray(this.formData[fields.id]) && i < this.formData[fields.id].length) {
                 field.defaultValue = this.formData[fields.id][i];
+              } else if (this.formData[field.id] !== undefined) {
+                field.defaultValue = this.formData[field.id];
               }
               // If the input group is of type array, add the array index for update handling
               if (fields.groupType === "array") {

@@ -63,4 +63,9 @@ describe("<NumberInput>", () => {
     expect(updateFn).toHaveBeenCalledTimes(0);
     expect(setState).toHaveBeenCalledWith(true); // Invalid
   });
+
+  it("should not throw an error if onUpdate is undefined", () => {
+    let component = shallow(<NumberInput id="test-id"/>);
+    component.simulate("change", {target: {name: "test-id", value: "15"}});
+  });
 });
