@@ -50,6 +50,7 @@
     "@babel/cli": "^7.4.4",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "axios-mock-adapter": "^1.17.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "flow-bin": "^0.102.0",
