@@ -5,6 +5,9 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import {act} from 'react-dom/test-utils';
 import Form from '../Form/Form';
+import Input from '../inputs/Input/Input';
+import SelectInput from '../inputs/SelectInput/SelectInput';
+import Button from 'react-bootstrap/Button';
 
 const mockSchema = {
   title: "WMS",
@@ -59,10 +62,16 @@ const mockData = {
 };
 
 describe("<APISchemaForms>", () => {
+  const setState = jest.fn();
+  const useStateSpy = jest.spyOn(React, "useState");
+  useStateSpy.mockImplementation((init) => [init, setState]);
+
   beforeEach(() => {
     const mock = new MockAdapter(axios);
     mock.onGet("http://localhost:8888/schema/wms.json").reply(200, mockSchema);
     mock.onGet("http://localhost:8888/api/wms/").reply(200, mockData);
+    mock.onPost("http://localhost:8888/api/wms/", {layer: "LayerA", style: undefined, opacity: 72, transparent: true})
+      .reply(200, {layer: "LayerA", style: undefined, opacity: 72, transparent: true});
   });
 
   it("should fetch the schema and data on load", done => {
@@ -85,6 +94,49 @@ describe("<APISchemaForms>", () => {
 
       done();
     })
+  });
+
+  it("should send back save data on save events", done => {
+    let component = mount(<APISchemaForms
+      schemaEndpoint="http://localhost:8888/schema/"
+      schemas={{wms: {schema: "wms", include: ["layer", "style", "opacity", "transparent"]}}}
+      dataApiEndpoint="http://localhost:8888/api/"
+      uiSchema={{wms: {opacity: {"ui:component": "NumberSliderInput"}}}}/>);
+
+    setImmediate(() => {
+      component.update();
+
+      let form = component.find(Form);
+
+      // Single field save
+      let inputs = form.find(Input);
+      let layerInput = inputs.at(0);
+      let inputField1 = layerInput.find(SelectInput);
+      inputField1.simulate("change", {target: {name: "layer", value: "LayerA"}});
+      // let saveButton1 = layerInput.find(Button);
+      // saveButton1.simulate("click");
+
+      //expect(setState).toHaveBeenCalledWith(true);
+
+      done();
+    });
+  });
+
+  it("should give an empty includes list if no include list is provided", done => {
+    let component = mount(<APISchemaForms
+      schemaEndpoint="http://localhost:8888/schema/"
+      schemas={{wms: {schema: "wms"}}}
+      dataApiEndpoint="http://localhost:8888/api/"
+      uiSchema={{}}/>);
+
+    setImmediate(() => {
+      component.update();
+
+      let form = component.find(Form);
+      expect(form.prop("includeFields")).toEqual([]);
+
+      done();
+    });
   });
 });
 
