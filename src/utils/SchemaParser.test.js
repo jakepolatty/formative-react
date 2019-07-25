@@ -27,18 +27,40 @@ const numberSchema = {
   multipleOf: 0.1
 };
 
+const altNumberSchema = {
+  title: "Elevation",
+  description: "The elevation of a layer in meters",
+  type: "number",
+  exclusiveMaximum: 8849,
+  exclusiveMinimum: -10995,
+  default: 0,
+  enum: [-10994, 0, 8849]
+};
+
 const integerSchema = {
   title: "Opacity",
   description: "The percentage opacity of the layer",
   type: "integer",
+  default: 99,
+  multipleOf: 3,
   exclusiveMaximum: 100,
   exclusiveMinimum: 0
+};
+
+const altIntegerSchema = {
+  title: "Opacity",
+  description: "The percentage opacity of the layer",
+  type: "integer",
+  enum: [0, 25, 50, 75, 100],
+  minimum: 0,
+  maximum: 100,
 };
 
 const booleanSchema = {
   title: "Data Quality",
   description:  "Whether the dataset meets the agency’s Information Quality Guidelines (true/false).",
-  type: "boolean"
+  type: "boolean",
+  default: false
 };
 
 const arrayFormatSchema = {
@@ -65,8 +87,28 @@ const arrayEnumSchema = {
       "CST",
       "EST"
     ]
-  }
+  },
+  default: "EST"
 }
+
+const arrayListSchema = {
+  title: "Attribution",
+  description: "Attribution information for the project",
+  type: "array",
+  items: [
+    {
+      title: "Name",
+      type: "string"
+    },
+    {
+      title: "ID Number",
+      type: "integer"
+    }
+  ],
+  additionalItems: {
+    type: "string"
+  }
+};
 
 const objectSchema = {
   title: "WMS",
@@ -120,8 +162,30 @@ const anyOfSchema = {
   anyOf: [
     {
       type: "string",
-      minLength: 1
+      maxLength: 10,
+      pattern: "\d+"
     },
+    {
+      type: "null"
+    }
+  ]
+};
+
+const multiAnyOfSchema = {
+  title: "Options",
+  anyOf: [
+    {
+      type: "string"
+    },
+    {
+      type: "number"
+    }
+  ]
+};
+
+const emptyAnyOfSchema = {
+  title: "Test",
+  anyOf: [
     {
       type: "null"
     }
@@ -172,17 +236,24 @@ describe("SchemaParser", () => {
   });
 
   it("should return an error for a malformed schema", done => {
-    function callback1(parsed, err) {
+    function callback(parsed, err) {
       expect(parsed).toBeNull();
       expect(err).toBeTruthy();
       done();
     }
 
-    SchemaParser.parseSchema({"$ref": "not-a-ref"}, "root", callback1);
+    SchemaParser.parseSchema({"$ref": "not-a-ref"}, "root", callback);
+  });
 
-    // With UI schema
-    SchemaParser.parseSchemaWithUI({"$ref": "not-a-ref"}, "root",
-      {test: {"ui:component": "TextInput"}}, callback1);
+  it("should return an error for a malformed schema with ui schema", done => {
+    function callback(parsed, err) {
+      expect(parsed).toBeNull();
+      expect(err).toBeTruthy();
+      done();
+    }
+
+    SchemaParser.parseSchemaWithUI({"$ref": "not-a-ref"}, {test: {"ui:component": "TextInput"}},
+      "root", callback);
   });
 
   it("should return null for an empty schema", () => {
@@ -199,7 +270,7 @@ describe("SchemaParser", () => {
   it("should return null for a null typed schema", () => {
     let parsed = SchemaParser.convertSchemaLayer({type: "null"}, "root", {});
     expect(parsed).toBeNull();
-  })
+  });
 
   it("should parse string layers", () => {
     let parsed1 = SchemaParser.convertSchemaLayer(stringSchema, "description", {});
@@ -259,6 +330,14 @@ describe("SchemaParser", () => {
     let parsed3 = SchemaParser.convertSchemaLayer(numberSchema, "elevation",
       {elevation: {"ui:component": "RadioInput"}});
     expect(parsed3.type).toEqual("NumberInput");
+
+    // Extra options
+    let parsed4 = SchemaParser.convertSchemaLayer(altNumberSchema, "elevation", {});
+    expect(parsed4.type).toEqual("SelectInput");
+    expect(parsed4.exclusiveMin).toEqual(-10995);
+    expect(parsed4.exclusiveMax).toEqual(8849);
+    expect(parsed4.defaultValue).toEqual(0);
+    expect(parsed4.options).toEqual([-10994, 0, 8849]);
   });
 
   it("should parse integer layers", () => {
@@ -268,6 +347,8 @@ describe("SchemaParser", () => {
     expect(parsed1.type).toEqual("NumberInput");
     expect(parsed1.exclusiveMin).toEqual(0);
     expect(parsed1.exclusiveMax).toEqual(100);
+    expect(parsed1.defaultValue).toEqual(99);
+    expect(parsed1.increment).toEqual(3);
 
     // Simple UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(integerSchema, "opacity",
@@ -279,6 +360,13 @@ describe("SchemaParser", () => {
     let parsed3 = SchemaParser.convertSchemaLayer(integerSchema, "opacity",
       {opacity: {"ui:component": "NumberSliderInpu"}});
     expect(parsed3.type).toEqual("NumberInput");
+
+    // Extra options
+    let parsed4 = SchemaParser.convertSchemaLayer(altIntegerSchema, "opacity", {});
+    expect(parsed4.type).toEqual("SelectInput");
+    expect(parsed4.min).toEqual(0);
+    expect(parsed4.max).toEqual(100);
+    expect(parsed4.options).toEqual([0, 25, 50, 75, 100]);
   });
 
   it("should parse boolean layers", () => {
@@ -286,6 +374,7 @@ describe("SchemaParser", () => {
     expect(parsed1.label).toEqual("Data Quality");
     expect(parsed1.description).toEqual("Whether the dataset meets the agency’s Information Quality Guidelines (true/false).");
     expect(parsed1.type).toEqual("CheckboxInput");
+    expect(parsed1.defaultValue).toEqual(false);
 
     // Simple UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(booleanSchema, "dataQuality",
@@ -324,12 +413,42 @@ describe("SchemaParser", () => {
     expect(tagField.minLength).toEqual(1);
   });
 
+  it("should parse array tuple validation list layers", () => {
+    let parsed1 = SchemaParser.convertSchemaLayer(arrayListSchema, "attribution", {});
+    expect(parsed1.type).toEqual("InputGroup");
+    expect(parsed1.groupType).toEqual("array");
+    expect(parsed1.label).toEqual("Attribution");
+    expect(parsed1.description).toEqual("Attribution information for the project");
+
+    let items1 = parsed1.items;
+    expect(items1[0].type).toEqual("TextInput");
+    expect(items1[0].label).toEqual("Name");
+    expect(items1[1].type).toEqual("NumberInput");
+    expect(items1[1].label).toEqual("ID Number");
+
+    expect(parsed1.additionalItemFormat).toEqual({type: "TextInput", id: "attribution"});
+
+    // Simple UI schema
+    let parsed2 = SchemaParser.convertSchemaLayer(arrayListSchema, "attribution",
+      {attribution: {"ui:component": "MultiSelectInput"}});
+    expect(parsed2.type).toEqual("InputGroup");
+    expect(parsed2.groupType).toEqual("array");
+    expect(parsed2.label).toEqual("Attribution");
+
+    let items2 = parsed2.items;
+    expect(items2[0].type).toEqual("TextInput");
+    expect(items2[0].label).toEqual("Name");
+    expect(items2[1].type).toEqual("NumberInput");
+    expect(items2[1].label).toEqual("ID Number");
+  });
+
   it("should parse array wrappers for enums", () => {
     let parsed1 = SchemaParser.convertSchemaLayer(arrayEnumSchema, "timeZones", {});
     expect(parsed1.label).toEqual("Time Zone (US)");
     expect(parsed1.description).toEqual("An American time zone");
     expect(parsed1.type).toEqual("SelectInput");
     expect(parsed1.options).toEqual(["PST", "MST", "CST", "EST"]);
+    expect(parsed1.defaultValue).toEqual("EST");
 
     // Simple UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(arrayEnumSchema, "timeZones",
@@ -337,6 +456,11 @@ describe("SchemaParser", () => {
     expect(parsed2.type).toEqual("MultiSelectInput");
     expect(parsed2.options).toEqual(["PST", "MST", "CST", "EST"]);
     expect(parsed2.maxItems).toEqual(3);
+
+    // Invalid ui:component flag
+    let parsed3 = SchemaParser.convertSchemaLayer(arrayEnumSchema, "timeZones",
+      {timeZones: {"ui:component": "MultiSelectInpu"}});
+    expect(parsed3.type).toEqual("SelectInput");
   });
 
   it("should recursively parse object layers", () => {
@@ -379,11 +503,19 @@ describe("SchemaParser", () => {
     expect(elevation.max).toEqual(8848);
   });
 
+  it("should return null items for an object layer with no valid children", () => {
+    let parsed = SchemaParser.convertSchemaLayer(
+      {title: "Test", type: "object", properties: [emptyAnyOfSchema]}, "test", {});
+    expect(parsed.items).toEqual([null]);
+  });
+
   it("should parse simple nullable anyOf layers", () => {
     let parsed1 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial", {});
     expect(parsed1.label).toEqual("Spatial");
     expect(parsed1.description).toEqual("The range of spatial applicability of a dataset.");
     expect(parsed1.type).toEqual("TextInput");
+    expect(parsed1.maxLength).toEqual(10);
+    expect(parsed1.pattern).toEqual("\d+")
 
     // Simply UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial",
@@ -395,6 +527,15 @@ describe("SchemaParser", () => {
     let parsed3 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial",
       {spatial: {"ui:component": "GeoBoundingBoxInpu"}});
     expect(parsed3.type).toEqual("TextInput");
+  });
+
+  it("should return other anyOfLayers as null", () => {
+    let parsed1 = SchemaParser.convertSchemaLayer(emptyAnyOfSchema);
+    expect(parsed1).toBeNull();
+
+    // TODO: Add functionality for multi-layer parsing and remove this test
+    let parsed2 = SchemaParser.convertSchemaLayer(multiAnyOfSchema, "options", {});
+    expect(parsed2).toBeNull();
   });
 
   it("correctly identifies empty objects", () => {

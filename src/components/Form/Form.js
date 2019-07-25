@@ -49,7 +49,7 @@ type FormProps = {
 };
 
 export default function Form(props: FormProps): Element<'div'> {
-  let {schema, uiSchema, externalData, schemaID, includeFields, handleSave} = props;
+  let {schema, uiSchema, externalData, schemaID, includeFields, handleSave, onError} = props;
 
   const [parsedSchema: ?FieldsType, setParsedSchema] = useState({});
   let initialData = (externalData !== undefined && externalData !== null) ? externalData : {};

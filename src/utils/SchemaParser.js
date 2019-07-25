@@ -84,6 +84,7 @@ class SchemaParser {
       return parsedLayer;
     } else if (filteredLayer.length >= 2) {
       // TODO: Handle anyOf schemas with multiple non-null children
+      return null;
     } else {
       // The anyOf schema is incorrectly formatted if it has no remaining children
       return null;
@@ -157,6 +158,7 @@ class SchemaParser {
         // Append the UI schema options to the field
         fieldObject.options = arrayLayer.items.enum;
       } else {
+        // Override the specified ui:component flag since this is an input group
         fieldObject = {type: "InputGroup", id: key};
         if (Array.isArray(arrayLayer.items)) {
           let itemsArray = arrayLayer.items.map((item, index) => {
