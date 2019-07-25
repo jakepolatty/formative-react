@@ -67,7 +67,6 @@ export default function APISchemaForms(props: FormsProps) {
   const saveFormData = (formData: {[key: string]: any}, schemaType: string) => {
     let schemaData = dataObject[schemaType];
     let mergedData = Object.assign(schemaData, formData);
-    console.log("formData")
     axios.post(dataApiEndpoint + schemaType + "/", mergedData).then(res => {
       if (res.data !== undefined && res.data !== null) {
         setDataObject(Object.assign(dataObject, {[schemaType]: res.data}));
@@ -89,7 +88,6 @@ export default function APISchemaForms(props: FormsProps) {
             if (schemas[key].include === undefined) {
               schemas[key].include = [];
             }
-
             schemas[key].include.forEach((dataKey) => {
               filteredData[dataKey] = dataObject[schemaType][dataKey];
             });

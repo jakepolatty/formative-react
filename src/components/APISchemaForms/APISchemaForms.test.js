@@ -70,7 +70,7 @@ describe("<APISchemaForms>", () => {
     const mock = new MockAdapter(axios);
     mock.onGet("http://localhost:8888/schema/wms.json").reply(200, mockSchema);
     mock.onGet("http://localhost:8888/api/wms/").reply(200, mockData);
-    mock.onPost("http://localhost:8888/api/wms/", {layer: "LayerA", style: undefined, opacity: 72, transparent: true})
+    mock.onPost("http://localhost:8888/api/wms/")
       .reply(200, {layer: "LayerA", style: undefined, opacity: 72, transparent: true});
   });
 
@@ -108,15 +108,13 @@ describe("<APISchemaForms>", () => {
 
       let form = component.find(Form);
 
-      // Single field save
       let inputs = form.find(Input);
       let layerInput = inputs.at(0);
       let inputField1 = layerInput.find(SelectInput);
       inputField1.simulate("change", {target: {name: "layer", value: "LayerA"}});
-      // let saveButton1 = layerInput.find(Button);
-      // saveButton1.simulate("click");
 
-      //expect(setState).toHaveBeenCalledWith(true);
+      let saveButton = form.find("#wms-SAVE").at(0);
+      saveButton.simulate("click");
 
       done();
     });
