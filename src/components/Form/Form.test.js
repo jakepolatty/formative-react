@@ -1,6 +1,6 @@
 import React from 'react';
 import {shallow, mount} from 'enzyme';
-import Form from './Form';
+import Form, {updateReducer} from './Form';
 import InputFormField from './FormGeneration/InputFormField';
 
 const sampleSchema = {
@@ -70,4 +70,20 @@ describe("<Form>", () => {
     saveButton.simulate("click");
     expect(saveFn).toHaveBeenCalledWith({elevation: 30});
   });
+
+  it("should correctly reduce update dispatches", () => {
+    let sampleUpdatedDict = {layer: true, opacity: true};
+
+    let reduced1 = updateReducer(sampleUpdatedDict, {type: "reset", payload: ""});
+    expect(reduced1).toEqual({});
+
+    let reduced2 = updateReducer(sampleUpdatedDict, {type: "update", payload: "elevation"});
+    expect(reduced2).toEqual({layer: true, opacity: true, elevation: true});
+
+    let reduced3 = updateReducer(sampleUpdatedDict, {type: "save-field", payload: "layer"});
+    expect(reduced3).toEqual({opacity: true});
+
+    let reduced4 = updateReducer(sampleUpdatedDict, {type: "other", payload: ""});
+    expect(reduced4).toEqual({layer: true, opacity: true});
+  })
 });

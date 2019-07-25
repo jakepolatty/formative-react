@@ -23,7 +23,7 @@ type ReducerActionType = {
   payload: string
 }
 
-function updateReducer(dict: {[key: string]: any}, {type, payload}: ReducerActionType) {
+export function updateReducer(dict: {[key: string]: any}, {type, payload}: ReducerActionType) {
   switch (type) {
     case "reset":
       return {};
