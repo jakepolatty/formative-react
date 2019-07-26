@@ -125,50 +125,30 @@ class SchemaParser {
     const arrayTypes = inputTypeMap.array;
     const defaultType = "SelectInput";
 
-    if (uiSchema === undefined || uiSchema[key] === undefined
-      || uiSchema[key]["ui:component"] === undefined) {
-      // The array should be rendered as a selection input if it has a single enumerated child,
-      // otherwise it should be presented as a list of inputs
-      if (arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
+    if (arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
+      if (uiSchema === undefined || uiSchema[key] === undefined
+        || uiSchema[key]["ui:component"] === undefined) {
         inputType = defaultType;
-        fieldObject = {type: inputType, id: key};
-        fieldObject.options = arrayLayer.items.enum;
       } else {
-        fieldObject = {type: "InputGroup", id: key};
-        if (Array.isArray(arrayLayer.items)) {
-          // Tuple Validation
-          let itemsArray = arrayLayer.items.map((item, index) => {
-            return SchemaParser.convertSchemaLayer(item, key, uiSchema);
-          });
-          fieldObject.items = itemsArray;
-        } else {
-          // List Validation
-          fieldObject.itemFormat = SchemaParser.convertSchemaLayer(arrayLayer.items, key, uiSchema);
+        inputType = uiSchema[key]["ui:component"];
+        if (!arrayTypes.includes(inputType)) {
+          inputType = defaultType;
         }
       }
+
+      fieldObject = {type: inputType, id: key};
+      fieldObject.options = arrayLayer.items.enum;
     } else {
-      inputType = uiSchema[key]["ui:component"];
-      if (!arrayTypes.includes(inputType)) {
-        inputType = defaultType;
-      }
-      // The array should be rendered as a selection input if it has a single enumerated child,
-      // otherwise it should be presented as a list of inputs
-      if (arrayLayer.items !== undefined && arrayLayer.items.enum !== undefined) {
-        fieldObject = {type: inputType, id: key};
-        // Append the UI schema options to the field
-        fieldObject.options = arrayLayer.items.enum;
+      fieldObject = {type: "InputGroup", id: key};
+      if (Array.isArray(arrayLayer.items)) {
+        // Tuple Validation
+        let itemsArray = arrayLayer.items.map((item, index) => {
+          return SchemaParser.convertSchemaLayer(item, key, uiSchema);
+        });
+        fieldObject.items = itemsArray;
       } else {
-        // Override the specified ui:component flag since this is an input group
-        fieldObject = {type: "InputGroup", id: key};
-        if (Array.isArray(arrayLayer.items)) {
-          let itemsArray = arrayLayer.items.map((item, index) => {
-            return SchemaParser.convertSchemaLayer(item, key, uiSchema);
-          });
-          fieldObject.items = itemsArray;
-        } else {
-          // List Validation
-          fieldObject.itemFormat = SchemaParser.convertSchemaLayer(arrayLayer.items, key, uiSchema);
-        }
+        // List Validation
+        fieldObject.itemFormat = SchemaParser.convertSchemaLayer(arrayLayer.items, key, uiSchema);
       }
     }
 
