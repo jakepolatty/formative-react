@@ -30,7 +30,7 @@ If you wish to add a new input component to the repository for your use case, pl
 ## Authors
 Jacob Polatty<sup>1</sup>
 
-<sup>1</sup> Computer Science Department, Brown University, 115 Waterman Street, Providence, RI 02912
+<sup>1</sup>Computer Science Department, Brown University, 115 Waterman Street, Providence, RI 02912
 
 ## Funding
 This work was done at RPS Group, in support of the U.S. Integrated Ocean Observing System (IOOS®)

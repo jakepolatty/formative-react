@@ -22,8 +22,7 @@
     "bootstrap": "^4.3.1",
     "font-awesome": "^4.7.0",
     "json-schema-ref-parser": "^7.0.1",
-    "react-bootstrap": "^1.0.0-beta.9",
-    "react-scripts": "3.0.1"
+    "react-bootstrap": "^1.0.0-beta.9"
   },
   "peerDependencies": {
     "react": "^16.8.6",
@@ -31,7 +30,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "babel src -d build --copy-files",
+    "build": "rm -rf dist && babel src -d dist --copy-files",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "flow": "flow"
@@ -60,6 +59,7 @@
     "enzyme-adapter-react-16": "^1.14.0",
     "flow-bin": "^0.102.0",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.0.1"
   }
 }
