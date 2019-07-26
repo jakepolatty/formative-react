@@ -24,28 +24,30 @@ export default function APISchemaForms(props: FormsProps) {
   useEffect(() => {
     async function fetchSchemas() {
       // Make axios get requests to retrieve the schema for each of the specified keys
-      let schemaKeys = Object.keys(schemas);
+      let schemaKeys: Array<string> = Object.keys(schemas);
       let schemaData = await Promise.all(schemaKeys.map((key) => {
         let schema = schemas[key].schema;
         return axios.get(schemaEndpoint + schema + ".json").then(res => {
           return {schemaObject: res.data, key: key, schema: schema};
-        }).catch(err => {
-          onError(err.message);
-        });
-      }));
+        })
+      })).catch(err => {
+        onError(err.message);
+        return [];
+      });;
 
       // Get all schemas used in the form group to retrieve data from the api
-      let uniqueSchemas = [...new Set(schemaKeys.map(key => {
+      let uniqueSchemas: Array<string> = [...new Set(schemaKeys.map(key => {
         return schemas[key].schema;
       }))];
 
-      let formData = await Promise.all(uniqueSchemas.map((schema) => {
+      let formData = await Promise.all(uniqueSchemas.map(schema => {
         return axios.get(dataApiEndpoint + schema + "/").then(res => {
           return {data: res.data, schema: schema};
-        }).catch(err => {
-          onError(err.message);
         });
-      }));
+      })).catch(err => {
+        onError(err.message);
+        return [];
+      });;
 
       let schemaObject = {};
       schemaData.forEach((data) => {
@@ -102,6 +104,7 @@ export default function APISchemaForms(props: FormsProps) {
               schemaID={key}
               includeFields={schemas[key].include}
               key={key}
+              onError={onError}
             />
           );
         })

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import Form from 'react-bootstrap/Form';
-import type {GenericSelectionInputProps} from '../utils/inputFlowTypes.js';
+import type {GenericSelectionInputProps} from '../inputFlowTypes.js';
 
 export default function RadioInput(props: GenericSelectionInputProps) {
   let {id, initialValue, onUpdate, options} = props;

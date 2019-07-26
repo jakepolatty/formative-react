@@ -24,11 +24,15 @@ export type GenericInputProps = {
 };
 
 export type StringSelectionInputProps = {
-  ...StringInputProps,
+  id: string,
+  initialValue: string,
+  onUpdate: (string) => void,
   options: Array<string>
 };
 
 export type GenericSelectionInputProps = {
-  ...GenericInputProps,
+  id: string,
+  initialValue: string | number | boolean,
+  onUpdate: (string | number | boolean) => void,
   options: Array<string | number | boolean>
 };

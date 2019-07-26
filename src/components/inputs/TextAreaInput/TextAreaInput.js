@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import Form from 'react-bootstrap/Form';
-import type {StringInputProps} from '../utils/inputFlowTypes.js';
+import type {StringInputProps} from '../inputFlowTypes.js';
 
 type Props = {
   ...StringInputProps,
