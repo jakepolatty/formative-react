@@ -33,7 +33,9 @@
     "build": "rm -rf dist && babel src -d dist --copy-files",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "flow": "flow"
+    "flow": "flow",
+    "coverage": "npm test -- --coverage --watchAll=false",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -55,6 +57,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "axios-mock-adapter": "^1.17.0",
+    "coveralls": "^3.0.5",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "flow-bin": "^0.102.0",

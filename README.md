@@ -1,7 +1,7 @@
 # React Schema Form
 
 Dynamic React forms, with generation driven by a JSON schema and full visual customizability
-provided through a UI schema and standardized CSS id generation.
+provided through a UI schema and standardized CSS id hooks.
 
 ## Installation
 1. Install Node.js and npm (Node Package Manager)
