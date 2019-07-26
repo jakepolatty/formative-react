@@ -1,6 +1,7 @@
 # React Schema Form
+[![Build Status](https://travis-ci.com/jakepolatty/react-schema-form.svg?branch=master)](https://travis-ci.com/jakepolatty/react-schema-form)
 
-Dynamic React forms, with generation driven by a JSON schema and full visual customizability
+> Dynamic React forms, with generation driven by a JSON schema and full visual customizability
 provided through a UI schema and standardized CSS id generation.
 
 ## Installation
