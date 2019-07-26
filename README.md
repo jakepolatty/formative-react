@@ -1,6 +1,9 @@
 # React Schema Form
+[![Build Status](https://travis-ci.com/jakepolatty/react-schema-form.svg?branch=master)](https://travis-ci.com/jakepolatty/react-schema-form)
+[![Coverage Status](https://coveralls.io/repos/github/jakepolatty/react-schema-form/badge.svg?branch=master)](https://coveralls.io/github/jakepolatty/react-schema-form?branch=master)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Dynamic React forms, with generation driven by a JSON schema and full visual customizability
+> Dynamic React forms, with generation driven by a JSON schema and full visual customizability
 provided through a UI schema and standardized CSS id hooks.
 
 ## Installation
