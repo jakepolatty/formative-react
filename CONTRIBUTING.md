@@ -1,6 +1,6 @@
-# Style Guide
+# Style and Contribution Guide
 
-All new input fields suggested to the `react-schema-form` must adhere to this style guide
+All new input fields proposed for `react-schema-form` must adhere to this style guide
 in order to be a candidate for acceptance into the repository.
 
 ## Directory Usage
@@ -9,7 +9,7 @@ All inputs should be added to an appropriate subdirectory within the `src/compon
 
 ## Design Patterns
 ### Functional Components
-This repository follows the new development standard introduced in React 16.8 with the
+This repository follows the development standard introduced in React 16.8 with the
 [Hooks API](https://reactjs.org/docs/hooks-reference.html) of writing functional components
 with hooks rather than stateful class-based components.
 
@@ -26,6 +26,7 @@ All custom input fields must accept the following props:
 - `id`: A unique identifier key designating the field
 - `initialValue`: The initial value that the field should take on
 - `onUpdate`: A callback that handles updates to the field value
+
 These props are all passed into any input field component from the `Input` wrapper.
 
 ### Label, Description, and Saving

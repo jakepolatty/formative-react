@@ -1,6 +1,7 @@
 # React Schema Form
 
-Dynamic React forms, generated from a JSON schema with full display options controlled by a UI schema.
+Dynamic React forms, with generation driven by a JSON schema and full visual customizability
+provided through a UI schema and standardized CSS id generation.
 
 ## Installation
 1. Install Node.js and npm (Node Package Manager)
@@ -24,4 +25,10 @@ component that takes in the following props:
 
 ## Contributing to the repository
 If you wish to add a new input component to the repository for your use case, please read the
-[Style and Contribution Guide](StyleGuide.md).
+[Style and Contribution Guide](CONTRIBUTING.md).
+
+## Authors
+Jacob Polatty
+
+## Funding
+This work was done at RPS Group, in support of the U.S. Integrated Ocean Observing System (IOOS®)
