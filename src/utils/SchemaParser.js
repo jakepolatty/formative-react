@@ -183,17 +183,7 @@ class SchemaParser {
     const stringTypes = inputTypeMap.string;
     const defaultType = strLayer.enum !== undefined ? "SelectInput" : "TextInput";
 
-    if (uiOptions === undefined || uiOptions["ui:component"] === undefined) {
-      // Check for a special string format passed in with the schema JSON
-      inputType = defaultType;
-      fieldObject = {type: inputType, id: key};
-    } else {
-      inputType = uiOptions["ui:component"];
-      if (!stringTypes.includes(inputType)) {
-        inputType = defaultType;
-      }
-      fieldObject = {type: inputType, id: key};
-    }
+    fieldObject = SchemaParser.generateFieldObject(uiOptions, defaultType, stringTypes, key);
 
     // Append the relevant JSON schema fields to the field data
     Object.assign(fieldObject,
@@ -225,16 +215,7 @@ class SchemaParser {
     const numberTypes = inputTypeMap.number;
     const defaultType = numLayer.enum !== undefined ? "SelectInput" : "NumberInput";
 
-    if (uiOptions === undefined || uiOptions["ui:component"] === undefined) {
-      inputType = defaultType;
-      fieldObject = {type: inputType, id: key};
-    } else {
-      inputType = uiOptions["ui:component"];
-      if (!numberTypes.includes(inputType)) {
-        inputType = defaultType;
-      }
-      fieldObject = {type: inputType, id: key};
-    }
+    fieldObject = SchemaParser.generateFieldObject(uiOptions, defaultType, numberTypes, key);
 
     // Append the relevant JSON schema fields to the field data
     Object.assign(fieldObject,
@@ -267,16 +248,7 @@ class SchemaParser {
     const integerTypes = inputTypeMap.integer;
     const defaultType = intLayer.enum !== undefined ? "SelectInput" : "NumberInput";
 
-    if (uiOptions === undefined || uiOptions["ui:component"] === undefined) {
-      inputType = defaultType;
-      fieldObject = {type: inputType, id: key};
-    } else {
-      inputType = uiOptions["ui:component"];
-      if (!integerTypes.includes(inputType)) {
-        inputType = defaultType;
-      }
-      fieldObject = {type: inputType, id: key};
-    }
+    fieldObject = SchemaParser.generateFieldObject(uiOptions, defaultType, integerTypes, key);
 
     // Append the relevant JSON schema fields to the field data
     Object.assign(fieldObject,
@@ -309,16 +281,7 @@ class SchemaParser {
     const booleanTypes = inputTypeMap.boolean;
     const defaultType = "CheckboxInput";
 
-    if (uiOptions === undefined || uiOptions["ui:component"] === undefined) {
-      inputType = defaultType;
-      fieldObject = {type: inputType, id: key};
-    } else {
-      inputType = uiOptions["ui:component"];
-      if (!booleanTypes.includes(inputType)) {
-        inputType = defaultType;
-      }
-      fieldObject = {type: inputType, id: key};
-    }
+    fieldObject = SchemaParser.generateFieldObject(uiOptions, defaultType, booleanTypes, key);
 
     // Append the relevant JSON schema fields to the field data
     Object.assign(fieldObject,
@@ -342,6 +305,25 @@ class SchemaParser {
   // Helper method for checking whether an object is empty
   static isEmptyObject(obj) {
     return Object.keys(obj).length === 0;
+  }
+
+  // Helper method for generating fieldObject type and id template from ui schema and valid options
+  static generateFieldObject(uiOptions, defaultType, validTypes, key) {
+    let inputType;
+    let fieldObject;
+
+    if (uiOptions === undefined || uiOptions["ui:component"] === undefined) {
+      inputType = defaultType;
+      fieldObject = {type: inputType, id: key};
+    } else {
+      inputType = uiOptions["ui:component"];
+      if (!validTypes.includes(inputType)) {
+        inputType = defaultType;
+      }
+      fieldObject = {type: inputType, id: key};
+    }
+
+    return fieldObject;
   }
 }
 
