@@ -1,4 +1,5 @@
 import SchemaParser from './SchemaParser';
+import SchemaLayerParsers from './SchemaLayerParsers';
 
 const stringSchema = {
   title: "Description",
