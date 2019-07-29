@@ -4,8 +4,13 @@
 [![codebeat badge](https://codebeat.co/badges/152a8750-1b2e-4372-89de-84252c905f22)](https://codebeat.co/projects/github-com-jakepolatty-react-schema-form-master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-> Dynamic React forms, with generation driven by a JSON schema and full visual customizability
-provided through a UI schema and standardized CSS id hooks.
+> Dynamic React forms, with generation driven by a [JSON schema](https://json-schema.org/) and full visual
+customizability provided through a UI schema and standardized CSS id hooks.
+
+## Installation
+
+## Usage
+Detailed usage information is provided in the [Usage Guide](docs/USAGE.md).
 
 ## Contributing to the repository
 If you wish to add a new input component to the repository, please read the
