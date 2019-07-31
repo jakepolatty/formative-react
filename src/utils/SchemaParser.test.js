@@ -172,6 +172,21 @@ const anyOfSchema = {
   ]
 };
 
+const oneOfSchema = {
+  title: "Spatial",
+  description: "The range of spatial applicability of a dataset.",
+  oneOf: [
+    {
+      type: "string",
+      maxLength: 10,
+      pattern: "\d+"
+    },
+    {
+      type: "null"
+    }
+  ]
+};
+
 const multiAnyOfSchema = {
   title: "Options",
   description: "Example options",
@@ -534,7 +549,7 @@ describe("SchemaParser", () => {
     expect(parsed1.description).toEqual("The range of spatial applicability of a dataset.");
     expect(parsed1.type).toEqual("TextInput");
     expect(parsed1.maxLength).toEqual(10);
-    expect(parsed1.pattern).toEqual("\d+")
+    expect(parsed1.pattern).toEqual("\d+");
 
     // Simply UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial",
@@ -546,20 +561,30 @@ describe("SchemaParser", () => {
     let parsed3 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial",
       {spatial: {"ui:component": "GeoBoundingBoxInpu"}});
     expect(parsed3.type).toEqual("TextInput");
+
+    let parsed4 = SchemaParser.convertSchemaLayer(oneOfSchema, "spatial", {});
+    expect(parsed4.label).toEqual("Spatial");
+    expect(parsed4.description).toEqual("The range of spatial applicability of a dataset.");
+    expect(parsed4.type).toEqual("TextInput");
+    expect(parsed4.maxLength).toEqual(10);
+    expect(parsed4.pattern).toEqual("\d+");
   });
 
   it("should parse complex anyOf and oneOf layers with UI schema selection", () => {
     // Title matching
     let parsed1 = SchemaParser.convertSchemaLayer(multiOneOfSchema, "login",
-      {login: {"ui:format": "Email"}});
+      {login: {"ui:format": "Email", "ui:component": "EmailInput"}});
     expect(parsed1.label).toEqual("Login");
     expect(parsed1.description).toEqual("The selected login method");
+    expect(parsed1.type).toEqual("EmailInput");
+    expect(parsed1.pattern).toEqual("/\S+@\S+\.\S+/");
 
     // Object matching 
     let parsed2 = SchemaParser.convertSchemaLayer(multiAnyOfSchema, "options",
       {options: {"ui:format": {type: "number"}}});
     expect(parsed2.label).toEqual("Options");
     expect(parsed2.description).toEqual("Example options");
+    expect(parsed2.type).toEqual("NumberInput");
   });
 
   it("should return empty anyOfLayers as null", () => {
@@ -569,5 +594,10 @@ describe("SchemaParser", () => {
     // If no UI schema is provided the multi-layer should return null
     let parsed2 = SchemaParser.convertSchemaLayer(multiAnyOfSchema, "options", {});
     expect(parsed2).toBeNull();
+
+    // Invalid ui:format flag
+    let parsed3 = SchemaParser.convertSchemaLayer(multiOneOfSchema, "login",
+      {login: {"ui:format": "GitHub Login"}});
+    expect(parsed3).toBeNull();
   });
 });

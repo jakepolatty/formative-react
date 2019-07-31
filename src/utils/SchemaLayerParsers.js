@@ -127,7 +127,7 @@ class SchemaLayerParsers {
 
     if (ofLayer.items.length === 1) {
       // In this case the anyOf field can be rendered directly as its non-null child
-      parsedLayer = SchemaParser.convertSchemaLayer(ofLayer[0], key, uiSchema);
+      parsedLayer = SchemaParser.convertSchemaLayer(ofLayer.items[0], key, uiSchema);
     } else if (ofLayer.items.length >= 2 && uiSchema !== undefined && uiSchema[key] !== undefined
       && uiSchema[key]["ui:format"] !== undefined) {
       // TODO: Handle anyOf schemas with multiple non-null children
@@ -145,8 +145,6 @@ class SchemaLayerParsers {
             parsedLayer = SchemaParser.convertSchemaLayer(option, key, uiSchema);
           }
         }
-      } else {
-        return null;
       }
     } else {
       // The schema is incorrectly formatted if it has no remaining children
