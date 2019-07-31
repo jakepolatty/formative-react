@@ -91,53 +91,75 @@ class SchemaLayerParsers {
   // Parses a section of the schema wrapped by an anyOf validator
   static parseAnyOfLayer(anyOfLayer, key, uiSchema) {
     // Filter out any {type: "null"} fields, whose functionality is included in inputs by default
-    let filteredLayer = [];
+    let filteredLayers = [];
     for (let i = 0; i < anyOfLayer.anyOf.length; i++) {
       let childSchema = anyOfLayer.anyOf[i];
       if (childSchema.type !== "null") {
-        filteredLayer.push(childSchema);
+        filteredLayers.push(childSchema);
       }
     }
 
-    if (filteredLayer.length === 1) {
-      // In this case the anyOf field can be rendered directly as its non-null child
-      let parsedLayer = SchemaParser.convertSchemaLayer(filteredLayer[0], key, uiSchema);
-      Object.assign(parsedLayer,
-        anyOfLayer.title !== undefined && {label: anyOfLayer.title},
-        anyOfLayer.description !== undefined && {description: anyOfLayer.description});
+    let filteredLayer =
+      {title: anyOfLayer.title, description: anyOfLayer.description, items: filteredLayers};
 
-      return parsedLayer;
-    } else if (filteredLayer.length >= 2 && uiSchema !== undefined && uiSchema[key] !== undefined
+    return SchemaLayerParsers.parseSelectionOfLayer(filteredLayer, key, uiSchema);
+  }
+
+  // Parses a section of the schema wrapped by a oneOf validator
+  static parseOneOfLayer(oneOfLayer, key, uiSchema) {
+    // Filter out any {type: "null"} fields, whose functionality is included in inputs by default
+    let filteredLayers = [];
+    for (let i = 0; i < oneOfLayer.oneOf.length; i++) {
+      let childSchema = oneOfLayer.oneOf[i];
+      if (childSchema.type !== "null") {
+        filteredLayers.push(childSchema);
+      }
+    }
+
+    let filteredLayer =
+      {title: oneOfLayer.title, description: oneOfLayer.description, items: filteredLayers};
+
+    return SchemaLayerParsers.parseSelectionOfLayer(filteredLayer, key, uiSchema);
+  }
+
+  static parseSelectionOfLayer(ofLayer, key, uiSchema) {
+    let parsedLayer = null;
+
+    if (ofLayer.items.length === 1) {
+      // In this case the anyOf field can be rendered directly as its non-null child
+      parsedLayer = SchemaParser.convertSchemaLayer(ofLayer[0], key, uiSchema);
+    } else if (ofLayer.items.length >= 2 && uiSchema !== undefined && uiSchema[key] !== undefined
       && uiSchema[key]["ui:format"] !== undefined) {
       // TODO: Handle anyOf schemas with multiple non-null children
       let format = uiSchema[key]["ui:format"];
-      let parsedLayer = null;
       
       if (typeof format === "string") {
-        for (let option of anyOfLayer.anyOf) {
+        for (let option of ofLayer.items) {
           if (format === option.title) {
             parsedLayer = SchemaParser.convertSchemaLayer(option, key, uiSchema);
           }
         }
       } else if (typeof format === "object") {
-        for (let option of anyOfLayer.anyOf) {
+        for (let option of ofLayer.items) {
           if (isEqual(format, option)) {
-            let parsedLayer = SchemaParser.convertSchemaLayer(option, key, uiSchema);
+            parsedLayer = SchemaParser.convertSchemaLayer(option, key, uiSchema);
           }
         }
       } else {
         return null;
       }
-      
-      if (parsedLayer !== null) {
-        Object.assign(parsedLayer,
-          anyOfLayer.title !== undefined && {label: anyOfLayer.title},
-          anyOfLayer.description !== undefined && {description: anyOfLayer.description});
-
-        return parsedLayer;
-      }
     } else {
-      // The anyOf schema is incorrectly formatted if it has no remaining children
+      // The schema is incorrectly formatted if it has no remaining children
+      return null;
+    }
+
+    if (parsedLayer !== null) {
+      Object.assign(parsedLayer,
+        ofLayer.title !== undefined && {label: ofLayer.title},
+        ofLayer.description !== undefined && {description: ofLayer.description});
+
+      return parsedLayer;
+    } else {
       return null;
     }
   }

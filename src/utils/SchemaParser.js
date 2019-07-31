@@ -53,7 +53,7 @@ class SchemaParser {
     } else if (schema.anyOf !== undefined && schema.anyOf.length > 0) {
       return SchemaLayerParsers.parseAnyOfLayer(schema, currentKey, uiSchema);
     } else if (schema.oneOf !== undefined && schema.oneOf.length > 0) {
-      return SchemaLayerParsers.parseAnyOfLayer(schema, currentKey, uiSchema);
+      return SchemaLayerParsers.parseOneOfLayer(schema, currentKey, uiSchema);
     } else if (schema.enum !== undefined && schema.enum.length > 0) {
       return SchemaLayerParsers.parseStringLayer(schema, currentKey, uiSchema[currentKey]);
     } else {

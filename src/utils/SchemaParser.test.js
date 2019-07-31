@@ -174,12 +174,30 @@ const anyOfSchema = {
 
 const multiAnyOfSchema = {
   title: "Options",
+  description: "Example options",
   anyOf: [
     {
-      type: "string"
+      type: "string",
+      minLength: 1
     },
     {
       type: "number"
+    }
+  ]
+};
+
+const multiOneOfSchema = {
+  title: "Login",
+  description: "The selected login method",
+  oneOf: [
+    {
+      title: "Email",
+      type: "string",
+      pattern: "/\S+@\S+\.\S+/"
+    },
+    {
+      title: "Username",
+      type: "string"
     }
   ]
 };
@@ -510,7 +528,7 @@ describe("SchemaParser", () => {
     expect(parsed.items).toEqual([null]);
   });
 
-  it("should parse simple nullable anyOf layers", () => {
+  it("should parse simple nullable anyOf and oneOf layers", () => {
     let parsed1 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial", {});
     expect(parsed1.label).toEqual("Spatial");
     expect(parsed1.description).toEqual("The range of spatial applicability of a dataset.");
@@ -530,11 +548,25 @@ describe("SchemaParser", () => {
     expect(parsed3.type).toEqual("TextInput");
   });
 
-  it("should return other anyOfLayers as null", () => {
+  it("should parse complex anyOf and oneOf layers with UI schema selection", () => {
+    // Title matching
+    let parsed1 = SchemaParser.convertSchemaLayer(multiOneOfSchema, "login",
+      {login: {"ui:format": "Email"}});
+    expect(parsed1.label).toEqual("Login");
+    expect(parsed1.description).toEqual("The selected login method");
+
+    // Object matching 
+    let parsed2 = SchemaParser.convertSchemaLayer(multiAnyOfSchema, "options",
+      {options: {"ui:format": {type: "number"}}});
+    expect(parsed2.label).toEqual("Options");
+    expect(parsed2.description).toEqual("Example options");
+  });
+
+  it("should return empty anyOfLayers as null", () => {
     let parsed1 = SchemaParser.convertSchemaLayer(emptyAnyOfSchema);
     expect(parsed1).toBeNull();
 
-    // TODO: Add functionality for multi-layer parsing and remove this test
+    // If no UI schema is provided the multi-layer should return null
     let parsed2 = SchemaParser.convertSchemaLayer(multiAnyOfSchema, "options", {});
     expect(parsed2).toBeNull();
   });
