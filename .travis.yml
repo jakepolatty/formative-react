@@ -2,5 +2,5 @@ language: node_js
 node_js:
   - lts/dubnium
   - stable
-script: npm run coverage
+script: npm run coverage && npm run flow
 after_success: npm run coveralls

@@ -109,6 +109,7 @@ object).  For a sample schema named `wms`, the following ids would be accessible
 All ids at the level of groups of inputs are defined based upon the name of that field group defined in the
 JSON schema.  For a sample group named `general`, the following id is always rendered to the page:
 - `general-INPUTS`: A wrapper div for all inputs within the group, allowing for group-based styles.
+
 Nodes with the following ids are optionally rendered if the JSON schema provides the relevant data:
 - `general-LABEL`: A heading label displayed above the group of inputs
 - `general-DESCRIPTION`: A text description of the contents of the group displayed below the list of inputs
@@ -122,6 +123,7 @@ components
 - `project`: The input component itself
 - `project-SAVE`: The save button displayed to the right of the input component that becomes active when
 the value of the input field is updated
+
 Nodes with the following ids are optionally rendered if the JSON schema and UI schema provide the relevant
 data:
 - `project-LABEL`: The title label for the field
