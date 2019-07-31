@@ -102,7 +102,7 @@ export default function APISchemaForms(props: FormsProps) {
               externalData={filteredData}
               handleSave={(formData) => saveFormData(formData, schemaType)}
               schemaID={key}
-              includeFields={schemas[key].include}
+              includeFields={schemas[key] !== undefined ? schemas[key].include : []}
               key={key}
               onError={onError}
             />

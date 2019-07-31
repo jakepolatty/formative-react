@@ -2,9 +2,6 @@ const inputTypeMap = {
   string: [
     "TextInput",
     "TextAreaInput",
-    "PasswordInput",
-    "EmailInput",
-    "UrlInput",
     "FileInput",
     "SelectInput",
     "DateInput",
@@ -17,7 +14,6 @@ const inputTypeMap = {
     "NumberSliderInput",
     "TextInput",
     "RangeInput",
-    // "SelectInput",
     "HiddenInput",
   ],
   boolean: [
@@ -30,7 +26,6 @@ const inputTypeMap = {
     "NumberSliderInput",
     "TextInput",
     "RangeInput",
-    // "SelectInput",
     "HiddenInput",
   ],
   array: [

@@ -573,10 +573,10 @@ describe("SchemaParser", () => {
   it("should parse complex anyOf and oneOf layers with UI schema selection", () => {
     // Title matching
     let parsed1 = SchemaParser.convertSchemaLayer(multiOneOfSchema, "login",
-      {login: {"ui:format": "Email", "ui:component": "EmailInput"}});
+      {login: {"ui:format": "Email"}});
     expect(parsed1.label).toEqual("Login");
     expect(parsed1.description).toEqual("The selected login method");
-    expect(parsed1.type).toEqual("EmailInput");
+    expect(parsed1.type).toEqual("TextInput");
     expect(parsed1.pattern).toEqual("/\S+@\S+\.\S+/");
 
     // Object matching 
