@@ -22,6 +22,8 @@
     "bootstrap": "^4.3.1",
     "font-awesome": "^4.7.0",
     "json-schema-ref-parser": "^7.0.1",
+    "lodash.isempty": "^4.4.0",
+    "lodash.isequal": "^4.5.0",
     "react-bootstrap": "^1.0.0-beta.9"
   },
   "peerDependencies": {

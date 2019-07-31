@@ -1,5 +1,6 @@
 import inputTypeMap from "../inputMaps/inputTypeMap.js";
 import SchemaParser from './SchemaParser';
+import isEqual from 'lodash.isequal';
 
 class SchemaLayerParsers {
   // Parses an object section of the schema and all of its component elements
@@ -106,9 +107,35 @@ class SchemaLayerParsers {
         anyOfLayer.description !== undefined && {description: anyOfLayer.description});
 
       return parsedLayer;
-    } else if (filteredLayer.length >= 2) {
+    } else if (filteredLayer.length >= 2 && uiSchema !== undefined && uiSchema[key] !== undefined
+      && uiSchema[key]["ui:format"] !== undefined) {
       // TODO: Handle anyOf schemas with multiple non-null children
-      return null;
+      let format = uiSchema[key]["ui:format"];
+      let parsedLayer = null;
+      
+      if (typeof format === "string") {
+        for (let option of anyOfLayer.anyOf) {
+          if (format === option.title) {
+            parsedLayer = SchemaParser.convertSchemaLayer(option, key, uiSchema);
+          }
+        }
+      } else if (typeof format === "object") {
+        for (let option of anyOfLayer.anyOf) {
+          if (isEqual(format, option)) {
+            let parsedLayer = SchemaParser.convertSchemaLayer(option, key, uiSchema);
+          }
+        }
+      } else {
+        return null;
+      }
+      
+      if (parsedLayer !== null) {
+        Object.assign(parsedLayer,
+          anyOfLayer.title !== undefined && {label: anyOfLayer.title},
+          anyOfLayer.description !== undefined && {description: anyOfLayer.description});
+
+        return parsedLayer;
+      }
     } else {
       // The anyOf schema is incorrectly formatted if it has no remaining children
       return null;

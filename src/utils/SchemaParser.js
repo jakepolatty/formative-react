@@ -1,5 +1,6 @@
 import $RefParser from "json-schema-ref-parser";
 import SchemaLayerParsers from "./SchemaLayerParsers";
+import isEmpty from "lodash.isempty";
 
 class SchemaParser {
   /**********************
@@ -19,7 +20,7 @@ class SchemaParser {
 
   // Converts the JSON schema and UI schema into a fields object that can be displayed by Form.js
   static parseSchemaWithUI(jsonSchema, uiSchema, schemaID, callback) {
-    if (uiSchema === null || uiSchema === undefined || SchemaParser.isEmptyObject(uiSchema)) {
+    if (uiSchema === null || uiSchema === undefined || isEmpty(uiSchema)) {
       SchemaParser.parseSchema(jsonSchema, schemaID, callback);
     } else {
       $RefParser.dereference(jsonSchema, (err, schema) => {
@@ -51,20 +52,13 @@ class SchemaParser {
       return SchemaLayerParsers.parseBooleanLayer(schema, currentKey, uiSchema[currentKey]);
     } else if (schema.anyOf !== undefined && schema.anyOf.length > 0) {
       return SchemaLayerParsers.parseAnyOfLayer(schema, currentKey, uiSchema);
+    } else if (schema.oneOf !== undefined && schema.oneOf.length > 0) {
+      return SchemaLayerParsers.parseAnyOfLayer(schema, currentKey, uiSchema);
     } else if (schema.enum !== undefined && schema.enum.length > 0) {
       return SchemaLayerParsers.parseStringLayer(schema, currentKey, uiSchema[currentKey]);
     } else {
       return null;
     }
-  }
-
-  /****************
-   * Helper Methods
-   ****************/
-
-  // Helper method for checking whether an object is empty
-  static isEmptyObject(obj) {
-    return Object.keys(obj).length === 0;
   }
 }
 

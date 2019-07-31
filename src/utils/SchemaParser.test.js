@@ -538,10 +538,4 @@ describe("SchemaParser", () => {
     let parsed2 = SchemaParser.convertSchemaLayer(multiAnyOfSchema, "options", {});
     expect(parsed2).toBeNull();
   });
-
-  it("correctly identifies empty objects", () => {
-    expect(SchemaParser.isEmptyObject({})).toBeTruthy();
-    expect(SchemaParser.isEmptyObject({a: 1})).toBeFalsy();
-    expect(SchemaParser.isEmptyObject({"a": "b"})).toBeFalsy();
-  });
 });
