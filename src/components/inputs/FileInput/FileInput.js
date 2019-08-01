@@ -13,17 +13,15 @@ export default function FileInput(props: Props) {
   let {id, onUpdate, multiple, accept} = props;
 
   const handleFileSelection = (event: any) => {
-    if (event) {
-      if (multiple) {
-        let files = event.target.files;
-        if (onUpdate !== undefined) {
-          onUpdate(files);
-        }
-      } else {
-        let file = event.target.files[0];
-        if (onUpdate !== undefined) {
-          onUpdate(file);
-        }
+    if (multiple) {
+      let files = event.target.files;
+      if (onUpdate !== undefined) {
+        onUpdate(files);
+      }
+    } else {
+      let file = event.target.files[0];
+      if (onUpdate !== undefined) {
+        onUpdate(file);
       }
     }
   }
