@@ -23,6 +23,12 @@ export type GenericInputProps = {
   onUpdate: (string | number | boolean) => void
 };
 
+export type MultiStringInputProps = {
+  id: string,
+  initialValue: string | Array<string>,
+  onUpdate: (string | Array<string>) => void
+}
+
 export type StringSelectionInputProps = {
   id: string,
   initialValue: string,

@@ -1,3 +1,4 @@
+import AutocompleteTextInput from '../components/inputs/AutocompleteTextInput/AutocompleteTextInput';
 import CheckboxInput from '../components/inputs/CheckboxInput/CheckboxInput';
 import DateInput from '../components/inputs/DateInput/DateInput';
 import FileInput from '../components/inputs/FileInput/FileInput';
@@ -11,6 +12,7 @@ import TextAreaInput from '../components/inputs/TextAreaInput/TextAreaInput';
 import TextInput from '../components/inputs/TextInput/TextInput';
 
 const reactInputMap = {
+  AutocompleteTextInput: AutocompleteTextInput,
   CheckboxInput: CheckboxInput,
   DateInput: DateInput,
   FileInput: FileInput,

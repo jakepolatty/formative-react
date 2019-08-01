@@ -1,5 +1,6 @@
 const inputTypeMap = {
   string: [
+    "AutocompleteTextInput",
     "TextInput",
     "TextAreaInput",
     "FileInput",
