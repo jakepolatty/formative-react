@@ -50,5 +50,10 @@ describe("<AutocompleteTextInput>", () => {
       initialValue={["TextInput", "RadioInput"]} multiple={true} onUpdate={updateFn}/>);
     component2.simulate("change", ["TextInput", "RadioInput", "NumberInput"]);
     expect(updateFn).toHaveBeenCalledWith(["TextInput", "RadioInput", "NumberInput"]);
+
+    // Undefined update function
+    let component3 = shallow(<AutocompleteTextInput id="test-id" options={testOptions}/>);
+    component3.simulate("change", ["SelectInput"]);
+    expect(updateFn).toHaveBeenCalledTimes(2);
   });
 });
