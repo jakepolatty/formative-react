@@ -13,13 +13,13 @@ type Props = {
   placeholder?: string
 };
 
+let cache = {};
+
 export default function AsyncAutocompleteInput(props: Props) {
   let {id, initialValue, onUpdate, queryUrl, queryKey, multiple, placeholder} = props;
 
   let [isLoading, setIsLoading] = React.useState(false);
   let [options, setOptions] = React.useState([]);
-
-  let cache = {};
 
   if (!Array.isArray(initialValue) && initialValue !== undefined) {
     initialValue = [initialValue];
@@ -40,7 +40,7 @@ export default function AsyncAutocompleteInput(props: Props) {
   }
 
   const handleSearch = (query: string) => {
-    if (cache[query]) {
+    if (cache[query] && cache[query].items !== []) {
       setOptions(cache[query].items);
     } else {
       setIsLoading(true);
@@ -50,6 +50,9 @@ export default function AsyncAutocompleteInput(props: Props) {
           cache[query] = data;
           setIsLoading(false);
           setOptions(data.items);
+        }).catch(err => {
+          setIsLoading(false);
+          setOptions([]);
         });
     }
   }

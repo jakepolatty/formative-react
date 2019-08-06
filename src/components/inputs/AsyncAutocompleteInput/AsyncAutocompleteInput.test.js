@@ -27,6 +27,7 @@ describe("<AsyncAutocompleteInput>", () => {
   beforeEach(() => {
     const mock = new MockAdapter(axios);
     mock.onGet("https://api.github.com/search/users?q=jakepolatty").reply(200, mockData);
+    mock.onGet("https://api.github.com/search/users?q=badrequest").reply(403, {message: "API rate limit exceeded"});
   });
 
   it("should render correctly with an id", () => {
@@ -54,6 +55,15 @@ describe("<AsyncAutocompleteInput>", () => {
     // Cache check
     component.simulate("search", "jakepolatty");
     expect(setState).toHaveBeenCalledTimes(4); // Loading true and false and two setOptions calls
+  });
+
+  it("should handle api errors without crashing", async () => {
+    let component = shallow(<AsyncAutocompleteInput id="test-id" queryUrl={queryUrl} queryKey={queryKey}/>);
+
+    component.simulate("search", "badrequest");
+    await flushPromises();
+    expect(setState).toHaveBeenCalledWith(false);
+    expect(setState).toHaveBeenCalledWith([]);
   });
 
   it("should send back updates", () => {
