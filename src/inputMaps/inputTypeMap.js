@@ -1,5 +1,6 @@
 const inputTypeMap = {
   string: [
+    "AsyncAutocompleteInput",
     "AutocompleteTextInput",
     "TextInput",
     "TextAreaInput",

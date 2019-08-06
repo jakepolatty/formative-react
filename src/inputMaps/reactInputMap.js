@@ -1,3 +1,4 @@
+import AsyncAutocompleteInput from '../components/inputs/AsyncAutocompleteInput/AsyncAutocompleteInput';
 import AutocompleteTextInput from '../components/inputs/AutocompleteTextInput/AutocompleteTextInput';
 import CheckboxInput from '../components/inputs/CheckboxInput/CheckboxInput';
 import DateInput from '../components/inputs/DateInput/DateInput';
@@ -12,6 +13,7 @@ import TextAreaInput from '../components/inputs/TextAreaInput/TextAreaInput';
 import TextInput from '../components/inputs/TextInput/TextInput';
 
 const reactInputMap = {
+  AsyncAutocompleteInput: AsyncAutocompleteInput,
   AutocompleteTextInput: AutocompleteTextInput,
   CheckboxInput: CheckboxInput,
   DateInput: DateInput,
