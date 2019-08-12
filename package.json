@@ -1,12 +1,26 @@
 {
   "name": "formative-react",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/jakepolatty/formative-react"
   },
+  "files": [
+    "dist",
+    "docs",
+    "README.md"
+  ],
+  "keywords": [
+    "react",
+    "form",
+    "formative",
+    "jsonschema",
+    "schema"
+  ],
+  "author": "Jake Polatty",
+  "license": "Apache-2.0",
   "babel": {
     "presets": [
       "@babel/preset-flow",
