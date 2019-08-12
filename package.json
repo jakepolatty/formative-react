@@ -1,13 +1,12 @@
 {
-  "name": "react-schema-form",
-  "version": "0.1.0",
+  "name": "formative-react",
+  "version": "1.0.0",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jakepolatty/react-schema-form"
+    "url": "https://github.com/jakepolatty/formative-react"
   },
-  "private": true,
   "babel": {
     "presets": [
       "@babel/preset-flow",

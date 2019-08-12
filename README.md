@@ -1,4 +1,4 @@
-# React Schema Form
+# Formative React
 [![Build Status](https://travis-ci.com/jakepolatty/react-schema-form.svg?branch=master)](https://travis-ci.com/jakepolatty/react-schema-form)
 [![Coverage Status](https://coveralls.io/repos/github/jakepolatty/react-schema-form/badge.svg?branch=master)](https://coveralls.io/github/jakepolatty/react-schema-form?branch=master)
 [![codebeat badge](https://codebeat.co/badges/152a8750-1b2e-4372-89de-84252c905f22)](https://codebeat.co/projects/github-com-jakepolatty-react-schema-form-master)

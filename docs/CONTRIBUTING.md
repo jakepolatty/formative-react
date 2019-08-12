@@ -1,10 +1,10 @@
 # Style and Contribution Guide
 
-All new input fields proposed for `react-schema-form` must follow this style guide
+All new input fields proposed for `formative-react` must follow this style guide
 in order to be a candidate for acceptance into the repository.
 
 ## Installation and Contributing
-1. [Create a fork](https://github.com/jakepolatty/react-schema-form/fork) of the repository and clone
+1. [Create a fork](https://github.com/jakepolatty/formative-react/fork) of the repository and clone
 the fork locally with `git clone`.
 2. Within the project root directory, run `npm install` to install all dependencies for development.
 3. Create a new feature branch with a descriptive name for your new component.
