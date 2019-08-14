@@ -24,13 +24,21 @@ class FormGenerator {
   setFormData: ({[key: string]: any}) => void;
   includeFields: Array<string>;
   handleSave: Function;
+  fullInputMap: {[key: string]: any};
 
   constructor(formData: {[key: string]: any}, setFormData: ({[key: string]: any}) => void,
-    includeFields: Array<string>, handleSave: Function) {
+    includeFields: Array<string>, customInputMap: {[key: string]: any}, handleSave: Function) {
     this.formData = formData;
     this.setFormData = setFormData;
     this.includeFields = includeFields;
     this.handleSave = handleSave;
+
+    if (customInputMap !== null) {
+      // Custom inputs can also overwrite default inputs so the custom map is included second
+      this.fullInputMap = {...reactInputMap, ...customInputMap};
+    } else {
+      this.fullInputMap = reactInputMap;
+    }
   }
 
   // Generates the React component heirarchy for the form from the parsed schema
@@ -46,7 +54,7 @@ class FormGenerator {
           return null;
         }
       } else {
-        const Field = reactInputMap[fields.type];
+        const Field = this.fullInputMap[fields.type];
         if (Field !== undefined) {
           // At this point the fields argument is at the level of a single field that can be rendered
           const {type, id, defaultValue, arrayIndex, label, description, info, ...rest} = fields;

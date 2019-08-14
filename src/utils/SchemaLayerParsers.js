@@ -4,11 +4,12 @@ import isEqual from 'lodash.isequal';
 
 class SchemaLayerParsers {
   // Parses an object section of the schema and all of its component elements
-  static parseObjectLayer(objLayer, key, uiSchema) {
+  static parseObjectLayer(objLayer, key, uiSchema, customInputMap) {
     let fieldGroupObject = {type: "InputGroup", id: key};
 
     let itemsArray = Object.keys(objLayer.properties).map((propKey) => {
-      let itemLayer = SchemaParser.convertSchemaLayer(objLayer.properties[propKey], propKey, uiSchema);
+      let itemLayer= SchemaParser.convertSchemaLayer(
+        objLayer.properties[propKey], propKey, uiSchema, customInputMap);
       // Add a required flag to the layer if it is required
       if (itemLayer !== null && itemLayer !== undefined) {
         if (objLayer.required !== undefined && objLayer.required.includes(propKey)) {
@@ -31,7 +32,7 @@ class SchemaLayerParsers {
   }
 
   // Parses an array section of the schema and its elements
-  static parseArrayLayer(arrayLayer, key, uiSchema) {
+  static parseArrayLayer(arrayLayer, key, uiSchema, customInputMap) {
     let inputType = undefined;
     let fieldObject;
     const arrayTypes = inputTypeMap.array;
@@ -43,7 +44,7 @@ class SchemaLayerParsers {
         inputType = defaultType;
       } else {
         inputType = uiSchema[key]["ui:component"];
-        if (!arrayTypes.includes(inputType)) {
+        if (!arrayTypes.includes(inputType) || !Object.keys(customInputMap).includes(inputType)) {
           inputType = defaultType;
         }
       }
@@ -89,7 +90,7 @@ class SchemaLayerParsers {
   }
 
   // Parses a section of the schema wrapped by an anyOf validator
-  static parseAnyOfLayer(anyOfLayer, key, uiSchema) {
+  static parseAnyOfLayer(anyOfLayer, key, uiSchema, customInputMap) {
     // Filter out any {type: "null"} fields, whose functionality is included in inputs by default
     let filteredLayers = [];
     for (let i = 0; i < anyOfLayer.anyOf.length; i++) {
@@ -102,11 +103,11 @@ class SchemaLayerParsers {
     let filteredLayer =
       {title: anyOfLayer.title, description: anyOfLayer.description, items: filteredLayers};
 
-    return SchemaLayerParsers.parseSelectionOfLayer(filteredLayer, key, uiSchema);
+    return SchemaLayerParsers.parseSelectionOfLayer(filteredLayer, key, uiSchema, customInputMap);
   }
 
   // Parses a section of the schema wrapped by a oneOf validator
-  static parseOneOfLayer(oneOfLayer, key, uiSchema) {
+  static parseOneOfLayer(oneOfLayer, key, uiSchema, customInputMap) {
     // Filter out any {type: "null"} fields, whose functionality is included in inputs by default
     let filteredLayers = [];
     for (let i = 0; i < oneOfLayer.oneOf.length; i++) {
@@ -119,15 +120,15 @@ class SchemaLayerParsers {
     let filteredLayer =
       {title: oneOfLayer.title, description: oneOfLayer.description, items: filteredLayers};
 
-    return SchemaLayerParsers.parseSelectionOfLayer(filteredLayer, key, uiSchema);
+    return SchemaLayerParsers.parseSelectionOfLayer(filteredLayer, key, uiSchema, customInputMap);
   }
 
-  static parseSelectionOfLayer(ofLayer, key, uiSchema) {
+  static parseSelectionOfLayer(ofLayer, key, uiSchema, customInputMap) {
     let parsedLayer = null;
 
     if (ofLayer.items.length === 1) {
       // In this case the anyOf field can be rendered directly as its non-null child
-      parsedLayer = SchemaParser.convertSchemaLayer(ofLayer.items[0], key, uiSchema);
+      parsedLayer = SchemaParser.convertSchemaLayer(ofLayer.items[0], key, uiSchema, customInputMap);
     } else if (ofLayer.items.length >= 2 && uiSchema !== undefined && uiSchema[key] !== undefined
       && uiSchema[key]["ui:format"] !== undefined) {
       // TODO: Handle anyOf schemas with multiple non-null children
@@ -136,13 +137,13 @@ class SchemaLayerParsers {
       if (typeof format === "string") {
         for (let option of ofLayer.items) {
           if (format === option.title) {
-            parsedLayer = SchemaParser.convertSchemaLayer(option, key, uiSchema);
+            parsedLayer = SchemaParser.convertSchemaLayer(option, key, uiSchema, customInputMap);
           }
         }
       } else if (typeof format === "object") {
         for (let option of ofLayer.items) {
           if (isEqual(format, option)) {
-            parsedLayer = SchemaParser.convertSchemaLayer(option, key, uiSchema);
+            parsedLayer = SchemaParser.convertSchemaLayer(option, key, uiSchema, customInputMap);
           }
         }
       }
@@ -163,12 +164,13 @@ class SchemaLayerParsers {
   }
 
   // Parses a string valued field from the schema
-  static parseStringLayer(strLayer, key, uiOptions) {
+  static parseStringLayer(strLayer, key, uiOptions, customInputMap) {
     let fieldObject;
     const stringTypes = inputTypeMap.string;
+    let validTypes = stringTypes.concat(Object.keys(customInputMap));
     const defaultType = strLayer.enum !== undefined ? "SelectInput" : "TextInput";
 
-    fieldObject = SchemaLayerParsers.generateFieldObject(uiOptions, defaultType, stringTypes, key);
+    fieldObject = SchemaLayerParsers.generateFieldObject(uiOptions, defaultType, validTypes, key);
 
     // Append the relevant JSON schema fields to the field data
     Object.assign(fieldObject,
@@ -194,12 +196,13 @@ class SchemaLayerParsers {
   }
 
   // Parses a numerical field from the schema
-  static parseNumberLayer(numLayer, key, uiOptions) {
+  static parseNumberLayer(numLayer, key, uiOptions, customInputMap) {
     let fieldObject;
     const numberTypes = inputTypeMap.number;
+    let validTypes = numberTypes.concat(Object.keys(customInputMap));
     const defaultType = numLayer.enum !== undefined ? "SelectInput" : "NumberInput";
 
-    fieldObject = SchemaLayerParsers.generateFieldObject(uiOptions, defaultType, numberTypes, key);
+    fieldObject = SchemaLayerParsers.generateFieldObject(uiOptions, defaultType, validTypes, key);
 
     // Append the relevant JSON schema fields to the field data
     Object.assign(fieldObject,
@@ -226,12 +229,13 @@ class SchemaLayerParsers {
   }
 
   // Parses an integer field from the schema
-  static parseIntegerLayer(intLayer, key, uiOptions) {
+  static parseIntegerLayer(intLayer, key, uiOptions, customInputMap) {
     let fieldObject;
     const integerTypes = inputTypeMap.integer;
+    let validTypes = integerTypes.concat(Object.keys(customInputMap));
     const defaultType = intLayer.enum !== undefined ? "SelectInput" : "NumberInput";
 
-    fieldObject = SchemaLayerParsers.generateFieldObject(uiOptions, defaultType, integerTypes, key);
+    fieldObject = SchemaLayerParsers.generateFieldObject(uiOptions, defaultType, validTypes, key);
 
     // Append the relevant JSON schema fields to the field data
     Object.assign(fieldObject,
@@ -258,12 +262,13 @@ class SchemaLayerParsers {
   }
 
   // Parses a boolean field from the schema
-  static parseBooleanLayer(boolLayer, key, uiOptions) {
+  static parseBooleanLayer(boolLayer, key, uiOptions, customInputMap) {
     let fieldObject;
     const booleanTypes = inputTypeMap.boolean;
+    let validTypes = booleanTypes.concat(Object.keys(customInputMap));
     const defaultType = "CheckboxInput";
 
-    fieldObject = SchemaLayerParsers.generateFieldObject(uiOptions, defaultType, booleanTypes, key);
+    fieldObject = SchemaLayerParsers.generateFieldObject(uiOptions, defaultType, validTypes, key);
 
     // Append the relevant JSON schema fields to the field data
     Object.assign(fieldObject,

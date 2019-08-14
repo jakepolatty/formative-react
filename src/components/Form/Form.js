@@ -44,13 +44,15 @@ type FormProps = {
   uiSchema: {[key: string]: any} | null,
   externalData: {[key: string]: any} | null,
   schemaID: string,
+  customInputMap: {[key: string]: any},
   includeFields: Array<string>,
   handleSave: ({[key: string]: any}) => void,
   onError: (string) => void
 };
 
 export default function Form(props: FormProps): Element<'div'> {
-  let {schema, uiSchema, externalData, schemaID, includeFields, handleSave, onError} = props;
+  let {schema, uiSchema, externalData, schemaID, customInputMap, includeFields,
+    handleSave, onError} = props;
 
   const [parsedSchema: ?FieldsType, setParsedSchema] = useState({});
   let initialData = (externalData !== undefined && externalData !== null) ? externalData : {};
@@ -60,7 +62,7 @@ export default function Form(props: FormProps): Element<'div'> {
 
   // When a new schema is passed in, parse it to reload the form
   useEffect(() => {
-    SchemaParser.parseSchemaWithUI(schema, uiSchema, schemaID, (parsed, err) => {
+    SchemaParser.parseSchemaWithUI(schema, uiSchema, schemaID, customInputMap, (parsed, err) => {
       if (err) {
         onError("The JSON schema for " + schemaID + " was malformed.");
       } else {
@@ -95,7 +97,7 @@ export default function Form(props: FormProps): Element<'div'> {
     });
   }
 
-  let generator = new FormGenerator(formData, setFormData, includeFields, saveField);
+  let generator = new FormGenerator(formData, setFormData, includeFields, customInputMap, saveField);
 
   return (
     <div className={schemaID+"-FORM"}>

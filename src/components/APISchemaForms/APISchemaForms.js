@@ -13,11 +13,12 @@ export type FormsProps = {
   schemas: {[schema: string]: SchemaType},
   dataApiEndpoint: string,
   uiSchema: {[key: string]: any},
+  customInputMap: {[key: string]: any},
   onError: (string) => void
 };
 
 export default function APISchemaForms(props: FormsProps) {
-  let {schemaEndpoint, schemas, dataApiEndpoint, uiSchema, onError} = props;
+  let {schemaEndpoint, schemas, dataApiEndpoint, uiSchema, customInputMap, onError} = props;
   const [schemaObject, setSchemaObject] = useState({});
   const [dataObject, setDataObject] = useState({});
 
@@ -99,6 +100,7 @@ export default function APISchemaForms(props: FormsProps) {
             <Form
               schema={schemaObject[key].schemaObject}
               uiSchema={uiSchema[schemaType]}
+              customInputMap={customInputMap}
               externalData={filteredData}
               handleSave={(formData) => saveFormData(formData, schemaType)}
               schemaID={key}
