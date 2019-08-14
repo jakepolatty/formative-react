@@ -24,6 +24,12 @@ specification of a different input component type to render the data that the de
 type.  The UI schema also provides the capability to display an info hover popup to the left of the input
 component by including some description text with an `info` key.  An example UI schema is also provided
 [below](#ui-schema-example).
+- `customInputMap`: An optional object referencing user-defined input components to allow for the usage of
+inputs from outside the core Formative React repository.  This object follows the style of the
+[`reactInputMap`](src/inputMaps/reactInputMap.js) file with each string key that can be accessed within the
+UI schema having a value of a React component type that should be generated for that key.  This input map
+also allows the user to overwrite the base input components such as `TextInput` or `NumberInput` in cases
+where they wish to use a different underlying framework such as Material UI instead of React Bootstrap.
 - `onError`: A callback for handling error events that occur during API network operations.
 
 ### Schemas Object Example
@@ -66,6 +72,12 @@ specification of a different input component type to render the data that the de
 type.  The UI schema also provides the capability to display an info hover popup to the left of the input
 component by including some description text with an `info` key.  An example UI schema is also provided
 [below](#ui-schema-example).
+- `customInputMap`: An optional object referencing user-defined input components to allow for the usage of
+inputs from outside the core Formative React repository.  This object follows the style of the
+[`reactInputMap`](src/inputMaps/reactInputMap.js) file with each string key that can be accessed within the
+UI schema having a value of a React component type that should be generated for that key.  This input map
+also allows the user to overwrite the base input components such as `TextInput` or `NumberInput` in cases
+where they wish to use a different underlying framework such as Material UI instead of React Bootstrap.
 - `handleSave`: A callback that recieves updated fields on save events for handling in the parent component.
 - `onError`: A callback for handling error events that occur during API network operations.
 

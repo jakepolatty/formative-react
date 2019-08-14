@@ -3,6 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/jakepolatty/formative-react/badge.svg?branch=master)](https://coveralls.io/github/jakepolatty/formative-react?branch=master)
 [![codebeat badge](https://codebeat.co/badges/895ba274-4c82-4476-a0ce-7d3abe354c3a)](https://codebeat.co/projects/github-com-jakepolatty-formative-react-master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+![npm](https://img.shields.io/npm/v/formative-react)
 
 > Dynamic React forms, with generation driven by a [JSON schema](https://json-schema.org/) and full visual
 customizability provided through a UI schema and standardized CSS id hooks.
