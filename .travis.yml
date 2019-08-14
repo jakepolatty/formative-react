@@ -9,6 +9,7 @@ deploy:
   email: jakepolatty@gmail.com
   api_key:
     secure: bgBB8FwHtWmghkvEoy2cix4Os1eaugz6lNHoCG4eegJz+NgR/WNNxhxt8bxIdLge7YIy60iowNgaFVRtx0I5JA1i/oVCPqB7SOvhLuuRzNXVyJ3O/zknUlZ/3E+hTfbRIw/rzHCmu8mdH9IwJaNv77C/iqpInVR+WZ5nfkzcfZ4oNR7qJF/vIpAQMkXrO3/lo6Dsaf1gYTc8pBlwfWSH10iyhKe+XEsB8ou1q2n01CtkKud8H5MBW5aencBHJ1buZp9MJ8KzIINBpYF2BnnTqFOPtu8f9dy0A7hEKy448JP31wPYY+vCxbbsEwEe0pOgrCTZuaQ8Yn1iGoaPfCr+MdAZZqH4gYaLgndWSdDfzVqyDjze8Qi/2hXhph8r1CcTkjOAAH/TNZn8/2YuCMNyLObWFftLyFxDWDa34GLk2YpD78eJT6STU3XEhbSSh+1kRAQnq7UPiI+2AU0XtZylVwKmAs9XgcCQLhjG+CYUkkp20K3abNz0+yYqwtdK85LtpD2/7Y8Dh+BTe0KsO9ToChSw8JGQsKKVpvw1Hr4/vMCr9Nc3wSFzRPMNy14W6IHHedM8/Lw6cx3ofkf19ytNhejjQP3pRiVaCso43N6nEMENjEExajlDoWlIKI9XnAU5mWO4hom8hG4LbyB1mWPsFPKPNI8P+aQCdcvyn2qS0Fs=
+  skip_cleanup: true
   on:
     tags: true
     branch: master
