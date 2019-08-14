@@ -44,7 +44,7 @@ class SchemaLayerParsers {
         inputType = defaultType;
       } else {
         inputType = uiSchema[key]["ui:component"];
-        if (!arrayTypes.includes(inputType) || !Object.keys(customInputMap).includes(inputType)) {
+        if (!arrayTypes.includes(inputType) && !Object.keys(customInputMap).includes(inputType)) {
           inputType = defaultType;
         }
       }
@@ -56,12 +56,12 @@ class SchemaLayerParsers {
       if (Array.isArray(arrayLayer.items)) {
         // Tuple Validation
         let itemsArray = arrayLayer.items.map((item) => {
-          return SchemaParser.convertSchemaLayer(item, key, uiSchema);
+          return SchemaParser.convertSchemaLayer(item, key, uiSchema, customInputMap);
         });
         fieldObject.items = itemsArray;
       } else {
         // List Validation
-        fieldObject.itemFormat = SchemaParser.convertSchemaLayer(arrayLayer.items, key, uiSchema);
+        fieldObject.itemFormat = SchemaParser.convertSchemaLayer(arrayLayer.items, key, uiSchema, customInputMap);
       }
     }
 
@@ -78,7 +78,7 @@ class SchemaLayerParsers {
     // Add additional items field if it exists and is not set to false
     if (arrayLayer.additionalItems !== undefined && arrayLayer.additionalItems !== false) {
       fieldObject.additionalItemFormat = SchemaParser.convertSchemaLayer(arrayLayer.additionalItems,
-        key, uiSchema);
+        key, uiSchema, customInputMap);
     }
 
     // Append the UI fields last to override any JSON schema defaults
@@ -166,8 +166,10 @@ class SchemaLayerParsers {
   // Parses a string valued field from the schema
   static parseStringLayer(strLayer, key, uiOptions, customInputMap) {
     let fieldObject;
-    const stringTypes = inputTypeMap.string;
-    let validTypes = stringTypes.concat(Object.keys(customInputMap));
+    let validTypes = inputTypeMap.string;
+    if (customInputMap) {
+      validTypes = validTypes.concat(Object.keys(customInputMap));
+    }
     const defaultType = strLayer.enum !== undefined ? "SelectInput" : "TextInput";
 
     fieldObject = SchemaLayerParsers.generateFieldObject(uiOptions, defaultType, validTypes, key);
@@ -198,8 +200,10 @@ class SchemaLayerParsers {
   // Parses a numerical field from the schema
   static parseNumberLayer(numLayer, key, uiOptions, customInputMap) {
     let fieldObject;
-    const numberTypes = inputTypeMap.number;
-    let validTypes = numberTypes.concat(Object.keys(customInputMap));
+    let validTypes = inputTypeMap.number;
+    if (customInputMap) {
+      validTypes = validTypes.concat(Object.keys(customInputMap));
+    }
     const defaultType = numLayer.enum !== undefined ? "SelectInput" : "NumberInput";
 
     fieldObject = SchemaLayerParsers.generateFieldObject(uiOptions, defaultType, validTypes, key);
@@ -231,8 +235,10 @@ class SchemaLayerParsers {
   // Parses an integer field from the schema
   static parseIntegerLayer(intLayer, key, uiOptions, customInputMap) {
     let fieldObject;
-    const integerTypes = inputTypeMap.integer;
-    let validTypes = integerTypes.concat(Object.keys(customInputMap));
+    let validTypes = inputTypeMap.integer;
+    if (customInputMap) {
+      validTypes = validTypes.concat(Object.keys(customInputMap));
+    }
     const defaultType = intLayer.enum !== undefined ? "SelectInput" : "NumberInput";
 
     fieldObject = SchemaLayerParsers.generateFieldObject(uiOptions, defaultType, validTypes, key);
@@ -264,8 +270,10 @@ class SchemaLayerParsers {
   // Parses a boolean field from the schema
   static parseBooleanLayer(boolLayer, key, uiOptions, customInputMap) {
     let fieldObject;
-    const booleanTypes = inputTypeMap.boolean;
-    let validTypes = booleanTypes.concat(Object.keys(customInputMap));
+    let validTypes = inputTypeMap.boolean;
+    if (customInputMap) {
+      validTypes = validTypes.concat(Object.keys(customInputMap));
+    }
     const defaultType = "CheckboxInput";
 
     fieldObject = SchemaLayerParsers.generateFieldObject(uiOptions, defaultType, validTypes, key);

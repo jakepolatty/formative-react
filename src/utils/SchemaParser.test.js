@@ -245,7 +245,7 @@ describe("SchemaParser", () => {
       done();
     }
 
-    SchemaParser.parseSchema(objectSchema, "wms", callback1);
+    SchemaParser.parseSchemaWithUI(objectSchema, {}, "wms", {}, callback1);
 
     // With UI schema
     function callback2(parsed, err) {
@@ -266,7 +266,7 @@ describe("SchemaParser", () => {
     }
 
     SchemaParser.parseSchemaWithUI(objectSchema, {opacity: {"ui:component": "NumberSliderInput"}},
-      "wms", callback2);
+      "wms", {}, callback2);
   });
 
   it("should return an error for a malformed schema", done => {
@@ -276,7 +276,7 @@ describe("SchemaParser", () => {
       done();
     }
 
-    SchemaParser.parseSchema({"$ref": "not-a-ref"}, "root", callback);
+    SchemaParser.parseSchema({"$ref": "not-a-ref"}, "root", {}, callback);
   });
 
   it("should return an error for a malformed schema with ui schema", done => {
@@ -287,27 +287,27 @@ describe("SchemaParser", () => {
     }
 
     SchemaParser.parseSchemaWithUI({"$ref": "not-a-ref"}, {test: {"ui:component": "TextInput"}},
-      "root", callback);
+      "root", {}, callback);
   });
 
   it("should return null for an empty schema", () => {
-    let parsed1 = SchemaParser.convertSchemaLayer(null, "root", {});
+    let parsed1 = SchemaParser.convertSchemaLayer(null, "root", {}, {});
     expect(parsed1).toBeNull();
 
-    let parsed2 = SchemaParser.convertSchemaLayer(undefined, "root", {});
+    let parsed2 = SchemaParser.convertSchemaLayer(undefined, "root", {}, {});
     expect(parsed2).toBeNull();
 
-    let parsed3 = SchemaParser.convertSchemaLayer({}, "root", {});
+    let parsed3 = SchemaParser.convertSchemaLayer({}, "root", {}, {});
     expect(parsed3).toBeNull();
   });
 
   it("should return null for a null typed schema", () => {
-    let parsed = SchemaParser.convertSchemaLayer({type: "null"}, "root", {});
+    let parsed = SchemaParser.convertSchemaLayer({type: "null"}, "root", {}, {});
     expect(parsed).toBeNull();
   });
 
   it("should parse string layers", () => {
-    let parsed1 = SchemaParser.convertSchemaLayer(stringSchema, "description", {});
+    let parsed1 = SchemaParser.convertSchemaLayer(stringSchema, "description", {}, {});
     expect(parsed1.label).toEqual("Description");
     expect(parsed1.description).toEqual("Human-readable description of the distribution");
     expect(parsed1.type).toEqual("TextInput");
@@ -316,18 +316,18 @@ describe("SchemaParser", () => {
 
     // Simple UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(stringSchema, "description",
-      {description: {"ui:component": "TextAreaInput", info: "An info popup"}});
+      {description: {"ui:component": "TextAreaInput", info: "An info popup"}}, {});
     expect(parsed2.type).toEqual("TextAreaInput");
     expect(parsed2.info).toEqual("An info popup");
 
     // Invalid ui:component flag
     let parsed3 = SchemaParser.convertSchemaLayer(stringSchema, "description",
-      {description: {"ui:component": "TextAreaInpu"}});
+      {description: {"ui:component": "TextAreaInpu"}}, {});
     expect(parsed3.type).toEqual("TextInput");
   });
 
   it("should parse enumerated value layers", () => {
-    let parsed1 = SchemaParser.convertSchemaLayer(stringEnumSchema, "accessLevel", {});
+    let parsed1 = SchemaParser.convertSchemaLayer(stringEnumSchema, "accessLevel", {}, {});
     expect(parsed1.label).toEqual("Public Access Level");
     expect(parsed1.description).toEqual("This may include information regarding access or restrictions");
     expect(parsed1.type).toEqual("SelectInput");
@@ -335,18 +335,18 @@ describe("SchemaParser", () => {
 
     // Simple UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(stringEnumSchema, "accessLevel",
-      {accessLevel: {"ui:component": "TextInput", "default": "public"}});
+      {accessLevel: {"ui:component": "TextInput", "default": "public"}}, {});
     expect(parsed2.type).toEqual("TextInput");
     expect(parsed2.default).toEqual("public");
 
     // Invalid ui:component flag
     let parsed3 = SchemaParser.convertSchemaLayer(stringEnumSchema, "accessLevel",
-      {accessLevel: {"ui:component": "TextInpu"}});
+      {accessLevel: {"ui:component": "TextInpu"}}, {});
     expect(parsed3.type).toEqual("SelectInput");
   });
 
   it("should parse number layers", () => {
-    let parsed1 = SchemaParser.convertSchemaLayer(numberSchema, "elevation", {});
+    let parsed1 = SchemaParser.convertSchemaLayer(numberSchema, "elevation", {}, {});
     expect(parsed1.label).toEqual("Elevation");
     expect(parsed1.description).toEqual("The elevation of a layer in meters");
     expect(parsed1.type).toEqual("NumberInput");
@@ -356,17 +356,17 @@ describe("SchemaParser", () => {
 
     // Simple UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(numberSchema, "elevation",
-      {elevation: {"ui:component": "NumberSliderInput", "increment": 1}});
+      {elevation: {"ui:component": "NumberSliderInput", "increment": 1}}, {});
     expect(parsed2.type).toEqual("NumberSliderInput");
     expect(parsed2.increment).toEqual(1);
 
     // Invalid ui:component flag
     let parsed3 = SchemaParser.convertSchemaLayer(numberSchema, "elevation",
-      {elevation: {"ui:component": "RadioInput"}});
+      {elevation: {"ui:component": "RadioInput"}}, {});
     expect(parsed3.type).toEqual("NumberInput");
 
     // Extra options
-    let parsed4 = SchemaParser.convertSchemaLayer(altNumberSchema, "elevation", {});
+    let parsed4 = SchemaParser.convertSchemaLayer(altNumberSchema, "elevation", {}, {});
     expect(parsed4.type).toEqual("SelectInput");
     expect(parsed4.exclusiveMin).toEqual(-10995);
     expect(parsed4.exclusiveMax).toEqual(8849);
@@ -375,7 +375,7 @@ describe("SchemaParser", () => {
   });
 
   it("should parse integer layers", () => {
-    let parsed1 = SchemaParser.convertSchemaLayer(integerSchema, "opacity", {});
+    let parsed1 = SchemaParser.convertSchemaLayer(integerSchema, "opacity", {}, {});
     expect(parsed1.label).toEqual("Opacity");
     expect(parsed1.description).toEqual("The percentage opacity of the layer");
     expect(parsed1.type).toEqual("NumberInput");
@@ -386,17 +386,17 @@ describe("SchemaParser", () => {
 
     // Simple UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(integerSchema, "opacity",
-      {opacity: {"ui:component": "NumberSliderInput", "multipleOf": 5}});
+      {opacity: {"ui:component": "NumberSliderInput", "multipleOf": 5}}, {});
     expect(parsed2.type).toEqual("NumberSliderInput");
     expect(parsed2.multipleOf).toEqual(5);
 
     // Invalid ui:component flag
     let parsed3 = SchemaParser.convertSchemaLayer(integerSchema, "opacity",
-      {opacity: {"ui:component": "NumberSliderInpu"}});
+      {opacity: {"ui:component": "NumberSliderInpu"}}, {});
     expect(parsed3.type).toEqual("NumberInput");
 
     // Extra options
-    let parsed4 = SchemaParser.convertSchemaLayer(altIntegerSchema, "opacity", {});
+    let parsed4 = SchemaParser.convertSchemaLayer(altIntegerSchema, "opacity", {}, {});
     expect(parsed4.type).toEqual("SelectInput");
     expect(parsed4.min).toEqual(0);
     expect(parsed4.max).toEqual(100);
@@ -404,7 +404,7 @@ describe("SchemaParser", () => {
   });
 
   it("should parse boolean layers", () => {
-    let parsed1 = SchemaParser.convertSchemaLayer(booleanSchema, "dataQuality", {});
+    let parsed1 = SchemaParser.convertSchemaLayer(booleanSchema, "dataQuality", {}, {});
     expect(parsed1.label).toEqual("Data Quality");
     expect(parsed1.description).toEqual("Whether the dataset meets the agency’s Information Quality Guidelines (true/false).");
     expect(parsed1.type).toEqual("CheckboxInput");
@@ -412,17 +412,17 @@ describe("SchemaParser", () => {
 
     // Simple UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(booleanSchema, "dataQuality",
-      {dataQuality: {"ui:component": "RadioInput"}});
+      {dataQuality: {"ui:component": "RadioInput"}}, {});
     expect(parsed2.type).toEqual("RadioInput");
 
     // Invalid ui:component flag
     let parsed3 = SchemaParser.convertSchemaLayer(booleanSchema, "dataQuality",
-      {dataQuality: {"ui:component": "RadioInpu"}});
+      {dataQuality: {"ui:component": "RadioInpu"}}, {});
     expect(parsed3.type).toEqual("CheckboxInput");
   });
 
   it("should recursively parse array layers", () => {
-    let parsed1 = SchemaParser.convertSchemaLayer(arrayFormatSchema, "keywords", {});
+    let parsed1 = SchemaParser.convertSchemaLayer(arrayFormatSchema, "keywords", {}, {});
     expect(parsed1.type).toEqual("InputGroup");
     expect(parsed1.groupType).toEqual("array");
     expect(parsed1.label).toEqual("Tags");
@@ -437,7 +437,7 @@ describe("SchemaParser", () => {
 
     // Simple UI schema - should default to InputGroup
     let parsed2 = SchemaParser.convertSchemaLayer(arrayFormatSchema, "keywords",
-      {keywords: {"ui:component": "MultiSelectInput", minItems: 1, maxItems: 4}});
+      {keywords: {"ui:component": "MultiSelectInput", minItems: 1, maxItems: 4}}, {});
     expect(parsed2.type).toEqual("InputGroup");
     expect(parsed2.minItems).toEqual(1);
     expect(parsed2.maxItems).toEqual(4);
@@ -448,7 +448,7 @@ describe("SchemaParser", () => {
   });
 
   it("should parse array tuple validation list layers", () => {
-    let parsed1 = SchemaParser.convertSchemaLayer(arrayListSchema, "attribution", {});
+    let parsed1 = SchemaParser.convertSchemaLayer(arrayListSchema, "attribution", {}, {});
     expect(parsed1.type).toEqual("InputGroup");
     expect(parsed1.groupType).toEqual("array");
     expect(parsed1.label).toEqual("Attribution");
@@ -464,7 +464,7 @@ describe("SchemaParser", () => {
 
     // Simple UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(arrayListSchema, "attribution",
-      {attribution: {"ui:component": "MultiSelectInput"}});
+      {attribution: {"ui:component": "MultiSelectInput"}}, {});
     expect(parsed2.type).toEqual("InputGroup");
     expect(parsed2.groupType).toEqual("array");
     expect(parsed2.label).toEqual("Attribution");
@@ -477,7 +477,7 @@ describe("SchemaParser", () => {
   });
 
   it("should parse array wrappers for enums", () => {
-    let parsed1 = SchemaParser.convertSchemaLayer(arrayEnumSchema, "timeZones", {});
+    let parsed1 = SchemaParser.convertSchemaLayer(arrayEnumSchema, "timeZones", {}, {});
     expect(parsed1.label).toEqual("Time Zone (US)");
     expect(parsed1.description).toEqual("An American time zone");
     expect(parsed1.type).toEqual("SelectInput");
@@ -486,20 +486,20 @@ describe("SchemaParser", () => {
 
     // Simple UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(arrayEnumSchema, "timeZones",
-      {timeZones: {"ui:component": "MultiSelectInput", maxItems: 3}});
+      {timeZones: {"ui:component": "MultiSelectInput", maxItems: 3}}, {});
     expect(parsed2.type).toEqual("MultiSelectInput");
     expect(parsed2.options).toEqual(["PST", "MST", "CST", "EST"]);
     expect(parsed2.maxItems).toEqual(3);
 
     // Invalid ui:component flag
     let parsed3 = SchemaParser.convertSchemaLayer(arrayEnumSchema, "timeZones",
-      {timeZones: {"ui:component": "MultiSelectInpu"}});
+      {timeZones: {"ui:component": "MultiSelectInpu"}}, {});
     expect(parsed3.type).toEqual("SelectInput");
   });
 
   it("should recursively parse object layers", () => {
     let parsed1 = SchemaParser.convertSchemaLayer(objectSchema, "wms",
-      {opacity: {"ui:component": "NumberSliderInput", min: 0, max: 100}});
+      {opacity: {"ui:component": "NumberSliderInput", min: 0, max: 100}}, {});
     expect(parsed1.type).toEqual("InputGroup");
     expect(parsed1.groupType).toEqual("object");
     expect(parsed1.label).toEqual("WMS");
@@ -539,12 +539,12 @@ describe("SchemaParser", () => {
 
   it("should return null items for an object layer with no valid children", () => {
     let parsed = SchemaParser.convertSchemaLayer(
-      {title: "Test", type: "object", properties: [emptyAnyOfSchema]}, "test", {});
+      {title: "Test", type: "object", properties: [emptyAnyOfSchema]}, "test", {}, {});
     expect(parsed.items).toEqual([null]);
   });
 
   it("should parse simple nullable anyOf and oneOf layers", () => {
-    let parsed1 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial", {});
+    let parsed1 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial", {}, {});
     expect(parsed1.label).toEqual("Spatial");
     expect(parsed1.description).toEqual("The range of spatial applicability of a dataset.");
     expect(parsed1.type).toEqual("TextInput");
@@ -553,16 +553,16 @@ describe("SchemaParser", () => {
 
     // Simply UI schema
     let parsed2 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial",
-      {spatial: {"ui:component": "GeoBoundingBoxInput", "default": "(0, 0), (0, 0)"}});
+      {spatial: {"ui:component": "GeoBoundingBoxInput", "default": "(0, 0), (0, 0)"}}, {});
     expect(parsed2.type).toEqual("GeoBoundingBoxInput");
     expect(parsed2.default).toEqual("(0, 0), (0, 0)");
 
     // Invalid ui:component flag
     let parsed3 = SchemaParser.convertSchemaLayer(anyOfSchema, "spatial",
-      {spatial: {"ui:component": "GeoBoundingBoxInpu"}});
+      {spatial: {"ui:component": "GeoBoundingBoxInpu"}}, {});
     expect(parsed3.type).toEqual("TextInput");
 
-    let parsed4 = SchemaParser.convertSchemaLayer(oneOfSchema, "spatial", {});
+    let parsed4 = SchemaParser.convertSchemaLayer(oneOfSchema, "spatial", {}, {});
     expect(parsed4.label).toEqual("Spatial");
     expect(parsed4.description).toEqual("The range of spatial applicability of a dataset.");
     expect(parsed4.type).toEqual("TextInput");
@@ -573,7 +573,7 @@ describe("SchemaParser", () => {
   it("should parse complex anyOf and oneOf layers with UI schema selection", () => {
     // Title matching
     let parsed1 = SchemaParser.convertSchemaLayer(multiOneOfSchema, "login",
-      {login: {"ui:format": "Email"}});
+      {login: {"ui:format": "Email"}}, {});
     expect(parsed1.label).toEqual("Login");
     expect(parsed1.description).toEqual("The selected login method");
     expect(parsed1.type).toEqual("TextInput");
@@ -581,7 +581,7 @@ describe("SchemaParser", () => {
 
     // Object matching 
     let parsed2 = SchemaParser.convertSchemaLayer(multiAnyOfSchema, "options",
-      {options: {"ui:format": {type: "number"}}});
+      {options: {"ui:format": {type: "number"}}}, {});
     expect(parsed2.label).toEqual("Options");
     expect(parsed2.description).toEqual("Example options");
     expect(parsed2.type).toEqual("NumberInput");
@@ -592,12 +592,21 @@ describe("SchemaParser", () => {
     expect(parsed1).toBeNull();
 
     // If no UI schema is provided the multi-layer should return null
-    let parsed2 = SchemaParser.convertSchemaLayer(multiAnyOfSchema, "options", {});
+    let parsed2 = SchemaParser.convertSchemaLayer(multiAnyOfSchema, "options", {}, {});
     expect(parsed2).toBeNull();
 
     // Invalid ui:format flag
     let parsed3 = SchemaParser.convertSchemaLayer(multiOneOfSchema, "login",
-      {login: {"ui:format": "GitHub Login"}});
+      {login: {"ui:format": "GitHub Login"}}, {});
     expect(parsed3).toBeNull();
+  });
+
+  it("should allow custom input fields passed into the customInputMap", () => {
+    // In an actual implementation the final object would refer to a React component definition, not null
+    let parsed = SchemaParser.convertSchemaLayer(stringSchema, "description",
+      {description: {"ui:component": "DescriptionInput"}}, {DescriptionInput: null});
+    expect(parsed.label).toEqual("Description");
+    expect(parsed.description).toEqual("Human-readable description of the distribution");
+    expect(parsed.type).toEqual("DescriptionInput");
   });
 });
