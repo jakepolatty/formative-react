@@ -35,6 +35,12 @@ const checkboxField = {
   "description": "Whether the dataset meets the agency’s Information Quality Guidelines (true/false)."
 };
 
+const customNumberField = {
+  "type": "NumberInput",
+  "id": "opacity",
+  "label": "Opacity"
+}
+
 const nonexistentField = {
   "type": "NotAnInput",
   "id": "doesNotExist",
@@ -97,7 +103,7 @@ const inputFormatGroupWithDefaults = {
 
 describe("FormGenerator", () => {
   it("should return null for empty fields", () => {
-    let generator = new FormGenerator({}, () => null, [], () => null);
+    let generator = new FormGenerator({}, () => null, [], {}, () => null);
     let form1 = generator.generateForm(undefined);
     expect(form1).toBeNull();
     let form2 = generator.generateForm(null);
@@ -115,7 +121,7 @@ describe("FormGenerator", () => {
 
   it("should generate single fields from an input", () => {
     let generator = new FormGenerator({}, () => null,
-      ["rights", "accessLevel", "dataQuality"], () => null);
+      ["rights", "accessLevel", "dataQuality"], {}, () => null);
 
     let field1 = mount(generator.generateForm(textField));
     let input1 = field1.find(TextInput);
@@ -138,7 +144,7 @@ describe("FormGenerator", () => {
   });
 
   it("should skip single fields that are not in the include list", () => {
-    let generator = new FormGenerator({}, () => null, [], () => null);
+    let generator = new FormGenerator({}, () => null, [], {}, () => null);
 
     let field1 = generator.generateForm(textField);
     expect(field1).toBeNull();
@@ -151,7 +157,7 @@ describe("FormGenerator", () => {
   });
 
   it("should return null for fields with unavailable types", () => {
-    let generator = new FormGenerator({}, () => null, ["nonexistentField"], () => null);
+    let generator = new FormGenerator({}, () => null, ["nonexistentField"], {}, () => null);
 
     let field = generator.generateForm(nonexistentField);
     expect(field).toBeNull();
@@ -159,7 +165,7 @@ describe("FormGenerator", () => {
 
   it("should merge in prepopulated form data when it exists", () => {
     let generator = new FormGenerator({"rights": "public", "accessLevel": "public", "dataQuality": true},
-      () => null, ["rights", "accessLevel", "dataQuality"], () => null);
+      () => null, ["rights", "accessLevel", "dataQuality"], {}, () => null);
 
     let field1 = shallow(generator.generateForm(textField));
     expect(field1.prop("initialValue")).toEqual("public");
@@ -173,7 +179,7 @@ describe("FormGenerator", () => {
 
   it("should generate lists of fields for a specific input group", () => {
     let generator = new FormGenerator({"dataQuality": true}, () => null,
-      ["rights", "dataQuality"], () => null);
+      ["rights", "dataQuality"], {}, () => null);
 
     let fieldGroup = mount(generator.generateForm(inputList));
     expect(fieldGroup.prop("id")).toEqual("dataset");
@@ -196,14 +202,14 @@ describe("FormGenerator", () => {
   });
 
   it("should skip lists of fields for which none are in the include list", () => {
-    let generator = new FormGenerator({}, () => null, [], () => null);
+    let generator = new FormGenerator({}, () => null, [], {}, () => null);
 
     let fieldGroup = generator.generateForm(inputList);
     expect(fieldGroup).toBeNull();
   });
 
   it("should generate lists of fields for a generic input group", () => {
-    let generator = new FormGenerator({}, () => null, ["references"], () => null);
+    let generator = new FormGenerator({}, () => null, ["references"], {}, () => null);
 
     let fieldGroup = mount(generator.generateForm(inputFormatGroup));
     expect(fieldGroup.prop("id")).toEqual("references");
@@ -230,7 +236,7 @@ describe("FormGenerator", () => {
 
   it("should generate lists of fields for an array pattern", () => {
     let generator = new FormGenerator({"dataQuality": true}, () => null,
-      ["rights", "dataQuality"], () => null);
+      ["rights", "dataQuality"], {}, () => null);
     let fieldGroup = mount(generator.generateForm(arrayInputList));
     expect(fieldGroup.prop("id")).toEqual("dataset");
 
@@ -249,7 +255,7 @@ describe("FormGenerator", () => {
 
   it("should populate the input format fields with form data", () => {
     // Case where the data length is shorter than the min length
-    let generator1 = new FormGenerator({references: [1, 2]}, () => null, ["references"], () => null);
+    let generator1 = new FormGenerator({references: [1, 2]}, () => null, ["references"], {}, () => null);
     
     let fieldGroup1 = mount(generator1.generateForm(inputFormatGroup));
     let inputs1 = fieldGroup1.find("#references-INPUTS");
@@ -264,7 +270,7 @@ describe("FormGenerator", () => {
 
     // Case where the data length is longer than the min length
     let generator2 = new FormGenerator({references: ["A", "B", "C", "D"]}, () => null,
-      ["references"], () => null);
+      ["references"], {}, () => null);
 
     let fieldGroup2 = mount(generator2.generateForm(inputFormatGroup));
     let inputs2 = fieldGroup2.find("#references-INPUTS");
@@ -282,7 +288,7 @@ describe("FormGenerator", () => {
 
   it("should overwrite default value fields with form data", () => {
     // Case where the data length is shorter than the defaults length
-    let generator1 = new FormGenerator({references: [1, 2]}, () => null, ["references"], () => null);
+    let generator1 = new FormGenerator({references: [1, 2]}, () => null, ["references"], {}, () => null);
     
     let fieldGroup1 = mount(generator1.generateForm(inputFormatGroupWithDefaults));
     let inputs1 = fieldGroup1.find("#references-INPUTS");
@@ -297,7 +303,7 @@ describe("FormGenerator", () => {
 
     // Case where the data length is longer than the defaults length
     let generator2 = new FormGenerator({references: ["A", "B", "C", "D"]}, () => null,
-      ["references"], () => null);
+      ["references"], {}, () => null);
 
     let fieldGroup2 = mount(generator2.generateForm(inputFormatGroup));
     let inputs2 = fieldGroup2.find("#references-INPUTS");
@@ -313,8 +319,17 @@ describe("FormGenerator", () => {
     expect(input7.prop("initialValue")).toEqual("D");
   });
 
+  it("should allow for component overrides in the customInputMap", () => {
+    // Maps the NumberInput key to the TextInput component
+    let generator = new FormGenerator({}, () => null, ["opacity"], {NumberInput: TextInput}, () => null);
+
+    let field = mount(generator.generateForm(customNumberField));
+    let input = field.find(TextInput);
+    expect(input.length).toEqual(1);
+  });
+
   it("should skip format fields not in the include list", () => {
-    let generator = new FormGenerator({}, () => null, [], () => null);
+    let generator = new FormGenerator({}, () => null, [], {}, () => null);
 
     let fields = generator.generateForm(inputFormatGroup);
     expect(fields).toBeNull();

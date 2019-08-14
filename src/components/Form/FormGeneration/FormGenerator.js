@@ -32,13 +32,8 @@ class FormGenerator {
     this.setFormData = setFormData;
     this.includeFields = includeFields;
     this.handleSave = handleSave;
-
-    if (customInputMap !== null) {
-      // Custom inputs can also overwrite default inputs so the custom map is included second
-      this.fullInputMap = {...reactInputMap, ...customInputMap};
-    } else {
-      this.fullInputMap = reactInputMap;
-    }
+    // Custom inputs can also overwrite default inputs so the custom map is included second
+    this.fullInputMap = {...reactInputMap, ...customInputMap};
   }
 
   // Generates the React component heirarchy for the form from the parsed schema
