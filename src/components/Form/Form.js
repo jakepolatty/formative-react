@@ -1,5 +1,6 @@
 // @flow
 import React, {useState, useEffect, useReducer} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import type {Element} from 'react';
 import FormGenerator from './FormGeneration/FormGenerator.js';
 import type {FieldsType} from './FormGeneration/FormGenerator.js'
