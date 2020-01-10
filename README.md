@@ -25,6 +25,10 @@ Detailed usage information is provided in the [Usage Guide](docs/USAGE.md).
 If you wish to add a new input component to the repository, please read the
 [Style and Contribution Guide](docs/CONTRIBUTING.md).
 
+## Whitepaper
+If you would like to learn more about the Formative React development process and major design decisions, please
+refer to [the whitepaper](docs/FormativeReact.pdf).
+
 ## Authors
 Jacob Polatty<sup>1</sup>
 
